@@ -34,6 +34,7 @@ Files and directories may be named starting with numbers to control the sort ord
 
 These numbers will not appear in the titles for the sections and pages.
 
+
 ## Using Custom Page Titles
 Some characters cannot be used in file names on Windows, such as `/ ? < > \ : * | "`. If you want to name a page using these characters, you need to specify the title in a metadata section at the top of the file.
 
@@ -49,7 +50,9 @@ The metadata section consists of lower-case attributes (like "`title`") and valu
     See the section "Using Additional Metadata" in the DocuBot help for
     more information on using other fields in the metadata section.
 
+
 ## Editing the HTML Templates and Stylesheet
+
 
 ## Using Additional Metadata
 
@@ -59,7 +62,9 @@ The metadata section consists of lower-case attributes (like "`title`") and valu
 * Custom Metadata for Directories
 * Controlling CHM Indexing
 * Additional Markups (Textile, Raw HTML, RDoc, etc.)
-* Hiding Files from the TOC
+* Includes and Supporting File and Dirctories Hidden from the TOC
+* Customizing TOC Icons
+* Links between documents
 
 
 [1]: http://daringfireball.net/projects/markdown/basics

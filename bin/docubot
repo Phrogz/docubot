@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'docubot'
+
+USAGE = <<ENDUSAGE
+Usage:
+   docubot [-t template_name] directory
+ENDUSAGE
+
+ARGS = { :template=>'default' }
+UNFLAGGED_ARGS = [ :directory ]
+next_arg = UNFLAGGED_ARGS.first
+ARGV.each{ |arg|
+	case arg
+		when '-h','--help'
+		  ARGS[:help] = true
+		when '-t','--template'
+			next_arg = :template
+		else
+		  if next_arg
+		    ARGS[next_arg] = arg
+		    UNFLAGGED_ARGS.delete( next_arg )
+		  end
+		  next_arg = UNFLAGGED_ARGS.first
+	end
+}
+
+if ARGS[:help] or !ARGS[:directory]
+   puts USAGE
+   #puts EXAMPLES if ARGS[:help]
+   exit
+end
+
+DocuBot.generate( ARGS[:directory], ARGS )
+

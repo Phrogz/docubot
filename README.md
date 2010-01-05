@@ -1,8 +1,10 @@
 # About DocuBot
 DocuBot is a simple Ruby-based tool for easily creating complex CHM documents from a hierarchy of plain text files. At its simplest:
+
 1. Create a directory hierarchy of text files with the extension .md.
    * This will use [Markdown][1] to convert the files to HTML.
-1. Run `docubot mydirectory`
+
+2. Run `docubot mydirectory`
    * DocuBot will create `mydirectory.chm` in short order.
      The CHM will have Table of Contents based on the names of the directories and files.
 

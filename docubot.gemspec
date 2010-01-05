@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
 	s.email       = "gavin@phrogz.net"
 	s.homepage    = "http://github.com/Phrogz/docubot"
 	s.summary     = "Create CHM documentation from a simple hierarchy of text files."
+	s.description = s.summary # TODO
 	s.files       = %w[ bin/* lib/**/* test/**/* ].inject([]){ |all,glob| all+Dir[glob] }
 	s.rubyforge_project = 'docubot'
 	s.test_files = %w[test/all.rb]

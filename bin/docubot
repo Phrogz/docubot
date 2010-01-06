@@ -33,6 +33,6 @@ if ARGS[:help] or !ARGS[:directory]
 end
 
 bundle = DocuBot::Bundle.new( ARGS[:directory] )
-puts bundle.toc
 bundle.write( ARGS[:template] )
+puts bundle.toc
 

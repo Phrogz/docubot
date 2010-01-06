@@ -1,0 +1,14 @@
+!!! Strict
+%html
+	%head
+		%link(rel='stylesheet' type='text/css' href='shared.css' media='all')
+		%title= page.title
+	%body.page
+		#content
+			#header
+				%h1#title= page.title
+				#breadcrumb= page.breadcrumb
+				- if page.author?
+					#author= page.author
+			#page= page.html
+			#footer Copyright ©2010. All Rights Reserved.

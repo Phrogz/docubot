@@ -4,7 +4,7 @@ class DocuBot::Page
 
 	attr_reader :html
 
-	def self.from_file( filename, title=nil, type=:md )
+	def self.from_file( filename, title=nil, type=nil )
 		title ||= DocuBot.name( filename )
 		type  ||= File.extname( filename )[ 1..-1 ]
 		new( File.read(filename), title, type )

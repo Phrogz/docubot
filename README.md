@@ -43,9 +43,10 @@ Some characters cannot be used in file names on Windows, such as `/ ? < > \ : * 
 
 The metadata section consists of lower-case attributes (like "`title`") and values separated by colons. This section must be separated from the rest of the document by three plus characters on their own line ("`+++`"). For example:
 
-    title  : What does the Metadata Section Look Like?
-    author : Gavin Kistner
-    edited : 2010-01-05
+    title   : What does the Metadata Section Look Like?
+    author  : Gavin Kistner
+    edited  : 2010-01-05
+    summary : Example of a file using a metadata section.
     +++
     It does not matter what this file is named; the title above will be
     used instead. (However, the file name affects sorting in the TOC.)
@@ -55,9 +56,10 @@ The metadata section consists of lower-case attributes (like "`title`") and valu
 
 
 ## Editing the HTML Templates and Stylesheet
-
+TODO
 
 ## Using Additional Metadata
+TODO
 
 # Additional Planned Features
 * Automatic Glossary Links
@@ -68,7 +70,8 @@ The metadata section consists of lower-case attributes (like "`title`") and valu
 * Includes and Supporting File and Dirctories Hidden from the TOC
 * Customizing TOC Icons
 * Links between documents
-
+* User Variables (e.g. company name for template footer) stored or on command line
+* Optional TOC sub-entries for in-page headers
 
 [1]: http://daringfireball.net/projects/markdown/basics
 [2]: http://rubyinstaller.org/

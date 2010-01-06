@@ -7,6 +7,15 @@ class DocuBot::Section
 	def sub_sections
 		@entries.select{ |e| e.is_a?( DocuBot::Section ) }
 	end
+	def pages
+		@entries.select{ |e| e.is_a?( DocuBot::Page ) }
+	end
+	def every_page
+		(pages + sub_sections.map{ |sub| sub.every_page }).flatten
+	end
+	def every_section
+		(sub_sections + sub_sections.map{ |sub| sub.every_section }).flatten
+	end
 	def <<( entry )
 		@entries << entry
 	end

@@ -28,7 +28,7 @@ class	DocuBot::Bundle
 	end
 	
 	def write( template='default', destination=nil )
-		destination ||= "#{@source}_html"
+		destination ||= File.join( File.dirname(@source), "#{File.basename @source}_html" )
 
 		unless DocuBot::INSTALLED_TEMPLATES.include?( template )
 			raise "Cannot write DocuBot Bundle: the specified template '#{template}' does not exist in #{TEMPLATE_DIRECTORY}."
@@ -37,7 +37,8 @@ class	DocuBot::Bundle
 		Dir.mkdir(destination) unless File.exists?(destination)
 
 		# TODO: Write HTML files
-		# TODO: Store/copy extras
+		# TODO: Store/copy extras from source
+		# TODO: Look in template directory for 'extras' directory and copy contents
 		# TODO: CHM
 	end
 

@@ -12,8 +12,9 @@ class	DocuBot::Bundle
 		end
 		@toc = DocuBot::Section.new( "Table of Contents" )
 		sections_by_path = {}
-
-		Dir[ File.join( @source, '**/*' ) ].each do |item|
+		
+		source_glob = File.expand_path( File.join( @source, '**/*' ) )
+		Dir[ source_glob ].each do |item|
 			parent = sections_by_path[ File.dirname( item ) ] || @toc
 			if File.directory?( item )
 				section = DocuBot::Section.new( DocuBot.name( item ) )

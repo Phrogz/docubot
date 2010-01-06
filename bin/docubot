@@ -18,19 +18,21 @@ ARGV.each{ |arg|
 		when '-t','--template'
 			next_arg = :template
 		else
-		  if next_arg
-		    ARGS[next_arg] = arg
-		    UNFLAGGED_ARGS.delete( next_arg )
-		  end
-		  next_arg = UNFLAGGED_ARGS.first
+			if next_arg
+				ARGS[next_arg] = arg
+				UNFLAGGED_ARGS.delete( next_arg )
+			end
+			next_arg = UNFLAGGED_ARGS.first
 	end
 }
 
 if ARGS[:help] or !ARGS[:directory]
-   puts USAGE
-   #puts EXAMPLES if ARGS[:help]
-   exit
+	puts USAGE
+	#puts EXAMPLES if ARGS[:help]
+	exit
 end
 
-DocuBot.generate( ARGS[:directory], ARGS )
+bundle = DocuBot::Bundle.new( ARGS[:directory] )
+puts bundle.toc
+bundle.write( ARGS[:template] )
 

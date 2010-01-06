@@ -14,9 +14,12 @@ DocuBot requires [Ruby][2] and Windows. (Windows is required to create the CHM f
 
 
 # Installing
-  [sudo] gem install docubot
+1. Ensure you're running RubyGems 1.3.5 or newer:
+   * `gem update --system`
+2. Install the DocuBot gem:
+   * `gem install docubot`
 
-This will install the docubot binary as well as all necessary supporting files.
+This will install the `docubot` binary as well as all necessary supporting files.
 
 
 # Additional Control

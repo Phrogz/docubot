@@ -1,4 +1,6 @@
-DocuBot.handle_snippet /\$\$(\w[\w ]*\w)\$\$/ do
-	# TODO: look up glossary terms
-	"<span class='glossary'>#{$1}</span>"
+pattern = /\$\$(\w[\w ]*\w)\$\$/
+DocuBot.handle_snippet pattern do |match|
+	term = match[pattern,1]
+	# TODO: look up glossary terms, include information
+	"<span class='glossary'>#{term}</span>"
 end

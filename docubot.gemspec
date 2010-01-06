@@ -11,6 +11,8 @@ Gem::Specification.new do |s|
 	s.summary     = "Create CHM documentation from a simple hierarchy of text files."
 	s.description = s.summary # TODO
 	s.files       = %w[ bin/* lib/**/* test/**/* ].inject([]){ |all,glob| all+Dir[glob] }
+	s.bindir      = 'bin'
+	s.executables << 'docubot'
 	s.rubyforge_project = 'docubot'
 	s.test_files = %w[test/all.rb]
 	s.add_dependency 'bluecloth'

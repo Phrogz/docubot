@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# Hack to allow the binary to be run without the gem installed
+$: << File.join( File.dirname( __FILE__ ), '..', 'lib' )
+
 require 'rubygems'
 require 'docubot'
 

@@ -3,6 +3,7 @@ class DocuBot::Page
 	META_SEPARATOR = /^\+\+\+$/ # Sort of like +++ATH0
 
 	attr_reader :html, :pages
+	attr_accessor :parent
 
 	def initialize( source_path, title=nil, type=nil )
 		# puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )"
@@ -56,5 +57,6 @@ class DocuBot::Page
 	end
 	def <<( entry )
 		@pages << entry
+		entry.parent = self
 	end
 end

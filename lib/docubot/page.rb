@@ -1,18 +1,18 @@
 require 'yaml'
 class DocuBot::Page
-	META_SEPARATOR = /^\+\+\+$/ # Sort of like +++ATH0
+	META_SEPARATOR = /^\+\+\+\s*$/ # Sort of like +++ATH0
 
 	attr_reader :html, :pages
 	attr_accessor :parent
 
 	def initialize( source_path, title=nil, type=nil )
-		# puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )"
+		puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )" if $DEBUG
 		title ||= File.basename( source_path ).sub( /\.[^.]+$/, '' ).sub( /^\d*\s/, '' )
 		@meta = { 'title'=>title }
 		@source = source_path
 		@pages = []
 		if File.directory?( @source )
-			if source_path = Dir[ File.join( source_path, 'index.*' ) ][0]
+			if source_path = Dir[ source_path/'index.*' ][0]
 				@source = source_path
 			end
 		end
@@ -39,14 +39,14 @@ class DocuBot::Page
 		(["#{'  '*depth}#{@meta['title']}"] + @pages.map{ |e| e.to_s(depth+1) }).join("\n")
 	end
 	
-	def sub_sections
+	def sections
 		@pages.reject{ |e| e.pages.empty? }
 	end
-	def pages
+	def leafs
 		@pages.select{ |e| e.pages.empty? }
 	end
-	def every_page
-		(pages + sub_sections.map{ |sub| sub.every_page }).flatten
+	def every_leaf
+		(leafs + sub_sections.map{ |sub| sub.every_leaf }).flatten
 	end
 	def every_section
 		(sub_sections + sub_sections.map{ |sub| sub.every_section }).flatten

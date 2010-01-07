@@ -6,10 +6,10 @@ module DocuBot
 	end
 	
 	def self.process_snippets( html )
-		@snippets.inject(html){ |html,(regexp,handler)| html.gsub( regexp, &handler ) }
+		@snippets.inject(html){ |h,(regexp,handler)| h.gsub( regexp, &handler ) }
 	end
 	
-	Dir[ File.join( DocuBot::DIR, 'docubot/snippets/*.rb' ) ].each do |snippet|
+	Dir[ DocuBot::DIR/'docubot/snippets/*.rb' ].each do |snippet|
 		require snippet
 	end
 	

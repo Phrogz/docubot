@@ -3,6 +3,7 @@ DocuBot is a simple Ruby-based tool for easily creating complex CHM documents fr
 
 1. Create a directory hierarchy of text files with the extension .md.
    * This will use [Markdown][1] to convert the files to HTML.
+   * Use `docubot create mydirectory` to create a helpful shell for you.
 
 2. Run `docubot mydirectory`
    * DocuBot will create `mydirectory.chm` in short order.
@@ -56,23 +57,36 @@ The metadata section consists of lower-case attributes (like "`title`") and valu
 
 
 ## Using Custom Section Titles
-TODO
+A file named "index.md" inside a directory describes the section itself. Such a file with a title attribute in the metadata section allows you to set the title of the section itself.
 
-## Editing the HTML Templates and Stylesheet
+## Editing the HTML Template and Stylesheet
 TODO
 
 ## Using Additional Metadata
 TODO
 
+## Setting Global Metadata
+A file named "index.md" in the root of your documentation directory allows you to set global metadata for the entire project. Attributes defined in this file are available as properties on a `global` object in your template. For example:
+
+    # index.md at the root of your site
+    company: Froboz Widgets
+
+    # page.haml in your template
+    %html
+      %head
+        ...
+      %body
+        ...
+        #footer
+          Copyright ©#{Time.now.year} #{global.company}. All rights reserved.
+
 # Additional Planned Features
-* Automatic Glossary Links
 * Custom Filters and Partials
-* Custom Metadata for Directories
+* Links between documents
 * Controlling CHM Indexing
 * Additional Markups (Textile, Raw HTML, RDoc, etc.)
 * Includes and Supporting File and Dirctories Hidden from the TOC
-* Customizing TOC Icons
-* Links between documents
+* Customizing TOC Icons (with nice names, not indexes)
 * User Variables (e.g. company name for template footer) stored or on command line
 * Optional TOC sub-entries for in-page headers
 

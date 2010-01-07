@@ -16,6 +16,6 @@ module DocuBot
 	end
 end
 
-Dir[ File.join( DocuBot::DIR, 'docubot/converters/*.rb' ) ].each do |converter|
+Dir[ DocuBot::DIR/'docubot/converters/*.rb' ].each do |converter|
 	require converter
 end

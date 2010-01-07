@@ -8,12 +8,14 @@ class	DocuBot::Bundle
 		if !File.exists?( @source )
 			raise "DocuBot cannot find directory #{File.expand_path(@source)}. Exiting."
 		end
-		@toc = DocuBot::Page.new( ".", "Table of Contents" )
+		@toc = DocuBot::Page.new( @source, "Table of Contents" )
 		pages_by_path = {}
 		
-		source_glob = File.expand_path( File.join( @source, '**/*' ) )
-		Dir[ source_glob ].each do |item|
-			next if File.basename( item ) =~ /^index\.[^.]+$/
+		source_glob = File.expand_path( @source/'**/*' )
+		files_and_folders = Dir[ source_glob ]
+		files_and_folders.reject!{ |f| File.basename(f) =~ /^index\.[^.]+$/ }
+		files_and_folders.reject!{ |f| f =~ /\b_template\b/ }
+		files_and_folders.each do |item|
 			parent = pages_by_path[ File.dirname( item ) ] || @toc
 			extension = File.extname( item )[ 1..-1 ]
 			item_is_page = File.directory?( item ) || DocuBot::Converter.by_type[ extension ]
@@ -28,30 +30,36 @@ class	DocuBot::Bundle
 		end
 	end
 	
-	def write( template='default', destination=nil )
+	# Specify nil for template to use a '_template' directory from the source
+	def write( template=nil, destination=nil )
 		require 'fileutils'
 		
-		destination ||= File.join( File.dirname(@source), "#{File.basename @source}_html" )
+		destination ||= File.dirname(@source)/"#{File.basename @source}_html"
 		Dir.mkdir(destination) unless File.exists?(destination)
-				
-		template_dir = File.join( DocuBot::TEMPLATE_DIR, template )
-		unless File.exists?( template_dir )
-			warn "The specified template '#{template}' does not exist in #{DocuBot::TEMPLATE_DIRECTORY}.\nUnwrapped HTML output only."
+		
+		template_dir = if template.nil?
+			@source/'_template'
+		else
+			DocuBot::TEMPLATE_DIR/template/'_template'
 		end
 
-		extra_files = File.join( template_dir, 'extras' )
+		unless File.exists?( template_dir )
+			warn "The specified template '#{template}' does not exist in #{DocuBot::TEMPLATE_DIRECTORY}."
+			warn "Falling back to default template."
+			template_dir = DocuBot::TEMPLATE_DIR/'default'/'_template'
+		end
+
+		extra_files = template_dir/'extras'
 		if File.exists?( extra_files )
-			FileUtils.copy( Dir[ File.join extra_files, '*' ], destination )
+			FileUtils.copy( Dir[ extra_files/'*' ], destination )
 		end
 		
-		page_template = File.join( template_dir, 'page.haml' )
-		page_template = File.join( DocuBot::TEMPLATE_DIR, 'default', 'page.haml' ) unless File.exists?( page_template )
-		page_template = Haml::Engine.new( IO.read( page_template ), HAML_OPTIONS )
+		page_template = Haml::Engine.new( IO.read( template_dir/'page.haml' ), HAML_OPTIONS )
 		Dir.chdir destination do
 			@toc.descendants.each do |page|
 				#FIXME: Page titles may not be unique. Need to generate unique file names; associated with originals for links to work.
 				file = page.title.gsub(/\W+/,'_') + '.html'
-				html = page_template.render( Object.new, :page=>page )
+				html = page_template.render( Object.new, :page=>page, :global=>@toc )
 				puts "Writing out #{file.inspect}" if $DEBUG
 				File.open( file, 'w' ){ |f| f << html }
 			end

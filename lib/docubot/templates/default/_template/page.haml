@@ -20,4 +20,6 @@
 
 			#page= page.html
 			
-		#footer Copyright ©#{Time.now.year}. All Rights Reserved.
+		#footer
+			Copyright ©#{Time.now.year}#{ " #{global.company}" if global.company? }.
+			All Rights Reserved.

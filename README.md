@@ -59,6 +59,8 @@ The metadata section consists of lower-case attributes (like "`title`") and valu
 ## Using Custom Section Titles
 A file named "index.md" inside a directory describes the section itself. Such a file with a title attribute in the metadata section allows you to set the title of the section itself.
 
+Note that for the metadata section to be recognized, the section must end with `+++` on its own line (even if you have no additional content you wanted to write for that section).
+
 ## Editing the HTML Template and Stylesheet
 TODO
 
@@ -70,6 +72,8 @@ A file named "index.md" in the root of your documentation directory allows you t
 
     # index.md at the root of your site
     company: Froboz Widgets
+    +++
+
 
     # page.haml in your template
     %html

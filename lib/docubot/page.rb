@@ -20,7 +20,13 @@ class DocuBot::Page
 		type ||= File.extname( @source )[ 1..-1 ]
 		unless File.directory?( @source )
 			parts = File.read( @source ).split( META_SEPARATOR, 2 )
-			@meta.merge!( YAML.load( parts.first ) ) if parts.length > 1
+			if parts.length > 1
+				yaml = parts.first
+				# Make YAML friendler to n00bs
+				yaml.gsub!( /^\t/, '  ' )
+				yaml = YAML.load( yaml )
+				@meta.merge!( yaml ) 
+			end
 			@html = DocuBot::convert_to_html( parts.last, type )
 			@html = DocuBot::process_snippets( @html )
 		end

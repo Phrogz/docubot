@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'haml'
-class Hamlizer < Haml::Engine
+class DocuBot::Hamlizer < Haml::Engine
 	extend DocuBot::Converter
 	converts_for :haml
 	def initialize( source )

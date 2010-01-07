@@ -44,7 +44,7 @@ class	DocuBot::Bundle
 		end
 
 		unless File.exists?( template_dir )
-			warn "The specified template '#{template}' does not exist in #{DocuBot::TEMPLATE_DIRECTORY}."
+			warn "The specified template '#{template}' does not exist in #{DocuBot::TEMPLATE_DIR}."
 			warn "Falling back to default template."
 			template_dir = DocuBot::TEMPLATE_DIR/'default'/'_template'
 		end

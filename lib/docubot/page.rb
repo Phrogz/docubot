@@ -2,20 +2,28 @@ require 'yaml'
 class DocuBot::Page
 	META_SEPARATOR = /^\+\+\+$/ # Sort of like +++ATH0
 
-	attr_reader :html
+	attr_reader :html, :pages
 
-	def self.from_file( filename, title=nil, type=nil )
-		title ||= DocuBot.name( filename )
-		type  ||= File.extname( filename )[ 1..-1 ]
-		new( File.read(filename), title, type )
-	end
-
-	def initialize( source, title=nil, type=:md )
-		parts = source.split( META_SEPARATOR, 2 )
+	def initialize( source_path, title=nil, type=nil )
+		# puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )"
+		# TODO: name->title logic is specific to pages, right?
+		title ||= DocuBot.name( source_path )
 		@meta = { 'title'=>title }
-		@meta.merge!( YAML.load( parts.first ) ) if parts.length > 1
-		@html = DocuBot::convert_to_html( parts.last, type )
-		@html = DocuBot::process_snippets( @html )
+		@source = source_path
+		@pages = []
+		if File.directory?( @source )
+			if source_path = Dir[ File.join( source_path, 'index.*' ) ][0]
+				@source = source_path
+			end
+		end
+
+		type  ||= File.extname( @source )[ 1..-1 ]
+		unless File.directory?( @source )
+			parts = File.read( @source ).split( META_SEPARATOR, 2 )
+			@meta.merge!( YAML.load( parts.first ) ) if parts.length > 1
+			@html = DocuBot::convert_to_html( parts.last, type )
+			@html = DocuBot::process_snippets( @html )
+		end
 	end
 
 	def method_missing( method, *args )
@@ -28,6 +36,25 @@ class DocuBot::Page
 	end
 	
 	def to_s( depth=0 )
-		"#{'  '*depth}#{@meta['title']}"
+		(["#{'  '*depth}#{@meta['title']}"] + @pages.map{ |e| e.to_s(depth+1) }).join("\n")
+	end
+	
+	def sub_sections
+		@pages.reject{ |e| e.pages.empty? }
+	end
+	def pages
+		@pages.select{ |e| e.pages.empty? }
+	end
+	def every_page
+		(pages + sub_sections.map{ |sub| sub.every_page }).flatten
+	end
+	def every_section
+		(sub_sections + sub_sections.map{ |sub| sub.every_section }).flatten
+	end
+	def descendants
+		(@pages + @pages.map{ |page| page.pages }).flatten
+	end
+	def <<( entry )
+		@pages << entry
 	end
 end

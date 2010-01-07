@@ -14,7 +14,6 @@ module DocuBot
 end
 
 require 'docubot/converter'
-require 'docubot/section'
 require 'docubot/page'
 require 'docubot/snippet'
 require 'docubot/bundle'

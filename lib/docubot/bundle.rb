@@ -1,7 +1,5 @@
 class	DocuBot::Bundle
 	attr_reader :toc, :extras
-	FALLBACK_PAGE    = "%h1= @title\n#content= @page"
-	FALLBACK_SECTION = "- @sections.each do |section|\n\t\#{section.title}: \#{section.summary}"
 	HAML_OPTIONS     = { :format=>:html4, :ugly=>true }
 	
 	def initialize( source_directory )
@@ -10,24 +8,22 @@ class	DocuBot::Bundle
 		if !File.exists?( @source )
 			raise "DocuBot cannot find directory #{File.expand_path(@source)}. Exiting."
 		end
-		@toc = DocuBot::Section.new( "Table of Contents" )
-		sections_by_path = {}
+		@toc = DocuBot::Page.new( ".", "Table of Contents" )
+		pages_by_path = {}
 		
 		source_glob = File.expand_path( File.join( @source, '**/*' ) )
 		Dir[ source_glob ].each do |item|
-			parent = sections_by_path[ File.dirname( item ) ] || @toc
-			if File.directory?( item )
-				section = DocuBot::Section.new( DocuBot.name( item ) )
-				sections_by_path[ item ] = section
-				parent << section
+			next if File.basename( item ) =~ /^index\.[^.]+$/
+			parent = pages_by_path[ File.dirname( item ) ] || @toc
+			extension = File.extname( item )[ 1..-1 ]
+			item_is_page = File.directory?( item ) || DocuBot::Converter.by_type[ extension ]
+			if item_is_page
+				page = DocuBot::Page.new( item )
+				pages_by_path[ item ] = page
+				parent << page
 			else
-				extension = File.extname( item )[ 1..-1 ]
-				if DocuBot::Converter.by_type[ extension ]
-					parent << DocuBot::Page.from_file( item )
-				else
-					# TODO: Anything better needed?
-					@extras << item
-				end
+				# TODO: Anything better needed?
+				@extras << item
 			end
 		end
 	end
@@ -49,24 +45,14 @@ class	DocuBot::Bundle
 		end
 		
 		page_template = File.join( template_dir, 'page.haml' )
-		page_template = File.exists?( page_template ) ? IO.read( page_template ) : FALLBACK_PAGE
-		page_template = Haml::Engine.new( page_template, HAML_OPTIONS )
+		page_template = File.join( DocuBot::TEMPLATE_DIR, 'default', 'page.haml' ) unless File.exists?( page_template )
+		page_template = Haml::Engine.new( IO.read( page_template ), HAML_OPTIONS )
 		Dir.chdir destination do
-			@toc.every_page.each do |page|
+			@toc.descendants.each do |page|
 				#FIXME: Page titles may not be unique. Need to generate unique file names; associated with originals for links to work.
 				file = page.title.gsub(/\W+/,'_') + '.html'
 				html = page_template.render( Object.new, :page=>page )
-				File.open( file, 'w' ){ |f| f << html }
-			end
-		end
-		
-		section_template = File.join( template_dir, 'section.haml' )
-		section_template = File.exists?( section_template ) ? IO.read( section_template ) : FALLBACK_SECTION
-		section_template = Haml::Engine.new( section_template, HAML_OPTIONS )
-		Dir.chdir destination do
-			@toc.every_section.each_with_index do |section,i|
-				file = "_Section_#{i}.html"
-				html = section_template.render( Object.new, :section=>section )
+				puts "Writing out #{file.inspect}" if $DEBUG
 				File.open( file, 'w' ){ |f| f << html }
 			end
 		end

@@ -6,10 +6,18 @@
 		%title= page.title
 	%body.page
 		#content
+
 			#header
 				%h1#title= page.title
 				#breadcrumb= page.breadcrumb
 				- if page.author?
 					#author= page.author
+
+			- unless page.pages.empty?
+				%ul#children
+					- page.pages.each do |entry|
+						%li= entry.title
+
 			#page= page.html
-			#footer Copyright ©2010. All Rights Reserved.
+			
+		#footer Copyright ©#{Time.now.year}. All Rights Reserved.

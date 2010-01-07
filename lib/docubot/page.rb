@@ -7,8 +7,7 @@ class DocuBot::Page
 
 	def initialize( source_path, title=nil, type=nil )
 		# puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )"
-		# TODO: name->title logic is specific to pages, right?
-		title ||= DocuBot.name( source_path )
+		title ||= File.basename( source_path ).sub( /\.[^.]+$/, '' ).sub( /^\d*\s/, '' )
 		@meta = { 'title'=>title }
 		@source = source_path
 		@pages = []

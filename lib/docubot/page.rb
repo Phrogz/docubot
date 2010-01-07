@@ -17,7 +17,7 @@ class DocuBot::Page
 			end
 		end
 
-		type  ||= File.extname( @source )[ 1..-1 ]
+		type ||= File.extname( @source )[ 1..-1 ]
 		unless File.directory?( @source )
 			parts = File.read( @source ).split( META_SEPARATOR, 2 )
 			@meta.merge!( YAML.load( parts.first ) ) if parts.length > 1

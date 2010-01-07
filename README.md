@@ -55,6 +55,9 @@ The metadata section consists of lower-case attributes (like "`title`") and valu
     more information on using other fields in the metadata section.
 
 
+## Using Custom Section Titles
+TODO
+
 ## Editing the HTML Templates and Stylesheet
 TODO
 

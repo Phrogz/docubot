@@ -22,7 +22,7 @@ class DocuBot::Page
 		# Directories without an index file have no @file
 		if @file
 			@type = type || File.extname( @file )[ 1..-1 ]
-			parts = IO.read_utf8( @file ).split( META_SEPARATOR, 2 )
+			parts = IO.read( @file ).split( META_SEPARATOR, 2 )
 			
 			if parts.length > 1
 				# Make YAML friendler to n00bs
@@ -75,8 +75,8 @@ class DocuBot::Page
 	def to_html( template_dir )
 		contents = @raw && DocuBot::process_snippets( DocuBot::convert_to_html( @raw, @type ) )
 		layout = @meta['kind'] || ( leaf? ? 'page' : 'section' )
-		template = Haml::Engine.new( IO.read_utf8( template_dir / "#{layout}.haml" ), DocuBot::Bundle::HAML_OPTIONS )
-		template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc ).encode( 'utf-8', :undef=>:replace )
+		template = Haml::Engine.new( IO.read( template_dir / "#{layout}.haml" ), DocuBot::Bundle::HAML_OPTIONS )
+		template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc )
 	end
 		
 end

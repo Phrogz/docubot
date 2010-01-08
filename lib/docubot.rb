@@ -1,15 +1,11 @@
 # encoding: UTF-8
+# Assume all files read in are UTF-8 format
+Encoding.default_external = Encoding.default_internal = 'UTF-8'
 
 # Wicked monkey patch to avoid File.join verbosity everywhere
 class String
 	def / ( other )
 		File.join( self, other )
-	end
-end
-
-class IO
-	def self.read_utf8( file )
-		File.open( file, 'r:UTF-8' ){ |f| f.read }
 	end
 end
 

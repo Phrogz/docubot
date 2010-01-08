@@ -22,7 +22,8 @@ module DocuBot
 	warn "No templates installed in #{TEMPLATE_DIR}!" if INSTALLED_TEMPLATES.empty?
 end
 
+require 'docubot/snippet'
 require 'docubot/converter'
 require 'docubot/page'
-require 'docubot/snippet'
+require 'docubot/glossary'
 require 'docubot/bundle'

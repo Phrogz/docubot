@@ -1,8 +1,9 @@
 class DocuBot::Glossary
 	attr_accessor :bundle
-	def initialize
-		@entries   = {}
+	def initialize( bundle )
+		@entries   = { 'Squirrel on Trampoline'=>'...you do not want to know' }
 		@downcased = {}
+		@bundle    = bundle
 	end
 	def []=( term, definition )
 		@entries[ term ] = definition
@@ -12,10 +13,6 @@ class DocuBot::Glossary
 		@entries[ @downcased[ term.downcase ] ]
 	end
 	def each
-		@entries.each{ |term,def| yield term, def }
-	end
-	def to_html( template_dir )
-		template = Haml::Engine.new( IO.read_utf8( template_dir / 'glossary.haml' ), DocuBot::Bundle::HAML_OPTIONS )
-		template.render( Object.new, :glossary=>self )
+		@entries.each{ |term,defn| yield term, defn }
 	end
 end

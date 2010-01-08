@@ -6,7 +6,5 @@ class DocuBot::Hamlizer < Haml::Engine
 	def initialize( source )
 		super( source, :format=>:html4, :ugly=>true )
 	end
-	def to_html( template_dir )
-		render
-	end
+	alias_method :to_html, :render
 end

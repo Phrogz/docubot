@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class DocuBot::Bundle
 	attr_reader :toc, :extras, :glossary
 	HAML_OPTIONS = { :format=>:html4, :ugly=>true, :encoding=>'utf-8' }

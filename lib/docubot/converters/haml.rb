@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'rubygems'
 require 'haml'
 class DocuBot::Hamlizer < Haml::Engine

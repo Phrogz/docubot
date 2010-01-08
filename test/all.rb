@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'docubot'
 # I'm too lazy to enter the syntax for directory with spaces
 # So just find the 3_more_crap.md file that has metadata.

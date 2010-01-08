@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 # Wicked monkey patch to avoid File.join verbosity everywhere
 class String
 	def / ( other )

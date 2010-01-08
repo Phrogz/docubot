@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class DocuBot::Glossary
 	attr_accessor :bundle
 	def initialize( bundle )

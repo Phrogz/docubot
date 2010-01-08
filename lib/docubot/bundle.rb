@@ -1,4 +1,4 @@
-class	DocuBot::Bundle
+class DocuBot::Bundle
 	attr_reader :toc, :extras, :glossary
 	HAML_OPTIONS = { :format=>:html4, :ugly=>true, :encoding=>'utf-8' }
 	
@@ -11,6 +11,7 @@ class	DocuBot::Bundle
 		end
 		@toc = DocuBot::Page.new( ".", "Table of Contents" )
 		@toc.bundle = self
+		@toc.meta['glossary'] = @glossary
 		pages_by_path = {}
 		
 		Dir.chdir( @source ) do
@@ -67,7 +68,8 @@ class	DocuBot::Bundle
 				contents = page.to_html( template_dir )
 				html = page_template.render( Object.new, :page=>page, :contents=>contents, :global=>@toc )
 				file = page.file ? page.file.sub( /[^.]+$/, 'html' ) : File.join( page.folder, 'index.html' )
-				FileUtils.mkdir_p( File.dirname file )
+				dir  = File.dirname( file )
+				FileUtils.mkdir_p( dir ) unless File.exists?( dir )
 				puts "...writing out #{file.inspect}" if $DEBUG
 				File.open( file, 'w' ){ |f| f << html }
 			end

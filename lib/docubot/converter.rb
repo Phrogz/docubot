@@ -12,7 +12,7 @@ module DocuBot
 	def self.convert_to_html( source, type )
 		converter = DocuBot::Converter.by_type[ type.to_s ]
 		raise "No converter found for type #{type}" unless converter
-		puts "Converting #{type}: #{source.inspect}" if $DEBUG
+		puts "Converting #{type}: #{source.inspect[0..60]}" if $DEBUG
 		converter.new( source ).to_html
 	end
 end

@@ -2,7 +2,7 @@ require 'yaml'
 class DocuBot::Page
 	META_SEPARATOR = /^\+\+\+\s*$/u # Sort of like +++ATH0
 
-	attr_reader :pages, :type, :folder, :file
+	attr_reader :pages, :type, :folder, :file, :meta
 	attr_accessor :parent, :bundle
 
 	def initialize( source_path, title=nil, type=nil )
@@ -75,7 +75,7 @@ class DocuBot::Page
 		contents = @raw && DocuBot::process_snippets( DocuBot::convert_to_html( @raw, @type ) )
 		layout = @meta['kind'] || ( leaf? ? 'page' : 'section' )
 		template = Haml::Engine.new( IO.read_utf8( template_dir / "#{layout}.haml" ), DocuBot::Bundle::HAML_OPTIONS )
-		template.render( Object.new, :contents=>contents, :page=>self ).force_encoding( 'utf-8' )
+		template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc ).force_encoding( 'utf-8' )
 	end
 		
 end

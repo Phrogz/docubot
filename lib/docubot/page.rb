@@ -1,8 +1,8 @@
 require 'yaml'
 class DocuBot::Page
-	META_SEPARATOR = /^\+\+\+\s*$/ # Sort of like +++ATH0
+	META_SEPARATOR = /^\+\+\+\s*$/u # Sort of like +++ATH0
 
-	attr_reader :html, :pages
+	attr_reader :pages, :type
 	attr_accessor :parent
 
 	def initialize( source_path, title=nil, type=nil )
@@ -17,9 +17,10 @@ class DocuBot::Page
 			end
 		end
 
-		type ||= File.extname( @source )[ 1..-1 ]
+		@type = type || File.extname( @source )[ 1..-1 ]
 		unless File.directory?( @source )
-			parts = File.read( @source ).split( META_SEPARATOR, 2 )
+			parts = IO.read_utf8( @source ).split( META_SEPARATOR, 2 )
+			
 			if parts.length > 1
 				yaml = parts.first
 				# Make YAML friendler to n00bs
@@ -27,9 +28,10 @@ class DocuBot::Page
 				yaml = YAML.load( yaml )
 				@meta.merge!( yaml ) 
 			end
-			@html = DocuBot::convert_to_html( parts.last, type )
-			@html = DocuBot::process_snippets( @html )
+			# Raw markup untransformed
+			@raw = parts.last
 		end
+		
 	end
 
 	def method_missing( method, *args )
@@ -64,4 +66,17 @@ class DocuBot::Page
 		@pages << entry
 		entry.parent = self
 	end
+	def leaf?
+		@pages.empty?
+	end
+	
+	def to_html( template_dir )
+		contents = if @raw
+			DocuBot::process_snippets( DocuBot::convert_to_html( @raw, @type, template_dir ) )
+		end
+		layout = @meta['layout'] || ( leaf? ? 'page' : 'section' )
+		template = Haml::Engine.new( IO.read_utf8( template_dir / "#{layout}.haml" ), DocuBot::Bundle::HAML_OPTIONS )
+		template.render( Object.new, :contents=>contents, :page=>self ).force_encoding( 'utf-8' )
+	end
+		
 end

@@ -1,6 +1,6 @@
 class	DocuBot::Bundle
 	attr_reader :toc, :extras
-	HAML_OPTIONS     = { :format=>:html4, :ugly=>true }
+	HAML_OPTIONS = { :format=>:html4, :ugly=>true, :encoding=>'utf-8' }
 	
 	def initialize( source_directory )
 		@source = source_directory
@@ -54,12 +54,13 @@ class	DocuBot::Bundle
 			FileUtils.copy( Dir[ extra_files/'*' ], destination )
 		end
 		
-		page_template = Haml::Engine.new( IO.read( template_dir/'page.haml' ), HAML_OPTIONS )
+		page_template = Haml::Engine.new( IO.read( template_dir/'top.haml' ), HAML_OPTIONS )
 		Dir.chdir destination do
 			@toc.descendants.each do |page|
 				#FIXME: Page titles may not be unique. Need to generate unique file names; associated with originals for links to work.
+				contents = page.to_html( template_dir )
+				html = page_template.render( Object.new, :page=>page, :contents=>contents, :global=>@toc )
 				file = page.title.gsub(/\W+/,'_') + '.html'
-				html = page_template.render( Object.new, :page=>page, :global=>@toc )
 				puts "Writing out #{file.inspect}" if $DEBUG
 				File.open( file, 'w' ){ |f| f << html }
 			end

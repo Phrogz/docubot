@@ -1,0 +1,4 @@
+%ul#children
+	- page.pages.each do |child_page|
+		%li= #{child_page.title}#{": #{child_page.summary}" if child_page.summary?}
+				

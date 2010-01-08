@@ -1,0 +1,20 @@
+!!! Strict
+%html
+	%head
+		%meta(http-equiv='Content-Type' content='text/html; charset=utf-8')
+		%link(rel='stylesheet' type='text/css' href='shared.css' media='all')
+		%title= page.title
+	%body.page
+		#content
+
+			#header
+				%h1#title= page.title
+				#breadcrumb= page.breadcrumb
+				- if page.author?
+					#author= page.author
+
+			#page= contents
+			
+		#footer
+			Copyright ©#{Time.now.year}#{ " #{global.company}" if global.company? }.
+			All Rights Reserved.

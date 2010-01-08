@@ -4,7 +4,7 @@ class DocuBot::HTMLPassthrough
 	def initialize( html )
 		@html = html
 	end
-	def to_html
+	def to_html( template_dir )
 		@html
 	end
 end

@@ -9,10 +9,11 @@ module DocuBot
 		end
 	end
 
-	def self.convert_to_html( source, type )
+	def self.convert_to_html( source, type, template_dir )
 		converter = DocuBot::Converter.by_type[ type.to_s ]
 		raise "No converter found for type #{type}" unless converter
-		converter.new( source ).to_html
+		x = converter.new( source )
+		x.to_html( template_dir )
 	end
 end
 

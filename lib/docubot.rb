@@ -5,6 +5,12 @@ class String
 	end
 end
 
+class IO
+	def self.read_utf8( file )
+		File.open( file, 'r:UTF-8' ){ |f| f.read }
+	end
+end
+
 module DocuBot
 	VERSION = '0.0.1'
 	DIR     = File.dirname( __FILE__ )

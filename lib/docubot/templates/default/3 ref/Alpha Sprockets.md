@@ -1,0 +1,1 @@
+Without the leading digits, pages sort alphabetically in the Table of Contents.

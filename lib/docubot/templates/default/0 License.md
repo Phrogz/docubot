@@ -1,3 +1,5 @@
+This is a simple, no-frills Markdown file.
+
 Nelson Rocks Preserve is covered in steep terrain with loose, slippery and unstable footing. The weather can make matters worse. Sheer drops are everywhere. You may fall, be injured or die. There are hidden holes. You could break your leg. There are wild animals, which may be vicious, poisonous or carriers of deadly diseases. These include poisonous snakes and insects. Plants can be poisonous as well.
 
 Real dangers are present even on trails. Trails are not sidewalks. They can be, and are, steep, slippery and dangerous. Trail features made or enhanced by humans, such as steps, walls and railings (if any) can break, collapse, or otherwise fail catastrophically at any time.

@@ -1,31 +1,35 @@
 class	DocuBot::Bundle
-	attr_reader :toc, :extras
+	attr_reader :toc, :extras, :glossary
 	HAML_OPTIONS = { :format=>:html4, :ugly=>true, :encoding=>'utf-8' }
 	
 	def initialize( source_directory )
-		@source = source_directory
+		@source = File.expand_path( source_directory )
 		@extras = []
+		@glossary = DocuBot::Glossary.new( self )
 		if !File.exists?( @source )
-			raise "DocuBot cannot find directory #{File.expand_path(@source)}. Exiting."
+			raise "DocuBot cannot find directory #{@source}. Exiting."
 		end
-		@toc = DocuBot::Page.new( @source, "Table of Contents" )
+		@toc = DocuBot::Page.new( ".", "Table of Contents" )
+		@toc.bundle = self
 		pages_by_path = {}
 		
-		source_glob = File.expand_path( @source/'**/*' )
-		files_and_folders = Dir[ source_glob ]
-		files_and_folders.reject!{ |f| File.basename(f) =~ /^index\.[^.]+$/ }
-		files_and_folders.reject!{ |f| f =~ /\b_template\b/ }
-		files_and_folders.each do |item|
-			parent = pages_by_path[ File.dirname( item ) ] || @toc
-			extension = File.extname( item )[ 1..-1 ]
-			item_is_page = File.directory?( item ) || DocuBot::Converter.by_type[ extension ]
-			if item_is_page
-				page = DocuBot::Page.new( item )
-				pages_by_path[ item ] = page
-				parent << page
-			else
-				# TODO: Anything better needed?
-				@extras << item
+		Dir.chdir( @source ) do
+			files_and_folders = Dir[ '**/*' ]
+			files_and_folders.reject!{ |f| File.basename(f) =~ /^index\.[^.]+$/ }
+			files_and_folders.reject!{ |f| f =~ /\b_template\b/ }
+			files_and_folders.each do |item|
+				parent = pages_by_path[ File.dirname( item ) ] || @toc
+				extension = File.extname( item )[ 1..-1 ]
+				item_is_page = File.directory?( item ) || DocuBot::Converter.by_type[ extension ]
+				if item_is_page
+					page = DocuBot::Page.new( item )
+					page.bundle = self
+					pages_by_path[ item ] = page
+					parent << page
+				else
+					# TODO: Anything better needed?
+					@extras << item
+				end
 			end
 		end
 	end
@@ -35,7 +39,8 @@ class	DocuBot::Bundle
 		require 'fileutils'
 		
 		destination ||= File.dirname(@source)/"#{File.basename @source}_html"
-		Dir.mkdir(destination) unless File.exists?(destination)
+		FileUtils.rm_rf(destination) if File.exists?(destination)
+		FileUtils.mkdir(destination)
 		
 		template_dir = if template.nil?
 			@source/'_template'
@@ -48,6 +53,7 @@ class	DocuBot::Bundle
 			warn "Falling back to default template."
 			template_dir = DocuBot::TEMPLATE_DIR/'default'/'_template'
 		end
+		template_dir = File.expand_path( template_dir )
 
 		extra_files = template_dir/'extras'
 		if File.exists?( extra_files )
@@ -57,11 +63,12 @@ class	DocuBot::Bundle
 		page_template = Haml::Engine.new( IO.read( template_dir/'top.haml' ), HAML_OPTIONS )
 		Dir.chdir destination do
 			@toc.descendants.each do |page|
-				#FIXME: Page titles may not be unique. Need to generate unique file names; associated with originals for links to work.
+				puts "Working on #{page.title}" if $DEBUG
 				contents = page.to_html( template_dir )
 				html = page_template.render( Object.new, :page=>page, :contents=>contents, :global=>@toc )
-				file = page.title.gsub(/\W+/,'_') + '.html'
-				puts "Writing out #{file.inspect}" if $DEBUG
+				file = page.file ? page.file.sub( /[^.]+$/, 'html' ) : File.join( page.folder, 'index.html' )
+				FileUtils.mkdir_p( File.dirname file )
+				puts "...writing out #{file.inspect}" if $DEBUG
 				File.open( file, 'w' ){ |f| f << html }
 			end
 		end

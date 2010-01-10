@@ -71,6 +71,9 @@ class DocuBot::Page
 	def leaf?
 		@pages.empty?
 	end
+	def depth
+		@file ? @file.count('/') : @folder.count('/') + 1
+	end
 	
 	def to_html( template_dir )
 		contents = @raw && DocuBot::process_snippets( DocuBot::convert_to_html( @raw, @type ) )

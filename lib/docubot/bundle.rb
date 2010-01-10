@@ -67,7 +67,8 @@ class DocuBot::Bundle
 			@toc.descendants.each do |page|
 				puts "Working on #{page.title}" if $DEBUG
 				contents = page.to_html( template_dir )
-				html = page_template.render( Object.new, :page=>page, :contents=>contents, :global=>@toc )
+				root = "../" * page.depth
+				html = page_template.render( Object.new, :page=>page, :contents=>contents, :global=>@toc, :root=>root )
 				file = page.file ? page.file.sub( /[^.]+$/, 'html' ) : File.join( page.folder, 'index.html' )
 				dir  = File.dirname( file )
 				FileUtils.mkdir_p( dir ) unless File.exists?( dir )

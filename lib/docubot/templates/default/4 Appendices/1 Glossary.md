@@ -1,4 +1,4 @@
-kind: glossary
+flavor: glossary
 +++
 The metadata section in this file instructs this page to use the `glossary.haml` partial. That partial has the logic needed to spit out information from the glossary (gathered from a `_glossary` directory and/or `$$terms in double dollars$$` sprinkled throughout the documentation).
 

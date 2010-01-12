@@ -8,12 +8,13 @@ class DocuBot::Page
 
 	def initialize( source_path, title=nil, type=nil )
 		puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )" if $DEBUG
-		title ||= File.basename( source_path ).sub( /\.[^.]+$/, '' ).sub( /^\d*\s/, '' )
+		title ||= File.basename( source_path ).sub( /\.[^.]+$/, '' ).gsub( '_', ' ' ).sub( /^\d+\s/, '' )
 		@meta  = { 'title'=>title }
 		@pages = []
 		@file  = source_path
 		if File.directory?( @file )
 			@folder = @file
+			# WILL SET @file TO NIL FOR DIRECTORIES WITHOUT AN INDEX.* FILE
 			@file   = Dir[ source_path/'index.*' ][0]
 		else
 			@folder = File.dirname( @file )
@@ -38,9 +39,10 @@ class DocuBot::Page
 
 	def method_missing( method, *args )
 		key=method.to_s
-		case key[-1..-1]
+		case key[-1..-1] # the last character of the method name
 			when '?' then @meta.has_key?( key[0..-2] )
-			when '!', '=' then super
+			when '=' then @meta[ key[0..-2] ] = args[0]
+			when '!' then super
 			else @meta[ key ]
 		end
 	end
@@ -62,8 +64,9 @@ class DocuBot::Page
 		(sub_sections + sub_sections.map{ |sub| sub.every_section }).flatten
 	end
 	def descendants
-		(@pages + @pages.map{ |page| page.pages }).flatten
+		(@pages + @pages.map{ |page| page.descendants }).flatten
 	end
+	alias_method :every_page, :descendants
 	def <<( entry )
 		@pages << entry
 		entry.parent = self
@@ -74,11 +77,13 @@ class DocuBot::Page
 	def depth
 		@file ? @file.count('/') : @folder.count('/') + 1
 	end
-	
+	def html_path
+		@file ? @file.sub( /[^.]+$/, 'html' ) : ( @folder / 'index.html' )
+	end
 	def to_html( template_dir )
 		contents = @raw && DocuBot::process_snippets( DocuBot::convert_to_html( @raw, @type ) )
-		layout = @meta['kind'] || ( leaf? ? 'page' : 'section' )
-		template = Haml::Engine.new( IO.read( template_dir / "#{layout}.haml" ), DocuBot::Bundle::HAML_OPTIONS )
+		flavor = @meta['flavor'] || ( leaf? ? 'page' : 'section' )
+		template = Haml::Engine.new( IO.read( template_dir / "#{flavor}.haml" ), DocuBot::Bundle::HAML_OPTIONS )
 		template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc )
 	end
 		

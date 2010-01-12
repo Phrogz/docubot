@@ -9,16 +9,18 @@ require 'docubot'
 
 USAGE = <<ENDUSAGE
 Usage:
-   docubot [-t template_name] [create [-f]] directory
+   docubot [-t template_name] [create [-f]] directory [-w writer]
    -t, --template  The template to use (overrides any local template).
                    Available templates: #{DocuBot::INSTALLED_TEMPLATES.join(', ')}
    create          Create a starter directory filled with example files;
                    also copies the template for easy modification, if desired.
    -f, --force     Force create over an existing directory,
                    deleting any existing files.
+   -w, --writer    The output type to create [default: chm]
+                   Available writers: #{DocuBot::Writer::INSTALLED_WRITERS.join(', ')}
 ENDUSAGE
 
-ARGS = { :template=>'default' }
+ARGS = { :template=>'default', :writer=>'chm' }
 UNFLAGGED_ARGS = [ :directory ]
 next_arg = UNFLAGGED_ARGS.first
 ARGV.each{ |arg|
@@ -32,6 +34,8 @@ ARGV.each{ |arg|
 		when '-t','--template'
 			ARGS[:explicit_template] = true
 			next_arg = :template
+		when '-w','--writer'
+			next_arg = :writer
 		else
 			if next_arg
 				ARGS[next_arg] = arg
@@ -73,6 +77,6 @@ if ARGS[:create]
 	FileUtils.cp_r( src, dest )
 else
 	bundle = DocuBot::Bundle.new( ARGS[:directory] )
-	bundle.write( ARGS[:explicit_template] && ARGS[:template] )
+	bundle.write( :chm, ARGS[:explicit_template] && ARGS[:template] )
 end
 

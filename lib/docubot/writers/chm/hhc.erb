@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+<%@write_section = lambda do |page| %>
+<UL>
+	<%page.pages.each do |child|%>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="<%=CGI.escapeHTML child.title%>">
+			<param name="Local" value="<%=FileUtils.win_path( @bundle.dump_path / CGI.escapeHTML(child.html_path) )%>">
+			<%if child.leaf?%><param name="ImageNumber" value="11"><%end%>
+			</OBJECT>
+		<%@write_section[child] unless child.leaf?%>
+	<%end%>
+</UL>
+<%end%>
+</HEAD><BODY>
+
+<%@write_section[@bundle.toc]%>
+
+</BODY></HTML>

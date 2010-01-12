@@ -9,6 +9,14 @@ class String
 	end
 end
 
+require 'fileutils'
+
+module FileUtils
+	def self.win_path( path )
+		path.gsub( '/', '\\' )
+	end
+end
+
 module DocuBot
 	VERSION = '0.0.1'
 	DIR     = File.dirname( __FILE__ )
@@ -22,6 +30,7 @@ end
 
 require 'docubot/snippet'
 require 'docubot/converter'
+require 'docubot/writer'
 require 'docubot/page'
 require 'docubot/glossary'
 require 'docubot/bundle'

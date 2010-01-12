@@ -1,0 +1,23 @@
+[OPTIONS]
+<%
+	@toc = @bundle.toc
+	@default_topic = @toc.default? && @toc.descendants.find{ |page| page.title==@toc.default }
+	@default_topic ||= @bundle.toc.pages.find{ |page| page.file =~ /^\S+$/ }
+	#TODO: Scream and yell if no topic was found, because that means they all have spaces in the file name, which means HHC will shit the bed and not link to the default topic
+%>Compatibility=1.1 or later
+Compiled file="<%=FileUtils.win_path chm_path%>"
+Contents file="<%=FileUtils.win_path @hhc%>"
+<%if @default_topic%>Default topic=<%=FileUtils.win_path(File.basename(@bundle.dump_path)/@default_topic.html_path)%>
+<%end%>Display compile progress=No
+Full-text search=Yes
+Language=0x409 English (United States)
+Title=<%=@bundle.toc.title%>
+
+
+[FILES]
+<%@toc.descendants.each do |page|
+	%><%=FileUtils.win_path( @bundle.dump_path/page.html_path) %>
+<%end%>
+
+[INFOTYPES]
+

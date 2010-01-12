@@ -1,6 +1,7 @@
 # encoding: UTF-8
 class DocuBot::Writer
-	HAML_OPTIONS = { :format=>:html4, :ugly=>true, :encoding=>'utf-8' }
+	HAML_OPTIONS = { :format=>:html4, :ugly=>true }
+	HAML_OPTIONS.merge!( :encoding=>'utf-8' ) if Object.const_defined? "Encoding"
 
 	@@by_type = {}
 	def self.handles_type( type )

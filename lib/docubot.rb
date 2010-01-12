@@ -1,6 +1,8 @@
 # encoding: UTF-8
 # Assume all files read in are UTF-8 format
-Encoding.default_external = Encoding.default_internal = 'UTF-8'
+if Object.const_defined? "Encoding"
+	Encoding.default_external = Encoding.default_internal = 'UTF-8'
+end
 
 # Wicked monkey patch to avoid File.join verbosity everywhere
 class String

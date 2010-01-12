@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require 'rubygems'
+begin
 require 'redcloth'
 module RedCloth
 	extend DocuBot::Converter
@@ -11,4 +12,6 @@ module RedCloth
 			rc_new( markup, [:no_span_caps] )
 		end
 	end
+end
+rescue LoadError
 end

@@ -32,7 +32,7 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			new_files = Dir[ '*' ] - existing_files
 			@bundle.extras.concat( new_files )
 		end
-				
+		
 		Dir.chdir @html_path do
 			o = Object.new
 			

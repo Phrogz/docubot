@@ -5,7 +5,7 @@ class DocuBot::Bundle
 	def initialize( source_directory )
 		@source = File.expand_path( source_directory )
 		@extras = []
-		@glossary = DocuBot::Glossary.new( self )
+		@glossary = DocuBot::Glossary.new( self, @source/'_glossary' )
 		if !File.exists?( @source )
 			raise "DocuBot cannot find directory #{@source}. Exiting."
 		end
@@ -28,6 +28,7 @@ class DocuBot::Bundle
 					pages_by_path[ item ] = page
 					page.hide = true if File.basename( item ) =~ /^_/ && !page.hide?
 					parent << page
+					@glossary << page if item =~ /\b_glossary\b/
 				else
 					# TODO: Anything better needed?
 					@extras << item
@@ -40,6 +41,9 @@ class DocuBot::Bundle
 		writer = DocuBot::Writer.by_type[ writer_type.to_s.downcase ]
 		if writer
 			writer.new( self ).write( template, destination )
+			unless @glossary.missing_terms.empty?
+				warn "The following glossary terms were never defined:\n#{@glossary.missing_terms.map{|t|t.inspect}.join(', ')}"
+			end			
 		else
 			raise "Unknown writer '#{writer_type}'; available types: #{DocuBot::Writer::INSTALLED_WRITERS.join ', '}"
 		end

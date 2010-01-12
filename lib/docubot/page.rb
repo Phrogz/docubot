@@ -81,14 +81,18 @@ class DocuBot::Page
 	def html_path
 		@file ? @file.sub( /[^.]+$/, 'html' ) : ( @folder / 'index.html' )
 	end
-	def to_html( template_dir )
+	def to_html( template_dir=nil )
 		contents = @raw && DocuBot::process_snippets( self, DocuBot::convert_to_html( @raw, @type ) )
-		root = "../" * depth
-		self.flavor ||= leaf? ? 'page' : 'section'
-		template = template_dir / "#{flavor}.haml"
-		template = template_dir / "page.haml" unless File.exists?( template )
-		template = Haml::Engine.new( IO.read( template ), DocuBot::Writer::HAML_OPTIONS )
-		template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
+		# Allow the Glossary to call to_html on the pages without knowing which template will be used.
+		if template_dir
+			root = "../" * depth
+			self.flavor ||= leaf? ? 'page' : 'section'
+			template = template_dir / "#{flavor}.haml"
+			template = template_dir / "page.haml" unless File.exists?( template )
+			template = Haml::Engine.new( IO.read( template ), DocuBot::Writer::HAML_OPTIONS )
+			contents = template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
+		end
+		contents
 	end
 		
 end

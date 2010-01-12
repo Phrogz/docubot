@@ -14,6 +14,6 @@ begin
 		end
 	end
 rescue LoadError
-	warn "Unable to load RedCloth gem; textile markup will not be recognized as a page."
+	warn "Unable to load bluecloth gem; *.markdown/*.md markup will not be recognized as a page."
 end
 

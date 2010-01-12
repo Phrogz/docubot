@@ -83,7 +83,7 @@ class DocuBot::Page
 	def to_html( template_dir )
 		contents = @raw && DocuBot::process_snippets( DocuBot::convert_to_html( @raw, @type ) )
 		flavor = @meta['flavor'] || ( leaf? ? 'page' : 'section' )
-		template = Haml::Engine.new( IO.read( template_dir / "#{flavor}.haml" ), DocuBot::Bundle::HAML_OPTIONS )
+		template = Haml::Engine.new( IO.read( template_dir / "#{flavor}.haml" ), DocuBot::Writer::HAML_OPTIONS )
 		template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc )
 	end
 		

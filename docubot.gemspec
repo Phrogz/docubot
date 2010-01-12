@@ -17,8 +17,10 @@ Gem::Specification.new do |s|
 	s.test_files = %w[test/all.rb]
 	s.add_dependency 'bluecloth'
 	s.add_dependency 'haml'
+	s.add_dependency 'RedCloth'
 	s.requirements << "Windows with HTML Help Workshop installed."
 	s.requirements << "BlueCloth gem for Markdown conversion."
 	s.requirements << "Haml gem for template interpretation."
+	s.requirements << "RedCloth gem for Textile conversion."
 	#s.has_rdoc = true
 end

@@ -1,0 +1,10 @@
+!!! Strict
+%html
+	%head
+		%title= toc.title
+		%link{:rel=>'stylesheet', :type=>'text/css', :href=>"#{root}toc.css", :media=>'all'}
+		%script{:type=>'text/javascript', :src=>"#{root}toc.js"}
+	%body
+		%ul#toc
+			- li_pages_for toc
+			

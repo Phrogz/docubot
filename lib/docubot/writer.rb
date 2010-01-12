@@ -1,26 +1,23 @@
 # encoding: UTF-8
-module DocuBot
-	module Writer
-		@@by_type = {}
-		def handles_type( *types )
-			types.each{ |type| @@by_type[type.to_s] = self }
-		end
-		def self.by_type
-			@@by_type
-		end
-		DIR = File.expand_path( DocuBot::DIR / 'docubot/writers' )
-		Dir.chdir DIR do
-			INSTALLED_WRITERS = Dir['*']
-		end
-	end
+class DocuBot::Writer
+	HAML_OPTIONS = { :format=>:html4, :ugly=>true, :encoding=>'utf-8' }
 
-	def self.write_bundle( bundle, type, destination  )
-		writer = DocuBot::Writer.by_type[ type.to_s ]
-		raise "No writer found for type #{type}" unless writer
-		writer.new( bundle ).write( destination )
+	@@by_type = {}
+	def self.handles_type( type )
+		@@by_type[type.to_s.downcase] = self
 	end
+	def self.by_type
+		@@by_type
+	end
+	DIR = File.expand_path( DocuBot::DIR / 'docubot/writers' )
+
+	def initialize( bundle )
+		@bundle = bundle
+	end	
 end
 
 Dir[ DocuBot::Writer::DIR/'*.rb' ].each do |writer|
 	require writer
 end
+
+DocuBot::Writer::INSTALLED_WRITERS = DocuBot::Writer.by_type.keys

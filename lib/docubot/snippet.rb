@@ -6,8 +6,8 @@ module DocuBot
 		@snippets[ regexp ] = handler
 	end
 	
-	def self.process_snippets( html )
-		@snippets.inject(html){ |h,(regexp,handler)| h.gsub( regexp, &handler ) }
+	def self.process_snippets( page, html )
+		@snippets.inject(html){ |h,(regexp,handler)| h.gsub( regexp ){ |str| handler[ str, page ] } }
 	end
 	
 	Dir[ DocuBot::DIR/'docubot/snippets/*.rb' ].each do |snippet|

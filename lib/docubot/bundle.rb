@@ -16,7 +16,7 @@ class DocuBot::Bundle
 			pages_by_path = {}
 		
 			files_and_folders = Dir[ '**/*' ]
-			files_and_folders.reject!{ |f| File.basename(f) =~ /^index\.[^.]+$/ || File.basename(f) == '_static' }
+			files_and_folders.reject!{ |f| File.basename(f) =~ /^index\.[^.]+$/ || File.basename(f) == '_static' || File.basename(f) == '_glossary' }
 			files_and_folders.reject!{ |f| f =~ /\b_template\b/ }
 			files_and_folders.each do |item|
 				extension = File.extname( item )[ 1..-1 ]

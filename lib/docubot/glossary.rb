@@ -5,6 +5,7 @@ class DocuBot::Glossary
 		@entries   = { 'Squirrel on Trampoline'=>'...you do not want to know' }
 		@downcased = {}
 		@bundle    = bundle
+		@missing   = []
 	end
 	def []=( term, definition )
 		@entries[ term ] = definition
@@ -15,5 +16,8 @@ class DocuBot::Glossary
 	end
 	def each
 		@entries.each{ |term,defn| yield term, defn }
+	end
+	def add_missing_term( term )
+	  @missing << term
 	end
 end

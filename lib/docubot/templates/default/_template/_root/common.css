@@ -21,7 +21,7 @@ body.noside dl
 #breadcrumb
 {
 	margin:0;
-	background:black url(images/nvidia-logo.gif) no-repeat left middle;
+	background:black url(images/nvidia-logo.gif) no-repeat left center;
 	padding-left:56px;
 	font-family: 'Arial', sans-serif;
 	font-size:14px; font-weight:bold;

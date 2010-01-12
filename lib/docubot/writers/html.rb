@@ -18,15 +18,21 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 		end
 		template_dir = File.expand_path( template_dir )
 
-		# Copy files from template to root of destination
-		FileUtils.copy( Dir[ template_dir/'_root'/'*' ], @html_path )
-				
 		# Copy any files found in the source directory that weren't made into pages
 		@bundle.extras.each do |file|
 			FileUtils.mkdir_p( @html_path / File.dirname( file ) )
 			FileUtils.cp( source / file, @html_path / file )
 		end
 		
+		# Copy files from template to root of destination
+		# Record these as extras so that the CHMWriter can access them
+		Dir.chdir @html_path do
+			existing_files = Dir[ '*' ]
+			FileUtils.copy( Dir[ template_dir/'_root'/'*' ], '.' )
+			new_files = Dir[ '*' ] - existing_files
+			@bundle.extras.concat( new_files )
+		end
+				
 		Dir.chdir @html_path do
 			o = Object.new
 			

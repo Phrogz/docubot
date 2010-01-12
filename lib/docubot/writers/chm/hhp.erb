@@ -12,7 +12,11 @@ Title=<%=@toc.title%>
 [FILES]
 <%@toc.descendants.each do |page|
 	%><%=FileUtils.win_path( @html_path/page.html_path) %>
+<%end
+@bundle.extras.each do |file|
+	%><%=FileUtils.win_path @html_path/file%>
 <%end%>
+
 
 [INFOTYPES]
 

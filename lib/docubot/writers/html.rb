@@ -10,9 +10,10 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 		FileUtils.mkdir(@html_path)
 		
 		# Find a valid template directory, preferring _template in the documentation source
+		default_dir = DocuBot::TEMPLATE_DIR/'default'/'_template'
 		template_dir = template ? DocuBot::TEMPLATE_DIR/template/'_template' : source/'_template'
 		unless File.exists?( template_dir )
-			template_dir = DocuBot::TEMPLATE_DIR/'default'/'_template'
+			template_dir = default_dir
 			warn "The specified template '#{template}' does not exist in #{DocuBot::TEMPLATE_DIR}." if template
 			warn "Using default template from #{template_dir}."
 		end
@@ -37,26 +38,25 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			o = Object.new
 			
 			# Write out every page
-			page_template = Haml::Engine.new( IO.read( template_dir/'top.haml' ), HAML_OPTIONS )
+			template = File.exists?( template_dir/'top.haml' ) ? template_dir/'top.haml' : default_dir/'top.haml'
+			template = Haml::Engine.new( IO.read( template ), HAML_OPTIONS )
 			@bundle.toc.descendants.each do |page|
 				contents = page.to_html( template_dir )
 				root = "../" * page.depth
-				html = page_template.render( o, :page=>page, :contents=>contents, :global=>@bundle.toc, :root=>root )
+				html = template.render( o, :page=>page, :contents=>contents, :global=>@bundle.toc, :root=>root )
 				FileUtils.mkdir_p( File.dirname( page.html_path ) )
 				File.open( page.html_path, 'w' ){ |f| f << html }
 			end
 
-			# Write out the TOC (even though the CHM won't use it, others may)
-			File.open( '_toc.html', 'w' ) do |f|
-				template = Haml::Engine.new( IO.read( template_dir/'toc.haml' ), HAML_OPTIONS )
-				f << template.render( o, :toc=>@bundle.toc, :global=>@bundle.toc, :root=>'' )
+			# Write out the TOC and Index (even though the CHM won't use them, others may)
+			{ 'toc.haml'=>'_toc.html', 'index.haml'=>'_index.html' }.each do |haml,output|
+				File.open( output, 'w' ) do |f|
+					template = File.exists?( template_dir/haml ) ? template_dir/haml : default_dir/haml
+					template = Haml::Engine.new( IO.read( template ), HAML_OPTIONS )
+					f << template.render( o, :toc=>@bundle.toc, :global=>@bundle.toc, :root=>'' )
+				end
 			end
 
-			# Write out the index (even though the CHM won't use it, others may)
-			File.open( '_index.html', 'w' ) do |f|
-				template = Haml::Engine.new( IO.read( template_dir/'index.haml' ), HAML_OPTIONS )
-				f << template.render( o, :toc=>@bundle.toc, :global=>@bundle.toc, :root=>'' )
-			end
 		end
 		
 	end

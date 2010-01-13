@@ -13,7 +13,7 @@ class DocuBot::Bundle
 			@toc.bundle = self
 			@toc.meta['glossary'] = @glossary
 			@toc.meta['index']    = @index
-			pages_by_path = {}
+			pages_by_path = { '.'=>@toc }
 		
 			files_and_folders = Dir[ '**/*' ]
 			files_and_folders.reject!{ |f| File.basename(f) =~ /^index\.[^.]+$/ || File.basename(f) == '_static' || File.basename(f) == '_glossary' }
@@ -22,13 +22,15 @@ class DocuBot::Bundle
 				extension = File.extname( item )[ 1..-1 ]
 				item_is_page = File.directory?(item) || DocuBot::Converter.by_type[extension]
 				if item_is_page
-					parent = pages_by_path[ File.dirname( item ) ] || @toc
+					parent = pages_by_path[ File.dirname( item ) ]
 					page = DocuBot::Page.new( item )
 					page.bundle = self
 					pages_by_path[ item ] = page
-					page.hide = true if File.basename( item ) =~ /^_/ && !page.hide?
-					parent << page
-					@glossary << page if item =~ /\b_glossary\b/
+					page.meta['hide'] = true if File.basename( item ) =~ /^_/ && !page.hide?
+					parent << page if parent
+					if item =~ /\b_glossary\b/
+						@glossary << page 
+					end
 					@index.process_page( page )
 				else
 					# TODO: Anything better needed?

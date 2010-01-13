@@ -43,6 +43,8 @@ class DocuBot::Index
 			# If the new term has more capital letters, it wins.
 			if term.scan(/[A-Z]/).length > existing.scan(/[A-Z]/).length
 				@downcased[ down ] = term
+				@entries[ term ] = @entries[ existing ]
+				@entries.delete( existing )
 			else
 				term = existing
 			end

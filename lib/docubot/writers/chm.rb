@@ -14,12 +14,23 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		write_hhk
 		write_hhp
 		# This will fail if a handle is open to it on Windows
-		FileUtils.rm( @chm_path ) if File.exists?( @chm_path )
+		begin
+			FileUtils.rm( @chm_path ) if File.exists?( @chm_path )
+		rescue Errno::EACCES
+			require 'win32ole'
+			for process in WIN32OLE.connect("winmgmts://").ExecQuery("select Name,CommandLine from win32_process where Name='hh.exe'") do
+				process.Terminate if process.CommandLine.include? @chm_path.gsub('/','\\')
+			end
+		end
 		puts `hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
 		
 		# Clean out the intermediary files
 		FileUtils.rm( [ @hhc, @hhp, @hhk ] )
 		FileUtils.rm_r( @html_path )
+		
+		# Spin a new thread so it doesn't hold up the Ruby process, but sleep long enough for it to get going.
+		Thread.new{ `hh.exe "#{FileUtils.win_path @chm_path}"` }
+		sleep 0.1
 	end
 
 	def write_hhc

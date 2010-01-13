@@ -6,6 +6,7 @@
 <%@write_section = lambda do |page| %>
 <UL>
 	<%page.pages.each do |child|%>
+		<%next if child.hide%>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="<%=CGI.escapeHTML child.title%>">
 			<param name="Local" value="<%=FileUtils.win_path( @html_path / CGI.escapeHTML(child.html_path) )%>">

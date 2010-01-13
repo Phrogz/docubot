@@ -18,8 +18,8 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		puts `hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
 		
 		# Clean out the intermediary files
-		#FileUtils.rm( [ @hhc, @hhp, @hhk ] )
-		#FileUtils.rm_r( @html_path )
+		FileUtils.rm( [ @hhc, @hhp, @hhk ] )
+		FileUtils.rm_r( @html_path )
 	end
 
 	def write_hhc

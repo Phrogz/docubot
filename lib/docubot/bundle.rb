@@ -1,18 +1,18 @@
 # encoding: UTF-8
 class DocuBot::Bundle
-	attr_reader :toc, :extras, :glossary, :source, :dump_path
+	attr_reader :toc, :extras, :glossary, :index, :source
 	
 	def initialize( source_directory )
 		@source = File.expand_path( source_directory )
+		raise "DocuBot cannot find directory #{@source}. Exiting." unless File.exists?( @source )
 		@extras = []
 		@glossary = DocuBot::Glossary.new( self, @source/'_glossary' )
-		if !File.exists?( @source )
-			raise "DocuBot cannot find directory #{@source}. Exiting."
-		end
+		@index    = DocuBot::Index.new( self )
 		Dir.chdir( @source ) do
 			@toc = DocuBot::Page.new( ".", "Table of Contents" )
 			@toc.bundle = self
 			@toc.meta['glossary'] = @glossary
+			@toc.meta['index']    = @index
 			pages_by_path = {}
 		
 			files_and_folders = Dir[ '**/*' ]
@@ -29,6 +29,7 @@ class DocuBot::Bundle
 					page.hide = true if File.basename( item ) =~ /^_/ && !page.hide?
 					parent << page
 					@glossary << page if item =~ /\b_glossary\b/
+					@index.process_page( page )
 				else
 					# TODO: Anything better needed?
 					@extras << item

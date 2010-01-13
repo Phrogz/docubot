@@ -51,6 +51,12 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 				template = Haml::Engine.new( IO.read( template_dir/'toc.haml' ), HAML_OPTIONS )
 				f << template.render( o, :toc=>@bundle.toc, :global=>@bundle.toc, :root=>'' )
 			end
+
+			# Write out the index (even though the CHM won't use it, others may)
+			File.open( '_index.html', 'w' ) do |f|
+				template = Haml::Engine.new( IO.read( template_dir/'index.haml' ), HAML_OPTIONS )
+				f << template.render( o, :toc=>@bundle.toc, :global=>@bundle.toc, :root=>'' )
+			end
 		end
 		
 	end

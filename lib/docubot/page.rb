@@ -41,8 +41,8 @@ class DocuBot::Page
 		key=method.to_s
 		case key[-1..-1] # the last character of the method name
 			when '?' then @meta.has_key?( key[0..-2] )
-			when '=' then @meta[ key[0..-2] ] = args[0]
-			when '!' then super
+			#when '=' then @meta[ key[0..-2] ] = args[0]
+			when '!','=' then super
 			else @meta[ key ]
 		end
 	end
@@ -82,15 +82,17 @@ class DocuBot::Page
 		@file ? @file.sub( /[^.]+$/, 'html' ) : ( @folder / 'index.html' )
 	end
 	def to_html( template_dir=nil )
+		return @cached_html if @cached_html
 		contents = @raw && DocuBot::process_snippets( self, DocuBot::convert_to_html( @raw, @type ) )
 		# Allow the Glossary to call to_html on the pages without knowing which template will be used.
 		if template_dir
 			root = "../" * depth
-			self.flavor ||= leaf? ? 'page' : 'section'
+			@meta['flavor'] ||= leaf? ? 'page' : 'section'
 			template = template_dir / "#{flavor}.haml"
 			template = template_dir / "page.haml" unless File.exists?( template )
 			template = Haml::Engine.new( IO.read( template ), DocuBot::Writer::HAML_OPTIONS )
 			contents = template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
+			@cached_html = contents
 		end
 		contents
 	end

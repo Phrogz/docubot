@@ -2,6 +2,7 @@
 Compatibility=1.1 or later
 Compiled file="<%=FileUtils.win_path @chm_path%>"
 Contents file="<%=FileUtils.win_path @hhc%>"
+Index file="<%=FileUtils.win_path @hhk%>"
 <%if @default_topic%>Default topic=<%=FileUtils.win_path(File.basename(@html_path)/@default_topic.html_path)%>
 <%end%>Display compile progress=No
 Full-text search=Yes

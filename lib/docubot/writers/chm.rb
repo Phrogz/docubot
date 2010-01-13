@@ -9,16 +9,17 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 	def write( template=nil, destination=nil )
 		super( template, nil )
 		@chm_path = destination || "#{@bundle.source}.chm"
+		@toc = @bundle.toc
 		write_hhc
-		write_hhp
 		write_hhk
+		write_hhp
 		# This will fail if a handle is open to it on Windows
 		FileUtils.rm( @chm_path ) if File.exists?( @chm_path )
 		puts `hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
 		
 		# Clean out the intermediary files
-		FileUtils.rm( [ @hhc, @hhp, @hhk ] )
-		FileUtils.rm_r( @html_path )
+		#FileUtils.rm( [ @hhc, @hhp, @hhk ] )
+		#FileUtils.rm_r( @html_path )
 	end
 
 	def write_hhc
@@ -31,7 +32,6 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 	def write_hhp
 		@hhp = @chm_path.sub( /[^.]+$/, 'hhp' )
 
-		@toc = @bundle.toc
 		if @toc.default?
 			# User tried to specify the default page
 			@default_topic = @toc.descendants.find{ |page| page.title==@toc.default }

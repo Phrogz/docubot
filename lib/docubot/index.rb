@@ -51,4 +51,8 @@ class DocuBot::Index
 		@entries[ term ].uniq!
 		@downcased[ down ] = term
 	end
+	
+	def each
+		@entries.each{ |term, pages| yield term, pages }
+	end
 end

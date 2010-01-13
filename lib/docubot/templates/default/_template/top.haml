@@ -4,17 +4,22 @@
 		%meta(http-equiv='Content-Type' content='text/html; charset=utf-8')
 		%link{:rel=>'stylesheet', :type=>'text/css', :href=>"#{root}common.css", :media=>'all'}
 		%title= page.title
-	%body.page
+	%body{ :class=>page.style }
 		#content
-
-			#header
+			#pagetop
+				#breadcrumb
+					- toc = page.ancestors.first # The TOC has no page to link to
+					= toc.short_title || toc.title
+					%span.sep &gt;
+					- page.ancestors[1..-1].each do |dad|
+						%a{ :href=>root/dad.html_path }= dad.short_title || dad.title
+						%span.sep &gt;
+					= page.title
 				%h1#title= page.title
-				#breadcrumb= page.breadcrumb
 				- if page.author?
 					#author= page.author
-
-			#page= contents
-			
-		#footer
-			Copyright ©#{Time.now.year}#{ " #{global.company}" if global.company? }.
-			All Rights Reserved.
+			#pagebody
+				#mainbody= contents
+				#pagefooter
+					Copyright ©#{Time.now.year}#{ " #{global.company}" if global.company? }.
+					All Rights Reserved.

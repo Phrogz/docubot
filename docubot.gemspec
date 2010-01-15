@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
 	s.authors     = ["Gavin Kistner", "Harold Hausman"]
 	s.email       = "gavin@phrogz.net"
 	s.homepage    = "http://github.com/Phrogz/docubot"
-	s.summary     = "Create CHM documentation from a simple hierarchy of text files."
-	s.description = s.summary # TODO
+	s.summary     = "Create documentation from a hierarchy of text files."
+	s.description = "DocuBot creates HTML or CHM documentation from a hierarchy of files, supporting markups like Markdown, Textile, and Haml."
 	s.files       = %w[ bin/* lib/**/* test/**/* ].inject([]){ |all,glob| all+Dir[glob] }
 	s.bindir      = 'bin'
 	s.executables << 'docubot'

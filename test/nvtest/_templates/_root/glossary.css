@@ -1,0 +1,3 @@
+#glossary-box { display:none; position:absolute; width:30%; background:#red; border:1px solid black; padding:0.5em; }
+span.glossary { color:#36401C; border-bottom:1px dashed #6e8e34; cursor:help; }
+span.missing { color:red }

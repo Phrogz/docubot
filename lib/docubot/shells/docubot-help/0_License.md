@@ -1,6 +1,4 @@
 This is a simple, no-frills [Markdown](http://daringfireball.net/projects/markdown/basics) file.
-(This waiver is from [Via Ferrata](http://www.nelsonrocks.org/)'s waiver package, with a few
-additional stylistic modifications to show Markdown.)
 
 **Nelson Rocks Preserve** is covered in steep terrain with loose, slippery and unstable footing.
 The weather can make matters worse. Sheer drops are everywhere. You may fall, be injured or die.
@@ -12,18 +10,21 @@ _Real dangers are present even on trails._ Trails are not sidewalks. They can be
 steep, slippery and dangerous. Trail features made or enhanced by humans, such as steps, walls
 and railings (if any) can break, collapse, or otherwise fail catastrophically at any time.
 
-* Stay on the trails whenever possible. The terrain, in addition to being dangerous, is
-  surprisingly complex. You may get lost. Carry food, water and first aid supplies at all times.
-* Rocks and other objects can fall from the cliffs. They can tumble down slopes. This can happen
-  naturally, or be caused by people above you, such as climbers. Rocks of all sizes, including
-  huge boulders, can shift, move or fall with no warning. Use of helmets is advised for anyone
-  approaching the rock formations. They can be purchased or rented at Seneca Rocks. They won't
-  save you if you get hit by something big or on another part of your body.
-* Weather can be dangerous, regardless of the forecast. Be prepared with extra clothing, including
-  rain gear.
-* Please know that scrambling in high places (scrambling is moving over terrain steep enough to
-  use your hands) without proper experience, training and equipment, or allowing children to do so
-  is dangerous.
+Stay on the trails whenever possible. The terrain, in addition to being dangerous, is
+surprisingly complex. You may get lost. Carry food, water and first aid supplies at all times.
+
+Rocks and other objects can fall from the cliffs. They can tumble down slopes. This can happen
+naturally, or be caused by people above you, such as climbers. Rocks of all sizes, including
+huge boulders, can shift, move or fall with no warning. Use of helmets is advised for anyone
+approaching the rock formations. They can be purchased or rented at Seneca Rocks. They won't
+save you if you get hit by something big or on another part of your body.
+
+Weather can be dangerous, regardless of the forecast. Be prepared with extra clothing, including
+rain gear.
+
+Please know that scrambling in high places (scrambling is moving over terrain steep enough to
+use your hands) without proper experience, training and equipment, or allowing children to do so
+is dangerous.
 
 The Preserve does not provide rangers or security personnel. The other people in the preserve,
 including other visitors, our employees, agents, and guests, and anyone else who might sneak in,

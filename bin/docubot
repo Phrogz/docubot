@@ -68,7 +68,7 @@ if ARGS[:create]
 		     "  (Shells are installed in #{DocuBot::DIR/'shells'})", ""
 		exit 1
 	end
-	
+
 	if File.exist?( ARGS[:directory] )
 		if ARGS[:force]
 			# TODO: confirmation?
@@ -80,12 +80,24 @@ if ARGS[:create]
 			exit 1
 		end
 	end
-	src  = File.expand_path( DocuBot::SHELL_DIR/ARGS[:shell] )
+
 	dest = File.expand_path( ARGS[:directory] )
+	src  = File.expand_path( DocuBot::SHELL_DIR/ARGS[:shell] )
 	puts "  Creating:   #{dest}",
-	     "  as copy of: #{src}", ""
-	FileUtils.cp_r( src, dest )
+	     "  as copy of: #{src}", ""	
+	
+	# Copy template files first so that the shell can overwrite if it wants
+	FileUtils.mkdir_p( dest )
 	FileUtils.cp_r( DocuBot::TEMPLATE_DIR, dest/'_templates' )
+	
+	Dir.chdir src do
+		Dir['**/*.*'].each do |file|
+			dest_file = dest/file
+			dest_dir  = File.dirname(dest_file)
+			FileUtils.mkdir_p( dest_dir )
+			FileUtils.cp( file, dest_file )
+		end
+	end
 else
 	bundle = DocuBot::Bundle.new( ARGS[:directory] )
 	bundle.write( ARGS[:writer], ARGS[:output] )

@@ -35,9 +35,9 @@ class DocuBot::Bundle
 					# TODO: Move this bloat elsewhere.
 					if page.toc?
 						html = page.to_html
-						page.toc.scan /[a-z][\w.:-]*/ do |id|
+						page.toc.scan /[a-z][\w.:-]*/i do |id|
 							# TODO: Maybe a lightweight HTML parser would be faster here? (Certainly more robust.)
-							if title = html[/\bid *= *['"]#{id}['"][^>]*>([^<]+)/,1]
+							if title = html[/\b(?:id|ID) *= *['"]#{id}['"][^>]*>([^<]+)/,1]
 								page << DocuBot::SubLink.new( page, title.strip, id )
 							else
 								warn "Could not find requested toc anchor '##{id}' on #{page.html_path}"

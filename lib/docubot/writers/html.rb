@@ -34,6 +34,7 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			template = File.exists?( source_templates/'top.haml' ) ? source_templates/'top.haml' : master_templates/'top.haml'
 			template = Haml::Engine.new( IO.read( template ), HAML_OPTIONS )
 			@bundle.toc.descendants.each do |page|
+				next if page.sublink?
 				contents = page.to_html!
 				root = "../" * page.depth
 				html = template.render( o, :page=>page, :contents=>contents, :global=>@bundle.toc, :root=>root )

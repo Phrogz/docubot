@@ -5,7 +5,6 @@
 <!-- Sitemap 1.0 -->
 <%@write_section = lambda do |page| %>
 <UL>
-	<% p page.title, page.pages.map{ |x| x.title } %>
 	<%page.pages.each do |child|%>
 		<%next if child.hide%>
 		<LI> <OBJECT type="text/sitemap">

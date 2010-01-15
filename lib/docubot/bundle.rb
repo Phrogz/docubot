@@ -26,7 +26,6 @@ class DocuBot::Bundle
 					page = DocuBot::Page.new( item )
 					page.bundle = self
 					pages_by_path[ item ] = page
-					page.meta['hide'] = true if File.basename( item ) =~ /^_/ && !page.hide?
 					parent << page if parent
 					if item =~ /\b_glossary\b/
 						@glossary << page 

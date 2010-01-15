@@ -148,4 +148,10 @@ class DocuBot::SubLink
 	def method_missing(*args)
 		nil
 	end
+	def hide
+		false
+	end
+	def sublink?
+		true
+	end
 end

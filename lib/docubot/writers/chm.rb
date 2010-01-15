@@ -26,8 +26,8 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		`hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
 		
 		# Clean out the intermediary files
-		FileUtils.rm( [ @hhc, @hhp, @hhk ] )
-		FileUtils.rm_r( @html_path )
+		#FileUtils.rm( [ @hhc, @hhp, @hhk ] )
+		#FileUtils.rm_r( @html_path )
 		
 		# Spin a new thread so it doesn't hold up the Ruby process, but sleep long enough for it to get going.
 		Thread.new{ `hh.exe "#{FileUtils.win_path @chm_path}"` }

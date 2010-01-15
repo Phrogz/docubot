@@ -5,14 +5,19 @@
 <!-- Sitemap 1.0 -->
 <%@write_section = lambda do |page| %>
 <UL>
+	<% p page.title, page.pages.map{ |x| x.title } %>
 	<%page.pages.each do |child|%>
 		<%next if child.hide%>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="<%=CGI.escapeHTML child.title%>">
 			<param name="Local" value="<%=FileUtils.win_path( @html_path / child.html_path ).gsub('&','%26')%>">
-			<%if child.leaf?%><param name="ImageNumber" value="11"><%end%>
+			<%if child.sublink?
+				%><param name="ImageNumber" value="17"><%
+			elsif child.leaf?
+				%><param name="ImageNumber" value="11"><%
+			end%>
 			</OBJECT>
-		<%@write_section[child] unless child.leaf?%>
+		<%@write_section[child] unless child.pages.empty?%>
 	<%end%>
 </UL>
 <%end%>

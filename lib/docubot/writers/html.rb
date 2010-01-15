@@ -63,7 +63,7 @@ module Haml::Helpers
 				haml_tag :a, :href=>child.html_path do
 					haml_concat child.title
 				end
-				unless child.leaf?
+				unless child.pages.empty?
 					haml_tag :ul do
 						li_pages_for child
 					end

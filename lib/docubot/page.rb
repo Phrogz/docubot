@@ -28,13 +28,12 @@ class DocuBot::Page
 			if parts.length > 1
 				# Make YAML friendler to n00bs
 				yaml = YAML.load( parts.first.gsub( /^\t/, '  ' ) )
-				@meta.merge!( yaml ) 
+				@meta.merge!( yaml )
 			end
 			
 			# Raw markup, untransformed
 			@raw = parts.last
 		end
-		
 	end
 	def []( key )
 		@meta[key]
@@ -76,7 +75,7 @@ class DocuBot::Page
 		entry.parent = self
 	end
 	def leaf?
-		@pages.empty?
+		@pages.empty? || @pages.all?{ |x| x.is_a?(DocuBot::SubLink) }
 	end
 	def depth
 		@_depth ||= @file ? @file.count('/') : @folder.count('/') + 1
@@ -115,13 +114,13 @@ class DocuBot::Page
 	end
 end
 
-class DocuBot::TOCLink
+class DocuBot::SubLink
 	attr_reader :page, :title, :id
 	def initialize( page, title, id )
 		@page, @title, @id = page, title, id
 	end
 	def html_path
-		@page.html_path
+		"#{@page.html_path}##{@id}"
 	end
 	def leaf?
 		true
@@ -129,10 +128,24 @@ class DocuBot::TOCLink
 	def pages
 		[]
 	end
+	alias_method :descendants, :pages
 	def depth
 		@page.depth
 	end
 	def parent
 		@page
+	end
+	def parent=( page )
+		@page = page
+	end
+	def to_html
+		""
+	end
+	def ancestors
+		@page.ancestors
+	end
+	alias_method :to_html!, :to_html
+	def method_missing(*args)
+		nil
 	end
 end

@@ -36,6 +36,9 @@ class DocuBot::Page
 		end
 		
 	end
+	def []( key )
+		@meta[key]
+	end
 
 	def method_missing( method, *args )
 		key=method.to_s
@@ -76,27 +79,40 @@ class DocuBot::Page
 		@pages.empty?
 	end
 	def depth
-		@file ? @file.count('/') : @folder.count('/') + 1
+		@_depth ||= @file ? @file.count('/') : @folder.count('/') + 1
+	end
+	def root
+		@_root ||= "../" * depth
 	end
 	def html_path
 		@file ? @file.sub( /[^.]+$/, 'html' ) : ( @folder / 'index.html' )
 	end
-	def to_html( template_dir=nil )
+	def to_html
 		return @cached_html if @cached_html
-		contents = @raw && DocuBot::process_snippets( self, DocuBot::convert_to_html( @raw, @type ) )
-		# Allow the Glossary to call to_html on the pages without knowing which template will be used.
-		if template_dir
-			root = "../" * depth
-			@meta['flavor'] ||= leaf? ? 'page' : 'section'
-			template = template_dir / "#{flavor}.haml"
-			template = template_dir / "page.haml" unless File.exists?( template )
-			template = Haml::Engine.new( IO.read( template ), DocuBot::Writer::HAML_OPTIONS )
-			contents = template.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
-			@cached_html = contents
+
+		contents = if @raw
+			# Directories with no index.* file will not have any @raw
+			html = DocuBot::convert_to_html( self, @raw, @type )
+			DocuBot::process_snippets( self, html )
 		end
-		contents
+
+		@meta['template'] ||= leaf? ? 'page' : 'section'
+
+		master_templates = DocuBot::TEMPLATE_DIR
+		source_templates = @bundle.source / '_templates'
+
+		haml = source_templates / "#{template}.haml"
+		haml = master_templates / "#{template}.haml" unless File.exists?( haml )
+		haml = master_templates / "page.haml"        unless File.exists?( haml )
+		haml = Haml::Engine.new( IO.read( haml ), DocuBot::Writer::HAML_OPTIONS )
+		contents = haml.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
+
+		@cached_html = contents
 	end
-		
+	def to_html!
+		@cached_html=nil
+		to_html
+	end
 end
 
 class DocuBot::TOCLink

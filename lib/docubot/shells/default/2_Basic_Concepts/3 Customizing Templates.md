@@ -1,0 +1,1 @@
+Files in `_templates` override the default templates. See also CSS and JS in `_root`, which is copied to the root of the app.

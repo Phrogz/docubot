@@ -20,14 +20,12 @@ module FileUtils
 end
 
 module DocuBot
-	VERSION = '0.0.1'
-	DIR     = File.dirname( __FILE__ )
+	VERSION = '0.2'
+	DIR     = File.expand_path( File.dirname( __FILE__ ) )
 	
-	TEMPLATE_DIR = File.expand_path( DocuBot::DIR / 'docubot/templates' )
-	Dir.chdir TEMPLATE_DIR do
-		INSTALLED_TEMPLATES = Dir['*']
-	end
-	warn "No templates installed in #{TEMPLATE_DIR}!" if INSTALLED_TEMPLATES.empty?
+	TEMPLATE_DIR = DIR / 'docubot/templates'
+	SHELL_DIR    = DIR / 'docubot/shells'
+	Dir.chdir( SHELL_DIR ){ SHELLS = Dir['*'] }
 end
 
 require 'docubot/snippet'

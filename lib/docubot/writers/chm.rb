@@ -6,8 +6,8 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 	
 	SUPPORT = DocuBot::Writer::DIR / 'chm'
 	
-	def write( template=nil, destination=nil )
-		super( template, nil )
+	def write( destination=nil )
+		super( nil )
 		@chm_path = destination || "#{@bundle.source}.chm"
 		@toc = @bundle.toc
 		write_hhc

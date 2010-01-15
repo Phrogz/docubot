@@ -1,0 +1,1 @@
+Use relative paths, but end in .html

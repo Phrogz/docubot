@@ -61,7 +61,7 @@ A file named "index.md" inside a directory describes the section itself. Such a 
 
 Note that for the metadata section to be recognized, the section must end with `+++` on its own line (even if you have no additional content you wanted to write for that section).
 
-## Editing the HTML Template and Stylesheet
+## Editing the HTML Templates and Stylesheet
 TODO
 
 ## Using Additional Metadata

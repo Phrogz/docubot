@@ -1,0 +1,1 @@
+A [Haml](http://haml-lang.com/docs.html) file used to wrap markup and generated content around your page.

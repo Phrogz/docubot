@@ -1,0 +1,8 @@
+company: Froboz Widgets
+title  : Froboz Widgets Reference Manual
+author : Gavin Kistner
+edited : 2010-Jan-14
++++
+A file named `index.*` (one of the recognized markup types) lets you specify global variables for the project.
+
+Not every variable you put in the meta section has to be used; you can put your own metadata there.

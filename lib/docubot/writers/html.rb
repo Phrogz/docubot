@@ -1,24 +1,16 @@
 class DocuBot::HTMLWriter < DocuBot::Writer
 	handles_type :html
 	
-	# Specify nil for template to use a '_template' directory from the source.
 	# Specify nil for destination to place "<source>_html" next to the source.
-	def write( template=nil, destination=nil )
+	def write( destination=nil )
 		source = @bundle.source
 		@html_path = destination || File.dirname(source)/"#{File.basename source}_html"
 		FileUtils.rm_rf(@html_path) if File.exists?(@html_path)
 		FileUtils.mkdir(@html_path)
 		
-		# Find a valid template directory, preferring _template in the documentation source
-		default_dir = DocuBot::TEMPLATE_DIR/'default'/'_template'
-		template_dir = template ? DocuBot::TEMPLATE_DIR/template/'_template' : source/'_template'
-		unless File.exists?( template_dir )
-			template_dir = default_dir
-			warn "The specified template '#{template}' does not exist in #{DocuBot::TEMPLATE_DIR}." if template
-			warn "Using default template from #{template_dir}."
-		end
-		template_dir = File.expand_path( template_dir )
-
+		master_templates = DocuBot::TEMPLATE_DIR
+		source_templates = source/'_templates'
+		
 		# Copy any files found in the source directory that weren't made into pages
 		@bundle.extras.each do |file|
 			FileUtils.mkdir_p( @html_path / File.dirname( file ) )
@@ -29,7 +21,8 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 		# Record these as extras so that the CHMWriter can access them
 		Dir.chdir @html_path do
 			existing_files = Dir[ '*' ]
-			FileUtils.copy( Dir[ template_dir/'_root'/'*' ], '.' )
+			FileUtils.copy( Dir[ master_templates/'_root'/'*' ], '.' )
+			FileUtils.copy( Dir[ source_templates/'_root'/'*' ], '.' )
 			new_files = Dir[ '*' ] - existing_files
 			@bundle.extras.concat( new_files )
 		end
@@ -38,10 +31,10 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			o = Object.new
 			
 			# Write out every page
-			template = File.exists?( template_dir/'top.haml' ) ? template_dir/'top.haml' : default_dir/'top.haml'
+			template = File.exists?( source_templates/'top.haml' ) ? source_templates/'top.haml' : master_templates/'top.haml'
 			template = Haml::Engine.new( IO.read( template ), HAML_OPTIONS )
 			@bundle.toc.descendants.each do |page|
-				contents = page.to_html( template_dir )
+				contents = page.to_html!
 				root = "../" * page.depth
 				html = template.render( o, :page=>page, :contents=>contents, :global=>@bundle.toc, :root=>root )
 				FileUtils.mkdir_p( File.dirname( page.html_path ) )
@@ -51,7 +44,7 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			# Write out the TOC and Index (even though the CHM won't use them, others may)
 			{ 'toc.haml'=>'_toc.html', 'index.haml'=>'_index.html' }.each do |haml,output|
 				File.open( output, 'w' ) do |f|
-					template = File.exists?( template_dir/haml ) ? template_dir/haml : default_dir/haml
+					template = File.exists?( source_templates/haml ) ? source_templates/haml : master_templates/haml
 					template = Haml::Engine.new( IO.read( template ), HAML_OPTIONS )
 					f << template.render( o, :toc=>@bundle.toc, :global=>@bundle.toc, :root=>'' )
 				end

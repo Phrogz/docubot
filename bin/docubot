@@ -9,25 +9,25 @@ require 'docubot'
 
 USAGE = <<ENDUSAGE
 Usage:
-   docubot [-h] [-t template_name] [create [-f]] directory [-w writer] [-o output_file]
+   docubot [-h] [create [-s shell] [-f]] directory [-w writer] [-o output_file]
 ENDUSAGE
 
 HELP = <<ENDHELP
-   -h, --help      Show this help.
-   -t, --template  The template to use (overrides any local template).
-                   Available templates: #{DocuBot::INSTALLED_TEMPLATES.join(', ')}
-   create          Create a starter directory filled with example files;
-                   also copies the template for easy modification, if desired.
-   -f, --force     Force create over an existing directory,
-                   deleting any existing files.
-   -w, --writer    The output type to create [Defaults to 'chm']
-                   Available writers: #{DocuBot::Writer::INSTALLED_WRITERS.join(', ')}
-   -o, --output    The file or folder (depending on the writer) to create.
-                   [Default value depends on the writer chosen.]
+   -h, --help    Show this help.
+   create        Create a starter directory filled with example files;
+                 also copies the template for easy modification, if desired.
+   -s, --shell   The shell to copy from.
+                 Available shells: #{DocuBot::SHELLS.join(', ')}
+   -f, --force   Force create over an existing directory,
+                 deleting any existing files.
+   -w, --writer  The output type to create [Defaults to 'chm']
+                 Available writers: #{DocuBot::Writer::INSTALLED_WRITERS.join(', ')}
+   -o, --output  The file or folder (depending on the writer) to create.
+                 [Default value depends on the writer chosen.]
 
 ENDHELP
 
-ARGS = { :template=>'default', :writer=>'chm' }
+ARGS = { :shell=>'default', :writer=>'chm' }
 UNFLAGGED_ARGS = [ :directory ]
 next_arg = UNFLAGGED_ARGS.first
 ARGV.each{ |arg|
@@ -38,9 +38,8 @@ ARGV.each{ |arg|
 		  ARGS[:create] = true
 		when '-f','--force'
 		  ARGS[:force] = true
-		when '-t','--template'
-			ARGS[:explicit_template] = true
-			next_arg = :template
+		when '-s','--shell'
+			next_arg = :shell
 		when '-w','--writer'
 			next_arg = :writer
 		when '-o','--output'
@@ -60,15 +59,16 @@ if ARGS[:help] or !ARGS[:directory]
 	exit
 end
 
-unless DocuBot::INSTALLED_TEMPLATES.include?( ARGS[:template] )
-	puts "  Error: '#{ARGS[:template]}' is not a valid template.",
-	     "  Available templates: #{DocuBot::INSTALLED_TEMPLATES.join(', ')}",
-	     "  (Templates are installed in #{DocuBot::TEMPLATE_DIR})", ""
-	exit
-end
-
 if ARGS[:create]
 	require 'fileutils'
+
+	unless DocuBot::SHELLS.include?( ARGS[:shell] )
+		puts "  Error: '#{ARGS[:shell]}' is not a valid shell.",
+		     "  Available shells: #{DocuBot::SHELLS.join(', ')}",
+		     "  (Shells are installed in #{DocuBot::DIR/'shells'})", ""
+		exit 1
+	end
+	
 	if File.exist?( ARGS[:directory] )
 		if ARGS[:force]
 			# TODO: confirmation?
@@ -77,16 +77,17 @@ if ARGS[:create]
 		else
 			puts "  Error: directory '#{ARGS[:directory]}' already exists.",
 			     "  Use the --force option to forcibly overwrite.", ""
-			exit
+			exit 1
 		end
 	end
-	src  = File.expand_path( DocuBot::TEMPLATE_DIR/ARGS[:template] )
+	src  = File.expand_path( DocuBot::SHELL_DIR/ARGS[:shell] )
 	dest = File.expand_path( ARGS[:directory] )
 	puts "  Creating:   #{dest}",
 	     "  as copy of: #{src}", ""
 	FileUtils.cp_r( src, dest )
+	FileUtils.cp_r( DocuBot::TEMPLATE_DIR, dest/'_templates' )
 else
 	bundle = DocuBot::Bundle.new( ARGS[:directory] )
-	bundle.write( ARGS[:writer], ARGS[:explicit_template] && ARGS[:template], ARGS[:output] )
+	bundle.write( ARGS[:writer], ARGS[:output] )
 end
 

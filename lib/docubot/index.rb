@@ -42,6 +42,7 @@ class DocuBot::Index
 	
 	def add( term, page )
 		term.strip!
+		term.gsub!(/<[^>]+>/,'')
 		down = term.downcase
 		if existing = @downcased[ down ]
 			# The existing entry might be early-arriving all-lowercase.

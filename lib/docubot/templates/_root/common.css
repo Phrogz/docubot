@@ -1,0 +1,108 @@
+html, body
+{
+    margin:0;
+    padding:0;
+    background:white;
+}
+
+#breadcrumb
+{
+	margin:0;
+	background:black;
+	padding-left:1em;
+	font-family: 'Arial', sans-serif;
+	font-size:14px; font-weight:bold;
+	white-space:nowrap;
+	height:40px; line-height:40px; color:white; overflow:hidden;
+	color:#fff;
+}
+
+#breadcrumb a
+{
+	color:#fff; text-decoration:none
+}
+
+#breadcrumb a:hover
+{
+	color:#74b71b
+}
+#breadcrumb .sep
+{
+	color:#999; font-weight:normal; padding:0 0.2em
+}
+
+div#mainbody
+{
+	padding-right:0 ! important; padding-bottom:2em;
+}
+
+div.section
+{
+	margin-left:2em
+}
+
+a:link, a:visited { white-space:nowrap; color:#6e8e34 }
+a:hover { color:#74b71b }
+
+h1 {
+	margin:0;
+	padding-left:14px;
+	padding-right:50px;
+	font-family: 'Arial', sans-serif;
+	white-space:nowrap;
+	font-size:18px;
+	background:#6eb103 url(images/bg_green_bar_revised.gif) repeat-x;
+	height:30px; line-height:30px; color:white; overflow:hidden;
+	border-bottom:1px solid #999
+}
+
+h2
+{
+	clear:both;
+	margin-top:4em;
+}
+h2, h3, h4
+{
+	border-bottom:1px solid #dddddd;
+	margin-right:350px;
+	font-size:100%
+}
+h2.first-child, h3.first-child, h4.first-child
+{
+	margin-top:0
+}
+h3, h4
+{
+	margin-top:2em;
+	font-style:italic
+}
+
+.moreinfo
+{ 
+	font-style:italic;
+	color:#666;
+}
+
+.moreinfo a
+{
+    color: #6e8e34
+}
+.moreinfo a:hover
+{
+    color: #76b900
+}
+
+sup
+{
+	font-size:85%
+}
+#pagebody { margin:1em 2em }
+#pagebody h1 {
+	background:#666; color:#ccc; border:1px solid #333; font-size:100%; padding:0.2em 1em; line-height:1em ! important;
+	height:auto ! important; margin-top:1.5em
+}
+
+div#pagefooter {
+	margin-top:10em ! important; margin-bottom:1em ! important; width:25em; overflow:hidden; white-space:nowrap;
+	background:#eee; border:1px solid #ccc; border-left:none; color:#999; font-size:7pt ! important; padding:0.1em 1em
+}

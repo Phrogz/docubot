@@ -1,6 +1,6 @@
 -# TODO: Breakdown by letter.
 %ul#index
-	- global.index.entries.each do |keyword,pages|
+	- global.index.entries.sort_by{ |k,p| k.downcase }.each do |keyword,pages|
 		- if pages.length == 1
 			%li
 				%a{ :href => pages.first.html_path }= keyword

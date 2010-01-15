@@ -31,7 +31,7 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		
 		# Spin a new thread so it doesn't hold up the Ruby process, but sleep long enough for it to get going.
 		Thread.new{ `hh.exe "#{FileUtils.win_path @chm_path}"` }
-		sleep 0.1
+		sleep 0.1 if Object.const_defined? "Encoding" # This sleep does not help on 1.8.6
 	end
 
 	def write_hhc

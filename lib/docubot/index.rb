@@ -9,6 +9,9 @@
 #    The purpose of a @@physical mesh@@ is to...
 #  * Having an "index: headings" entry in the metasection, causing each
 #    heading on the page to be added to the index.
+#  * Having an "index: definitions" entry in the metasection, causing each
+#    <dt>...</dt> on the page to be added to the index.
+#    (May be combined with the above as "index: headings definitions".)
 #
 # As shown above, terms may be referenced in title or lowercase.
 # Names with capital letters will be favored over lowercase in the index.
@@ -25,12 +28,17 @@ class DocuBot::Index
 	# Note: in-content @@keyword@@ marks are processed by snippets/index_entries.rb 
 	def process_page( page )
 		page.keywords.split(/,\s*/).each{ |key| add( key, page ) } if page.keywords?
-		if page.index? && page.index.downcase=='headings'
-			#TODO: Do we need/want a proper HTML parser rather than regex?
+		if page.index?
 			#FIXME: Really, call to_html here?
-			#TODO: Fix the regex to use a backreference to ensure the correct closing tag, once 1.8x support is not necessary
-			page.to_html.scan( %r{<h[1-6][^>]*>(.+?)</h[1-6]>}im ) do |captures|
-				add( captures.first, page )
+			html = page.to_html
+
+			#TODO: Do we need/want a proper HTML parser rather than regexen?
+			if page.index.downcase.include?( 'headings' )
+				#TODO: Fix the regex to use a backreference to ensure the correct closing tag, once 1.8x support is not necessary
+				html.scan( %r{<h[1-6][^>]*>(.+?)</h[1-6]>}im ){ |captures| add( captures.first, page ) }
+			end
+			if page.index.downcase.include?( 'definitions' )
+				html.scan( %r{<dt[^>]*>(.+?)</dt>}im ){ |captures| add captures.first, page }
 			end
 		end
 	end

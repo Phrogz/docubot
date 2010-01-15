@@ -38,4 +38,7 @@ class DocuBot::Glossary
 		#TODO: perhaps don't serialize the page here, but wait until some #write call gives us a template so we can use that?
 		self[ page.title ] = page.to_html
 	end
+	def to_js
+		"$glossaryTerms = {#{@entries.map{ |term,defn| "'#{term.downcase.gsub("'","\\\\'")}':'#{defn.gsub("'","\\\\'").gsub(/[\r\n]/,'\\n')}'" }.join(",\n")}};"
+	end
 end

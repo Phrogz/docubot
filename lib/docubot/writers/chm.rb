@@ -22,7 +22,8 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 				process.Terminate if process.CommandLine.include? @chm_path.gsub('/','\\')
 			end
 		end
-		puts `hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
+		# TODO: output timing and progress results
+		`hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
 		
 		# Clean out the intermediary files
 		FileUtils.rm( [ @hhc, @hhp, @hhk ] )

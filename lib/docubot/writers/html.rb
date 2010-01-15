@@ -56,7 +56,8 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 					f << template.render( o, :toc=>@bundle.toc, :global=>@bundle.toc, :root=>'' )
 				end
 			end
-
+			
+			File.open( 'glossary-terms.js', 'w' ){ |f| f << @bundle.glossary.to_js }
 		end
 		
 	end

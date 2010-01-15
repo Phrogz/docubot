@@ -28,18 +28,15 @@ class DocuBot::Index
 	# Note: in-content @@keyword@@ marks are processed by snippets/index_entries.rb 
 	def process_page( page )
 		page.keywords.split(/,\s*/).each{ |key| add( key, page ) } if page.keywords?
-		if page.index?
-			#FIXME: Really, call to_html here?
-			html = page.to_html
 
-			#TODO: Do we need/want a proper HTML parser rather than regexen?
-			if page.index.downcase.include?( 'headings' )
-				#TODO: Fix the regex to use a backreference to ensure the correct closing tag, once 1.8x support is not necessary
-				html.scan( %r{<h[1-6][^>]*>(.+?)</h[1-6]>}im ){ |captures| add( captures.first, page ) }
-			end
-			if page.index.downcase.include?( 'definitions' )
-				html.scan( %r{<dt[^>]*>(.+?)</dt>}im ){ |captures| add captures.first, page }
-			end
+		html = page.to_html
+		unless page['no-index'] && page['no-index'].include?( 'headings' )
+			#TODO: Fix the regex to use a backreference to ensure the correct closing tag, once 1.8x support is not necessary
+			html.scan( %r{<h[1-6][^>]*>(.+?)</h[1-6]>}im ){ |captures| add( captures.first, page ) }
+		end
+
+		unless page['no-index'] && page['no-index'].include?( 'definitions' )
+			html.scan( %r{<dt[^>]*>(.+?)</dt>}im ){ |captures| add captures.first, page }
 		end
 	end
 	

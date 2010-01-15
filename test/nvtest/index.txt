@@ -1,4 +1,0 @@
-company    : NVIDIA Corporation
-title      : NVIDIA Reference Manual
-short_title: NVIDIA Reference
-+++

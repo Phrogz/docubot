@@ -1,5 +1,5 @@
 # About DocuBot
-DocuBot is a simple Ruby-based tool for easily creating complex CHM documents from a hierarchy of plain text files. At its simplest:
+DocuBot is a simple tool for easily creating complex CHM documents from a hierarchy of plain text files. At its simplest:
 
 1. Create a directory hierarchy of text files with the extension .md.
    * This will use [Markdown][1] to convert the files to HTML.
@@ -85,14 +85,9 @@ A file named "index.md" in the root of your documentation directory allows you t
           Copyright ©#{Time.now.year} #{global.company}. All rights reserved.
 
 # Additional Planned Features
-* Custom Filters and Partials
-* Links between documents
-* Controlling CHM Indexing
-* Additional Markups (Textile, Raw HTML, RDoc, etc.)
+* Additional Markups (RDoc? JavaDoc?)
 * Includes and Supporting File and Dirctories Hidden from the TOC
 * Customizing TOC Icons (with nice names, not indexes)
-* User Variables (e.g. company name for template footer) stored or on command line
-* Optional TOC sub-entries for in-page headers
 
 [1]: http://daringfireball.net/projects/markdown/basics
 [2]: http://rubyinstaller.org/

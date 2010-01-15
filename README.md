@@ -63,11 +63,36 @@ A file named "index.md" inside a directory describes the section itself. Such a 
 
 Note that for the metadata section to be recognized, the section must end with `+++` on its own line (even if you have no additional content you wanted to write for that section).
 
+
+## Adding terms to the CHM Index
+By default, every heading (`<h1>`-`<h6>`) and definition term (`<dt>`) in your final pages will be add an entry in the index to the page using it.
+
+Additionally, putting something like `keywords: Introduction, Overview, Tool Panel` at the top of the page will add index entries for those terms.
+
+Additionally, place double 'at' characters around text on your page, like `When using the @@hyperwrench@@, be sure...` to add index entries for each word or phrase you wrap.
+
+If you don't want headings and/or definitions indexed for a particular page, mention one or both of them at the top of the page like this: `no-index: headings, definitions`.
+
+
+## Adding Glossary Entries
+If you create a folder named `_glossary` at the root of your project, any pages you put in there will be added to the general glossary with the title of the page (filename or `title` attribute) as the term and the contents of the page as the definition.
+
+To use the glossary page in your site, create a page wherever you want with `template: glossary` in the metasection at the top. The glossary of terms and definitions will be generatd from the glossary template.
+
+To reference a glossary term on a particular page, put two dollar signs around the term, like `If the wrench starts $$fonkulating$$, run as fast...`. If you are using the `glossary.js`, generated `glossary-terms.js`, and `glossary.css` you will get a little tooltip with the definition when you click on it.
+
+If you want to create a glossary link using slightly different text than the glossary term, do it like so this, `With many $$rigid bodies:rigid body$$ in the scene, ...`. That will display the text "rigid bodies" but link it to the glossary term "rigid body".
+
+
 ## Editing the HTML Templates and Stylesheet
-TODO
+TODO: _See the files in the `_templates` directory (and the `_root` directory inside it). Bone up on your Haml and Ruby skills._
+
+TODO: _Use `template: foobar` at the top of a page to get it to use another page template. (Will always be wrapped in `top.haml`.)_
+
 
 ## Using Additional Metadata
-TODO
+TODO: _Labeled values in the metasection are available as properties of the `page` object made available to templates. Use `page.value?` to ask if any value has been defined. Use page['non-standard name'] if the name has spaces or hyphens or other non-standard idenfitiers in it._
+
 
 ## Setting Global Metadata
 A file named "index.md" in the root of your documentation directory allows you to set global metadata for the entire project. Attributes defined in this file are available as properties on a `global` object in your template. For example:
@@ -86,9 +111,9 @@ A file named "index.md" in the root of your documentation directory allows you t
         #footer
           Copyright ©#{Time.now.year} #{global.company}. All rights reserved.
 
+
 # Additional Planned Features
 * Additional Markups (RDoc? JavaDoc?)
-* Includes and Supporting File and Dirctories Hidden from the TOC
 * Customizing TOC Icons (with nice names, not indexes)
 
 [1]: http://daringfireball.net/projects/markdown/basics

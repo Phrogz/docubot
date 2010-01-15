@@ -98,3 +98,25 @@ class DocuBot::Page
 	end
 		
 end
+
+class DocuBot::TOCLink
+	attr_reader :page, :title, :id
+	def initialize( page, title, id )
+		@page, @title, @id = page, title, id
+	end
+	def html_path
+		@page.html_path
+	end
+	def leaf?
+		true
+	end
+	def pages
+		[]
+	end
+	def depth
+		@page.depth
+	end
+	def parent
+		@page
+	end
+end

@@ -10,7 +10,9 @@
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="<%=CGI.escapeHTML child.title%>">
 			<param name="Local" value="<%=FileUtils.win_path( @html_path / child.html_path ).gsub('&','%26')%>">
-			<%if child.sublink?
+			<%if child.icon?
+				%><param name="ImageNumber" value="<%=child.icon%>"><%
+			elsif child.sublink?
 				%><param name="ImageNumber" value="17"><%
 			elsif child.leaf?
 				%><param name="ImageNumber" value="11"><%

@@ -3,6 +3,8 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 	
 	# Specify nil for destination to place "<source>_html" next to the source.
 	def write( destination=nil )
+		start = Time.now
+		
 		source = @bundle.source
 		@html_path = destination || File.dirname(source)/"#{File.basename source}_html"
 		FileUtils.rm_rf(@html_path) if File.exists?(@html_path)
@@ -54,6 +56,7 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			File.open( 'glossary-terms.js', 'w' ){ |f| f << @bundle.glossary.to_js }
 		end
 		
+		puts "...%.1fs to write the HTML" % (Time.now - start)
 	end
 end
 

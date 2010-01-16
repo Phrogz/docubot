@@ -8,11 +8,14 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 	
 	def write( destination=nil )
 		super( nil )
+		lap = Time.now
 		@chm_path = destination || "#{@bundle.source}.chm"
 		@toc = @bundle.toc
 		write_hhc
 		write_hhk
 		write_hhp
+		puts "...%.1fs to write the CHM support files" % ((lap=Time.now)-lap)
+		
 		# This will fail if a handle is open to it on Windows
 		begin
 			FileUtils.rm( @chm_path ) if File.exists?( @chm_path )
@@ -22,12 +25,13 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 				process.Terminate if process.CommandLine.include? @chm_path.gsub('/','\\')
 			end
 		end
-		# TODO: output timing and progress results
 		`hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
+		puts "...%.1fs to create the CHM" % ((lap=Time.now)-lap)
 		
 		# Clean out the intermediary files
 		FileUtils.rm( [ @hhc, @hhp, @hhk ] )
 		FileUtils.rm_r( @html_path )
+		puts "...%.1fs to clean up temporary files" % ((lap=Time.now)-lap)
 		
 		# Spin a new thread so it doesn't hold up the Ruby process, but sleep long enough for it to get going.
 		Thread.new{ `hh.exe "#{FileUtils.win_path @chm_path}"` }

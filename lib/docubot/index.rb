@@ -29,14 +29,15 @@ class DocuBot::Index
 	def process_page( page )
 		page.keywords.split(/,\s*/).each{ |key| add( key, page ) } if page.keywords?
 
-		html = page.to_html
+		# FIXME: This is substantially slower (but way more correct) than regexp only.
 		unless page['no-index'] && page['no-index'].include?( 'headings' )
-			#TODO: Fix the regex to use a backreference to ensure the correct closing tag, once 1.8x support is not necessary
-			html.scan( %r{<h[1-6][^>]*>(.+?)</h[1-6]>}im ){ |captures| add( captures.first, page ) }
+			%w[h1 h2 h3 h4 h5 h6].each do |hn|
+				(page.hpricot/hn).each{ |head| add( head.inner_text, page ) }
+			end
 		end
 
 		unless page['no-index'] && page['no-index'].include?( 'definitions' )
-			html.scan( %r{<dt[^>]*>(.+?)</dt>}im ){ |captures| add captures.first, page }
+			(page.hpricot/"dt").each{ |defn| add( defn.inner_text, page ) }
 		end
 	end
 	

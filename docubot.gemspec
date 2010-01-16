@@ -3,7 +3,7 @@ require 'rubygems'
 
 Gem::Specification.new do |s|
 	s.name        = "docubot"
-	s.version     = "0.2.2"
+	s.version     = "0.2.3"
 	s.date        = "2010-01-15"
 	#s.platform    = Gem::Platform::Win32
 	s.authors     = ["Gavin Kistner", "Harold Hausman"]
@@ -15,12 +15,14 @@ Gem::Specification.new do |s|
 	s.bindir      = 'bin'
 	s.executables << 'docubot'
 	s.test_files = %w[test/all.rb]
-	s.add_dependency 'bluecloth'
 	s.add_dependency 'haml'
+	s.add_dependency 'hpricot'
+	s.add_dependency 'bluecloth'
 	s.add_dependency 'RedCloth'
 	s.requirements << "Windows with HTML Help Workshop installed."
-	s.requirements << "BlueCloth gem for Markdown conversion."
 	s.requirements << "Haml gem for template interpretation."
+	s.requirements << "Hpricot gem for parsing HTML after creation."
+	s.requirements << "BlueCloth gem for Markdown conversion."
 	s.requirements << "RedCloth gem for Textile conversion."
 	#s.has_rdoc = true
 end

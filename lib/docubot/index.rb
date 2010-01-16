@@ -32,12 +32,12 @@ class DocuBot::Index
 		# FIXME: This is substantially slower (but way more correct) than regexp only.
 		unless page['no-index'] && page['no-index'].include?( 'headings' )
 			%w[h1 h2 h3 h4 h5 h6].each do |hn|
-				(page.hpricot/hn).each{ |head| add( head.inner_text, page ) }
+				page.nokodoc.css(hn).each{ |head| add( head.inner_text, page ) }
 			end
 		end
 
 		unless page['no-index'] && page['no-index'].include?( 'definitions' )
-			(page.hpricot/"dt").each{ |defn| add( defn.inner_text, page ) }
+			page.nokodoc.css("dt").each{ |defn| add( defn.inner_text, page ) }
 		end
 	end
 	

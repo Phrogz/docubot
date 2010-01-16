@@ -34,9 +34,9 @@ class DocuBot::Bundle
 					
 					# TODO: Move this bloat elsewhere.
 					if page.toc?
-						hdoc = page.hpricot
+						ndoc = page.nokodoc
 						page.toc.scan /[a-z][\w.:-]*/i do |id|
-							if ele = hdoc.at("##{id}")
+							if ele = ndoc.at_css("##{id}")
 								page << DocuBot::SubLink.new( page, ele.inner_text, id )
 							else
 								warn "Could not find requested toc anchor '##{id}' on #{page.html_path}"

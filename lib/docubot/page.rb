@@ -1,6 +1,6 @@
 # encoding: UTF-8
 require 'yaml'
-require 'hpricot'
+require 'nokogiri'
 
 class DocuBot::Page
 	META_SEPARATOR = /^\+\+\+\s*$/ # Sort of like +++ATH0
@@ -114,11 +114,11 @@ class DocuBot::Page
 		@cached_html=nil
 		to_html
 	end
-	def hpricot
-		@hpricot ||= Hpricot(to_html)
+	def nokodoc
+		@nokodoc ||= Nokogiri::HTML(to_html)
 	end
-	def hpricot!
-		@hpricot = Hpricot(to_html!)
+	def nokodoc!
+		@nokodoc ||= Nokogiri::HTML(to_html!)
 	end
 end
 

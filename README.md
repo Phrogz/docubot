@@ -85,7 +85,7 @@ If you want to create a glossary link using slightly different text than the glo
 
 
 ## Adding Sub-Heading Links to the Table of Contents
-If you have a single page with many sections on it and you want to see sub-links for those sections in the table of contents, you can accomplish it in one of two ways:
+If you have a single page with many sections on it and you want to see sub-links for those sections in the table of contents, you can accomplish it in one of two ways.
 
 If you have content with explicit `id` attributes on various HTML elements, add a `toc` entry in the metasection with a **space-delimited** list of the element identifiers whose contents you want added as a sub-link in the table of contents. For example:
 

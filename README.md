@@ -133,7 +133,9 @@ TODO: _Labeled values in the metasection are available as properties of the `pag
 A file named "index.md" in the root of your documentation directory allows you to set global metadata for the entire project. Attributes defined in this file are available as properties on a `global` object in your template. For example:
 
     # index.md at the root of your site
-    company: Froboz Widgets
+    title  : FrobozzCo Reference Manual
+    company: Froboz Widgets (a FrobozzCo subsidiary)
+    default: Welcome to FrobozzCo
     +++
 
 
@@ -145,6 +147,12 @@ A file named "index.md" in the root of your documentation directory allows you t
         ...
         #footer
           Copyright ©#{Time.now.year} #{global.company}. All rights reserved.
+
+### CHM-Specific Metadata
+A `title` attribute set in a root "index.*" page will be used as the name for the CHM documentation. _(As seen above, the title of the CHM would show as "FrobozzCo Reference Manual".)_
+
+A `default` attribute set in this root file will try to find the page with that exact title and use it as the page displayed when the CHM opens the CHM documentation. _(As seen above, the CHM would open to the "Welcome to FrobozzCo" page, if it exists.)_ Due to a limitation in the CHM `hhp` file format (or DocuBot's understanding of it), the page used as the `default` may not have spaces in the file name.
+
 
 
 # Additional Planned Features

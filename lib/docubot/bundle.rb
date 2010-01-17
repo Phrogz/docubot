@@ -35,7 +35,13 @@ class DocuBot::Bundle
 					# TODO: Move this bloat elsewhere.
 					if page.toc?
 						ndoc = page.nokodoc
-						page.toc.scan /[a-z][\w.:-]*/i do |id|
+						toc = page.toc
+						ids = if toc[','] # Comma-delimited toc interpreted as generated ids
+							toc.split(/,\s*/).map{ |title| DocuBot.id_from_text(title) }
+						else
+							toc.scan /[a-z][\w.:-]*/i
+						end
+ 						ids.each do |id|
 							if ele = ndoc.at_css("##{id}")
 								page << DocuBot::SubLink.new( page, ele.inner_text, id )
 							else

@@ -26,6 +26,10 @@ module DocuBot
 	TEMPLATE_DIR = DIR / 'docubot/templates'
 	SHELL_DIR    = DIR / 'docubot/shells'
 	Dir.chdir( SHELL_DIR ){ SHELLS = Dir['*'] }
+	
+	def self.id_from_text( text )
+		text.strip.gsub(/[^\w.:-]+/,'-').gsub(/^-|-$/,'')
+	end
 end
 
 require 'docubot/snippet'

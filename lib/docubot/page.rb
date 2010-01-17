@@ -4,6 +4,7 @@ require 'nokogiri'
 
 class DocuBot::Page
 	META_SEPARATOR = /^\+\+\+\s*$/ # Sort of like +++ATH0
+	AUTO_ID_ELEMENTS = %w[ h1 h2 h3 h4 h5 h6 legend caption dt ].join(',')
 
 	attr_reader :pages, :type, :folder, :file, :meta
 	attr_accessor :parent, :bundle
@@ -34,7 +35,9 @@ class DocuBot::Page
 			end
 			
 			# Raw markup, untransformed
-			@raw = parts.last
+			if @raw = parts.last && parts.last.strip
+				@raw = @raw
+			end
 		end
 	end
 	def []( key )
@@ -91,8 +94,9 @@ class DocuBot::Page
 	def to_html
 		return @cached_html if @cached_html
 
-		contents = if @raw
+		contents = if @raw && !@raw.empty?
 			# Directories with no index.* file will not have any @raw
+			# TODO: Swap the order of these once we're sure that all converters will pass raw HTML through.
 			html = DocuBot::convert_to_html( self, @raw, @type )
 			DocuBot::process_snippets( self, html )
 		end
@@ -106,19 +110,28 @@ class DocuBot::Page
 		haml = master_templates / "#{template}.haml" unless File.exists?( haml )
 		haml = master_templates / "page.haml"        unless File.exists?( haml )
 		haml = Haml::Engine.new( IO.read( haml ), DocuBot::Writer::HAML_OPTIONS )
-		contents = haml.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
+		html = haml.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
 
-		@cached_html = contents
+		# Add IDs to elements 
+		unless !@raw || @meta['auto-id']==false
+			nokodoc( html ).css( AUTO_ID_ELEMENTS ).each do |node|
+				next if node.has_attribute?('id')
+				node['id'] = DocuBot.id_from_text(node.inner_text)
+			end
+			html = @nokodoc.at_css('body').children.to_html
+		end		
+
+		@cached_html = html
 	end
 	def to_html!
 		@cached_html=nil
 		to_html
 	end
-	def nokodoc
-		@nokodoc ||= Nokogiri::HTML(to_html)
+	def nokodoc( html=nil )
+		@nokodoc ||= Nokogiri::HTML(html || to_html)
 	end
 	def nokodoc!
-		@nokodoc ||= Nokogiri::HTML(to_html!)
+		@nokodoc = Nokogiri::HTML(to_html!)
 	end
 end
 

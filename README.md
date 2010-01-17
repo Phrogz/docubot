@@ -106,7 +106,7 @@ In the above example, the Table of Contents will have the following hierarchy:
 
 The sub-links in the table of contents will link directly to the subsection.
 
-If you are using markup (such as Markdown) without specifying HTML `id` attributes, do not fret. DocuBot will automatically create identifiers for the following HTML elements: `h1 h2 h3 h4 h5 h6 legend caption dt`. In this scenario, add a `toc` entry in the metasection with a **comma-delimited** list of the exact text for the element you wish to link to. For example:
+If you are using markup (such as Markdown) without specifying HTML `id` attributes, do not fret. DocuBot can automatically create identifiers for the following HTML elements: `h1 h2 h3 h4 h5 h6 legend caption dt`. In this scenario, add a `toc` entry in the metasection with a **comma-delimited** list of the exact text for the elements you wish to link to. For example:
 
     title: Welcome to FrobozzCo
     toc  : Introduction, Learning from Your Mistakes
@@ -118,8 +118,6 @@ If you are using markup (such as Markdown) without specifying HTML `id` attribut
     ## Learning from Your Mistakes
 
 The results will be the same as above.
-
-_If you know you don't need identifiers generated for various elements, you can speed things up ever-so-slightly by adding `auto-id: false` in the metasection for any page._
 
 ## Editing the HTML Templates and Stylesheet
 TODO: _See the files in the `_templates` directory (and the `_root` directory inside it). Bone up on your Haml and Ruby skills._

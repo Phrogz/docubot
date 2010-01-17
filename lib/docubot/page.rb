@@ -112,8 +112,8 @@ class DocuBot::Page
 		haml = Haml::Engine.new( IO.read( haml ), DocuBot::Writer::HAML_OPTIONS )
 		html = haml.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
 
-		# Add IDs to elements 
-		unless !@raw || @meta['auto-id']==false
+		# Add IDs to elements, only if a toc entry might reference one.
+		if @raw && @meta['toc'] && @meta['toc'][',']
 			nokodoc( html ).css( AUTO_ID_ELEMENTS ).each do |node|
 				next if node.has_attribute?('id')
 				node['id'] = DocuBot.id_from_text(node.inner_text)

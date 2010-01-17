@@ -3,8 +3,8 @@ require 'rubygems'
 
 Gem::Specification.new do |s|
 	s.name        = "docubot"
-	s.version     = "0.2.3"
-	s.date        = "2010-01-15"
+	s.version     = "0.3"
+	s.date        = "2010-01-16"
 	#s.platform    = Gem::Platform::Win32
 	s.authors     = ["Gavin Kistner", "Harold Hausman"]
 	s.email       = "gavin@phrogz.net"

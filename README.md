@@ -64,7 +64,7 @@ A file named "index.md" inside a directory describes the section itself. Such a 
 Note that for the metadata section to be recognized, the section must end with `+++` on its own line (even if you have no additional content you wanted to write for that section).
 
 
-## Adding terms to the Index
+## Adding Terms to the Index
 By default, every heading (`<h1>`-`<h6>`) and definition term (`<dt>`) in your final pages will add an entry in the index to the page using it.
 
 Additionally, putting something like `keywords: Introduction, Overview, Tool Panel` at the top of the page will add index entries for those terms.
@@ -118,6 +118,7 @@ If you are using markup (such as Markdown) without specifying HTML `id` attribut
     ## Learning from Your Mistakes
 
 The results will be the same as above.
+
 
 ## Editing the HTML Templates and Stylesheet
 TODO: _See the files in the `_templates` directory (and the `_root` directory inside it). Bone up on your Haml and Ruby skills._

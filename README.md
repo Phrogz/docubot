@@ -104,7 +104,7 @@ In the above example, the Table of Contents will have the following hierarchy:
        Introduction
        Learning from Your Mistakes
 
-The sub-links in the table of contents will link directly to the subsection.
+The sub-links in the table of contents will link directly to the appropriate subsection.
 
 If you are using markup (such as Markdown) without specifying HTML `id` attributes, do not fret. DocuBot can automatically create identifiers for the following HTML elements: `h1 h2 h3 h4 h5 h6 legend caption dt`. In this scenario, add a `toc` entry in the metasection with a **comma-delimited** list of the exact text for the elements you wish to link to. For example:
 

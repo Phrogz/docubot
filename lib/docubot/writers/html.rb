@@ -56,7 +56,7 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			File.open( 'glossary-terms.js', 'w' ){ |f| f << @bundle.glossary.to_js }
 		end
 		
-		puts "...%.1fs to write the HTML" % (Time.now - start)
+		puts "...%.2fs to write the HTML" % (Time.now - start)
 	end
 end
 

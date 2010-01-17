@@ -102,8 +102,8 @@ else
 	start = Time.now
 	bundle = DocuBot::Bundle.new( ARGS[:directory] )
 	lap = Time.now
-	puts "%.1fs to prepare the bundle..." % (lap-start)
+	puts "%.2fs to prepare the bundle..." % (lap-start)
 	bundle.write( ARGS[:writer], ARGS[:output] )
-	puts "%.1fs to write everything." % (Time.now-lap)
+	puts "%.2fs to write everything." % (Time.now-lap)
 end
 

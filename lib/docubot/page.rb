@@ -69,10 +69,26 @@ class DocuBot::Page
 	
 	# Wrap siblings of headers in <div class='section'>
 	def auto_section
-		unless @meta['auto-section']==false
-			@nokodoc
-			dirty_doc
+		return if @meta['auto-section']==false
+		return unless body = @nokodoc.at_css('body')
+		
+		#TODO: Make this a generic nokogiri call on any node (like body) where you can pass in a hierarchy of elements and a wrapper
+		stack = []
+		body.children.each do |node|
+			# non-matching nodes will get level of 0
+			level = node.name[ /h([1-6])/i, 1 ].to_i
+			level = 99 if level == 0
+
+			stack.pop while (top=stack.last) && top[:level]>=level
+			stack.last[:div].add_child( node ) if stack.last
+			if level<99
+				div = Nokogiri::XML::Node.new('div',@nokodoc)
+				div.set_attribute( 'class', 'section' )
+				node.add_next_sibling(div)
+				stack << { :div=>div, :level=>level }
+			end
 		end
+		dirty_doc
 	end
 
 	def []( key )

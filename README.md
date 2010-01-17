@@ -154,6 +154,60 @@ A `title` attribute set in a root "index.*" page will be used as the name for th
 
 A `default` attribute set in this root file will try to find the page with that exact title and use it as the page displayed when the CHM opens the CHM documentation. _(As seen above, the CHM would open to the "Welcome to FrobozzCo" page, if it exists.)_ Due to a limitation in the CHM `hhp` file format (or DocuBot's understanding of it), the page used as the `default` may not have spaces in the file name.
 
+## Automatic Sections
+By default, the contents of every page will have `<div class='section'>...</div>` wrapped around the 'children' of headings. For example, this (flat) HTML content for a page:
+
+    <p>Not sure how to start your day? Let us help!</p>
+    
+    <h1>1.0 Getting Started</h1>
+    <p>Welcome!</p>
+    
+    <h2>1.1 First Things First</h2>
+    <p>Get out of bed.</p>
+    
+    <h2>1.2 Get Dressed</h2>
+    <p>Put on your clothes.</p>
+    
+    <h3>1.2.1 First, the undergarments</h3>
+		<p>...and then the rest</p>
+		
+		<h1>2.0 Eating Breakfast</h1>
+		<p>And so on, and so on...</p>
+
+will actually be transformed into this:
+
+    <p>Not sure how to start your day? Let us help!</p>
+    
+    <h1>1.0 Getting Started</h1>
+    <div class='section'>
+       <p>Welcome!</p>
+    
+       <h2>1.1 First Things First</h2>
+       <div class='section'>
+          <p>Get out of bed.</p>
+       </div>
+    
+       <h2>1.2 Get Dressed</h2>
+       <div class='section'>
+          <p>Put on your clothes.</p>
+       
+          <h3>1.2.1 First, the undergarments</h3>
+          <div class='section'>
+            <p>...and then the rest</p>
+          </div>
+       </div>
+    </div>
+    
+    <h1>2.0 Eating Breakfast</h1>
+    <div class='section'>
+      <p>And so on, and so on...</p>
+    </div>
+
+This lets you put CSS such as: `div.section{ margin-left:1em }` to get your page content visually indented.
+
+This code is run on the contents of the page before being wrapped in the page and top templates. Presumably if you want to control the hierarchy in your templates, you can do that yourself.
+
+_If you do not want this transformation applied to a particular page, put `auto-section: false` in the metasection for the page._
 
 
 # Additional Planned Features

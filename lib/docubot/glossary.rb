@@ -10,8 +10,7 @@ class DocuBot::Glossary
 		if File.directory?( dir )
 			@directory = File.expand_path( dir )
 			# Dir[ dir/'*' ].each do |item|
-			# 	page = DocuBot::Page.new( item )
-			# 	page.bundle = @bundle
+			# 	page = DocuBot::Page.new( @bundle, item )
 			# 	self << page
 			# end
 		end

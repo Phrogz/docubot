@@ -9,8 +9,7 @@ class DocuBot::Bundle
 		@glossary = DocuBot::Glossary.new( self, @source/'_glossary' )
 		@index    = DocuBot::Index.new( self )
 		Dir.chdir( @source ) do
-			@toc = DocuBot::Page.new( ".", "Table of Contents" )
-			@toc.bundle = self
+			@toc = DocuBot::Page.new( self, ".", "Table of Contents" )
 			@toc.meta['glossary'] = @glossary
 			@toc.meta['index']    = @index
 			pages_by_path = { '.'=>@toc }
@@ -23,8 +22,7 @@ class DocuBot::Bundle
 				item_is_page = File.directory?(item) || DocuBot::Converter.by_type[extension]
 				if item_is_page
 					parent = pages_by_path[ File.dirname( item ) ]
-					page = DocuBot::Page.new( item )
-					page.bundle = self
+					page = DocuBot::Page.new( self, item )
 					pages_by_path[ item ] = page
 					parent << page if parent
 					if item =~ /\b_glossary\b/

@@ -6,40 +6,75 @@ class DocuBot::Page
 	META_SEPARATOR = /^\+\+\+\s*$/ # Sort of like +++ATH0
 	AUTO_ID_ELEMENTS = %w[ h1 h2 h3 h4 h5 h6 legend caption dt ].join(',')
 
-	attr_reader :pages, :type, :folder, :file, :meta
-	attr_accessor :parent, :bundle
+	attr_reader :pages, :type, :folder, :file, :meta, :nokodoc, :bundle
+	attr_accessor :parent
 
-	def initialize( source_path, title=nil, type=nil )
+	def initialize( bundle, source_path, title=nil, type=nil )
 		puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )" if $DEBUG
 		title ||= File.basename( source_path ).sub( /\.[^.]+$/, '' ).gsub( '_', ' ' ).sub( /^\d+\s/, '' )
+		@bundle = bundle
 		@meta  = { 'title'=>title }
 		@pages = []
 		@file  = source_path
 		if File.directory?( @file )
 			@folder = @file
-			# WILL SET @file TO NIL FOR DIRECTORIES WITHOUT AN INDEX.* FILE
 			@file   = Dir[ source_path/'index.*' ][0]
+			# Directories without an index.* file now have nil @file
 		else
 			@folder = File.dirname( @file )
 		end
-
-		# Directories without an index file have no @file
-		if @file
-			@type = type || File.extname( @file )[ 1..-1 ]
-			parts = IO.read( @file ).split( META_SEPARATOR, 2 )
-			
-			if parts.length > 1
-				# Make YAML friendler to n00bs
-				yaml = YAML.load( parts.first.gsub( /^\t/, '  ' ) )
-				@meta.merge!( yaml )
-			end
-			
-			# Raw markup, untransformed
-			if @raw = parts.last && parts.last.strip
-				@raw = @raw
-			end
+		slurp_file_contents if @file
+		create_nokodoc
+	end
+	
+	def slurp_file_contents
+		@type = type || File.extname( @file )[ 1..-1 ]
+		parts = IO.read( @file ).split( META_SEPARATOR, 2 )
+		
+		if parts.length > 1
+			# Make YAML friendler to n00bs
+			yaml = YAML.load( parts.first.gsub( /^\t/, '  ' ) )
+			@meta.merge!( yaml )
+		end
+		
+		# Raw markup, untransformed, needs content
+		if @raw = parts.last && parts.last.strip
+			@raw = nil if @raw.empty?
 		end
 	end
+	
+	def create_nokodoc
+		# Directories with no index.* file will not have any @raw
+		# Pages with metasection only will also not have any @raw
+		html = if @raw && !@raw.empty?
+			html = DocuBot::process_snippets( self, @raw )
+			html = DocuBot::convert_to_html( self, html, @type )
+		end
+		@nokodoc = Nokogiri::HTML(html || "")
+		auto_id
+		auto_section		
+	end
+
+	# Add IDs to elements that don't have them
+	def auto_id
+		# ...but only if a toc entry might reference one.
+		if @meta['toc'] && @meta['toc'][',']
+			@nokodoc.css( AUTO_ID_ELEMENTS ).each do |node|
+				next if node.has_attribute?('id')
+				node['id'] = DocuBot.id_from_text(node.inner_text)
+			end
+			dirty_doc
+		end
+	end
+	
+	# Wrap siblings of headers in <div class='section'>
+	def auto_section
+		unless @meta['auto-section']==false
+			@nokodoc
+			dirty_doc
+		end
+	end
+
 	def []( key )
 		@meta[key]
 	end
@@ -48,7 +83,6 @@ class DocuBot::Page
 		key=method.to_s
 		case key[-1..-1] # the last character of the method name
 			when '?' then @meta.has_key?( key[0..-2] )
-			#when '=' then @meta[ key[0..-2] ] = args[0]
 			when '!','=' then super
 			else @meta[ key ]
 		end
@@ -68,71 +102,66 @@ class DocuBot::Page
 	def every_leaf
 		(leafs + sub_sections.map{ |sub| sub.every_leaf }).flatten
 	end
+	
 	def every_section
 		(sub_sections + sub_sections.map{ |sub| sub.every_section }).flatten
 	end
+	
 	def descendants
 		(@pages + @pages.map{ |page| page.descendants }).flatten
 	end
+	
 	alias_method :every_page, :descendants
 	def <<( entry )
 		@pages << entry
 		entry.parent = self
 	end
+	
 	def leaf?
 		@pages.empty? || @pages.all?{ |x| x.is_a?(DocuBot::SubLink) }
 	end
+	
 	def depth
 		@_depth ||= @file ? @file.count('/') : @folder.count('/') + 1
 	end
+	
 	def root
 		@_root ||= "../" * depth
 	end
+	
 	def html_path
 		@file ? @file.sub( /[^.]+$/, 'html' ) : ( @folder / 'index.html' )
 	end
+	
 	def to_html
-		return @cached_html if @cached_html
+		html_in_template
+	end
 
-		contents = if @raw && !@raw.empty?
-			# Directories with no index.* file will not have any @raw
-			# TODO: Swap the order of these once we're sure that all converters will pass raw HTML through.
-			html = DocuBot::convert_to_html( self, @raw, @type )
-			DocuBot::process_snippets( self, html )
-		end
+	# Call this after modifying the structure of the nokodoc for the page
+	def dirty_doc
+		@content_html = nil
+	end
+	
+	def content_html
+		# Nokogiri 'helpfully' wraps our content in a full HTML page
+		# but apparently doesn't create a body for no content.
+		@content_html ||= (body=@nokodoc.at_css('body')) && body.children.to_html
+	end
 
+	def to_html
+		#TODO: cache this is people keep calling to_html and it's a problem
 		@meta['template'] ||= leaf? ? 'page' : 'section'
 
 		master_templates = DocuBot::TEMPLATE_DIR
 		source_templates = @bundle.source / '_templates'
-
-		haml = source_templates / "#{template}.haml"
-		haml = master_templates / "#{template}.haml" unless File.exists?( haml )
-		haml = master_templates / "page.haml"        unless File.exists?( haml )
-		haml = Haml::Engine.new( IO.read( haml ), DocuBot::Writer::HAML_OPTIONS )
-		html = haml.render( Object.new, :contents=>contents, :page=>self, :global=>@bundle.toc, :root=>root )
-
-		# Add IDs to elements, only if a toc entry might reference one.
-		if @raw && @meta['toc'] && @meta['toc'][',']
-			nokodoc( html ).css( AUTO_ID_ELEMENTS ).each do |node|
-				next if node.has_attribute?('id')
-				node['id'] = DocuBot.id_from_text(node.inner_text)
-			end
-			html = @nokodoc.at_css('body').children.to_html
-		end		
-
-		@cached_html = html
+		
+		tmpl = source_templates / "#{template}.haml"
+		tmpl = master_templates / "#{template}.haml" unless File.exists?( tmpl )
+		tmpl = master_templates / "page.haml"        unless File.exists?( tmpl )
+		haml = Haml::Engine.new( IO.read( tmpl ), DocuBot::Writer::HAML_OPTIONS )
+		haml.render( Object.new, :contents=>content_html, :page=>self, :global=>@bundle.toc, :root=>root )
 	end
-	def to_html!
-		@cached_html=nil
-		to_html
-	end
-	def nokodoc( html=nil )
-		@nokodoc ||= Nokogiri::HTML(html || to_html)
-	end
-	def nokodoc!
-		@nokodoc = Nokogiri::HTML(to_html!)
-	end
+	
 end
 
 class DocuBot::SubLink
@@ -165,7 +194,6 @@ class DocuBot::SubLink
 	def ancestors
 		@page.ancestors
 	end
-	alias_method :to_html!, :to_html
 	def method_missing(*args)
 		nil
 	end

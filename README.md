@@ -119,6 +119,8 @@ If you are using markup (such as Markdown) without specifying HTML `id` attribut
 
 The results will be the same as above.
 
+_If you know you don't need identifiers generated for various elements, you can speed things up ever-so-slightly by adding `auto-id: false` in the metasection for any page._
+
 ## Editing the HTML Templates and Stylesheet
 TODO: _See the files in the `_templates` directory (and the `_root` directory inside it). Bone up on your Haml and Ruby skills._
 

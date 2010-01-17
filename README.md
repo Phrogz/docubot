@@ -20,7 +20,7 @@ DocuBot requires [Ruby][2] and Windows. (Windows is required to create the CHM f
 2. Install the DocuBot gem:
    * `gem install docubot --no-rdoc --no-ri`
      * _Disabling system documentation is necessary because the RedCloth used by DocuBot currently has issues when installing on Windows._
-    * This will install the `docubot` binary as well as all necessary supporting files.
+     * This will install the `docubot` binary as well as all necessary supporting files.
 3. Download and install [Microsoft HTML Help](http://msdn.microsoft.com/en-us/library/ms669985(VS.85).aspx).
 4. Ensure that the HTML Help Compiler executable (`hhc.exe`) is in your PATH.
 
@@ -64,8 +64,8 @@ A file named "index.md" inside a directory describes the section itself. Such a 
 Note that for the metadata section to be recognized, the section must end with `+++` on its own line (even if you have no additional content you wanted to write for that section).
 
 
-## Adding terms to the CHM Index
-By default, every heading (`<h1>`-`<h6>`) and definition term (`<dt>`) in your final pages will be add an entry in the index to the page using it.
+## Adding terms to the Index
+By default, every heading (`<h1>`-`<h6>`) and definition term (`<dt>`) in your final pages will add an entry in the index to the page using it.
 
 Additionally, putting something like `keywords: Introduction, Overview, Tool Panel` at the top of the page will add index entries for those terms.
 
@@ -83,6 +83,41 @@ To reference a glossary term on a particular page, put two dollar signs around t
 
 If you want to create a glossary link using slightly different text than the glossary term, do it like so this, `With many $$rigid bodies:rigid body$$ in the scene, ...`. That will display the text "rigid bodies" but link it to the glossary term "rigid body".
 
+
+## Adding Sub-Heading Links to the Table of Contents
+If you have a single page with many sections on it and you want to see sub-links for those sections in the table of contents, you can accomplish it in one of two ways:
+
+If you have content with explicit `id` attributes on various HTML elements, add a `toc` entry in the metasection with a **space-delimited** list of the element identifiers whose contents you want added as a sub-link in the table of contents. For example:
+
+    title: Welcome to FrobozzCo
+    toc  : intro learning
+    +++
+    <h2 id="intro">Introduction</h2>
+    ...
+    <h3 id="goaway">But Don't Call Us...</h3>
+    ...
+    <h2 id="learning">Learning from Your Mistakes</h2>
+
+In the above example, the Table of Contents will have the following hierarchy:
+
+    Welcome to FrobozzCo
+       Introduction
+       Learning from Your Mistakes
+
+The sub-links in the table of contents will link directly to the subsection.
+
+If you are using markup (such as Markdown) without specifying HTML `id` attributes, do not fret. DocuBot will automatically create identifiers for the following HTML elements: `h1 h2 h3 h4 h5 h6 legend caption dt`. In this scenario, add a `toc` entry in the metasection with a **comma-delimited** list of the exact text for the element you wish to link to. For example:
+
+    title: Welcome to FrobozzCo
+    toc  : Introduction, Learning from Your Mistakes
+    +++
+    ## Introduction
+    ...
+    ### But Don't Call Us...
+    ...
+    ## Learning from Your Mistakes
+
+The results will be the same as above.
 
 ## Editing the HTML Templates and Stylesheet
 TODO: _See the files in the `_templates` directory (and the `_root` directory inside it). Bone up on your Haml and Ruby skills._

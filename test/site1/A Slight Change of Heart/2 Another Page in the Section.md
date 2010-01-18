@@ -1,1 +1,0 @@
-The title of this page should be "Another Page in the Section".

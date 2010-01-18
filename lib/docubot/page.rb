@@ -9,7 +9,7 @@ class DocuBot::Page
 	attr_reader :pages, :type, :folder, :file, :meta, :nokodoc, :bundle
 	attr_accessor :parent
 
-	def initialize( bundle, source_path, title=nil, type=nil )
+	def initialize( bundle, source_path, title=nil )
 		puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )" if $DEBUG
 		title ||= File.basename( source_path ).sub( /\.[^.]+$/, '' ).gsub( '_', ' ' ).sub( /^\d+\s/, '' )
 		@bundle = bundle
@@ -28,7 +28,7 @@ class DocuBot::Page
 	end
 	
 	def slurp_file_contents
-		@type = type || File.extname( @file )[ 1..-1 ]
+		@type = File.extname( @file )[ 1..-1 ]
 		parts = IO.read( @file ).split( META_SEPARATOR, 2 )
 		
 		if parts.length > 1
@@ -126,8 +126,8 @@ class DocuBot::Page
 	def descendants
 		(@pages + @pages.map{ |page| page.descendants }).flatten
 	end
-	
 	alias_method :every_page, :descendants
+	
 	def <<( entry )
 		@pages << entry
 		entry.parent = self
@@ -138,7 +138,7 @@ class DocuBot::Page
 	end
 	
 	def depth
-		@_depth ||= @file ? @file.count('/') : @folder.count('/') + 1
+		@_depth ||= self==@bundle.toc ? 0 : @file ? @file.count('/') : @folder.count('/') + 1
 	end
 	
 	def root

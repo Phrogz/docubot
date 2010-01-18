@@ -1,6 +1,6 @@
 # encoding: UTF-8
 class DocuBot::Glossary
-	attr_accessor :bundle
+	attr_accessor :bundle, :entries
 	def initialize( bundle, dir )
 		@entries   = {}
 		@downcased = {}
@@ -34,7 +34,6 @@ class DocuBot::Glossary
 		@missing.reject{ |term| self[term] }.uniq
 	end
 	def <<( page )
-		#TODO: perhaps don't serialize the page here, but wait until some #write call gives us a template so we can use that?
 		self[ page.title ] = page.to_html
 	end
 	def to_js

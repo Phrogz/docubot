@@ -1,0 +1,12 @@
+#encoding: UTF-8
+$: << '..'
+require 'spec/bundle'
+require 'spec/toc'
+require 'spec/converters'
+require 'spec/page'
+require 'spec/glossary'
+require 'spec/index'
+require 'spec/templates'
+require 'spec/command'
+require 'spec/writer/html'
+require 'spec/writer/chm'

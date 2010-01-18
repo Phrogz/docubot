@@ -118,6 +118,8 @@ If you are using markup (such as Markdown) without specifying HTML `id` attribut
 
 The results will be the same as above.
 
+_If you want `id` attributes auto-generated for the elements listed above, but don't necessarily need them for custom `toc` sub-entries, use `auto-id: true` to force them to be generated._
+
 
 ## Editing the HTML Templates and Stylesheet
 TODO: _See the files in the `_templates` directory (and the `_root` directory inside it). Bone up on your Haml and Ruby skills._

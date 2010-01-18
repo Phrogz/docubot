@@ -65,13 +65,12 @@ Note that for the metadata section to be recognized, the section must end with `
 
 
 ## Adding Terms to the Index
-By default, every heading (`<h1>`-`<h6>`) and definition term (`<dt>`) in your final pages will add an entry in the index to the page using it.
+1. By default, every heading (`<h1>`-`<h6>`) and definition term (`<dt>`) in your final pages will add an entry in the index to the page using it.
+   * _If you don't want headings and/or definitions indexed for a particular page, mention one or both of them at the top of the page like this: `no-index: headings, definitions`._
+	
+2. Additionally, putting something like `keywords: Introduction, Overview, Tool Panel` at the top of the page will add index entries for those terms.
 
-Additionally, putting something like `keywords: Introduction, Overview, Tool Panel` at the top of the page will add index entries for those terms.
-
-Additionally, place double 'at' characters around text on your page, like `When using the @@hyperwrench@@, be sure...` to add index entries for each word or phrase you wrap.
-
-If you don't want headings and/or definitions indexed for a particular page, mention one or both of them at the top of the page like this: `no-index: headings, definitions`.
+3. Additionally, placing double 'at' characters around text on your page, such as "`When using the @@hyperwrench@@, be sure...`", adds index entries for each word or phrase you wrap.
 
 
 ## Adding Glossary Entries
@@ -123,11 +122,11 @@ The results will be the same as above.
 ## Editing the HTML Templates and Stylesheet
 TODO: _See the files in the `_templates` directory (and the `_root` directory inside it). Bone up on your Haml and Ruby skills._
 
-TODO: _Use `template: foobar` at the top of a page to get it to use another page template. (Will always be wrapped in `top.haml`.)_
+TODO: _Sections default to `section.haml`, pages to `page.haml`. _Use `template: foobar` at the top of a page to get it to use another page template. All content finishes by being wrapped in `top.haml`._
 
 
 ## Using Additional Metadata
-TODO: _Labeled values in the metasection are available as properties of the `page` object made available to templates. Use `page.value?` to ask if any value has been defined. Use page['non-standard name'] if the name has spaces or hyphens or other non-standard idenfitiers in it._
+TODO: _Labeled values in the metasection are available as properties of the `page` object made available to templates. Use `page.value?` to ask if any value has been defined. Use `page['non-standard name']` if the name has spaces or hyphens or other non-standard idenfitiers in it._
 
 
 ## Setting Global Metadata
@@ -211,8 +210,10 @@ _If you do not want this transformation applied to a particular page, put `auto-
 
 
 # Additional Planned Features
-* Additional Markups (RDoc? JavaDoc?)
-* Customizing TOC Icons (with nice names, not indexes)
+* Additional Markups (e.g. RDoc)
+* Customizing TOC Icons (via nice names, not just indexes)
+* Additional output formats (single-page HTML, single PDF)
+* Doxygen integration
 
 [1]: http://daringfireball.net/projects/markdown/basics
 [2]: http://rubyinstaller.org/

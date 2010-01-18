@@ -14,7 +14,8 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		write_hhc
 		write_hhk
 		write_hhp
-		puts "...%.2fs to write the CHM support files" % ((lap=Time.now)-lap)
+		puts "...%.2fs to write the CHM support files" % (Time.now-lap)
+		lap = Time.now
 		
 		# This will fail if a handle is open to it on Windows
 		begin
@@ -26,12 +27,14 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 			end
 		end
 		`hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
-		puts "...%.2fs to create the CHM" % ((lap=Time.now)-lap)
+		puts "...%.2fs to create the CHM" % (Time.now-lap)
+		lap = Time.now
 		
 		# Clean out the intermediary files
 		FileUtils.rm( [ @hhc, @hhp, @hhk ] )
 		FileUtils.rm_r( @html_path )
-		puts "...%.2fs to clean up temporary files" % ((lap=Time.now)-lap)
+		puts "...%.2fs to clean up temporary files" % (Time.now-lap)
+		lap = Time.now
 		
 		# Spin a new thread so it doesn't hold up the Ruby process, but sleep long enough for it to get going.
 		Thread.new{ `hh.exe "#{FileUtils.win_path @chm_path}"` }

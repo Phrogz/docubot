@@ -57,8 +57,8 @@ class DocuBot::Page
 
 	# Add IDs to elements that don't have them
 	def auto_id
-		# ...but only if a toc entry might reference one.
-		if @meta['toc'] && @meta['toc'][',']
+		# ...but only if a toc entry might reference one, or requested.
+		if (@meta['auto-id']==true) || (@meta['toc'] && @meta['toc'][','])
 			@nokodoc.css( AUTO_ID_ELEMENTS ).each do |node|
 				next if node.has_attribute?('id')
 				node['id'] = DocuBot.id_from_text(node.inner_text)

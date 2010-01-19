@@ -1,7 +1,8 @@
 # encoding: UTF-8
+require 'pathname'
 class DocuBot::Bundle
 	attr_reader :toc, :extras, :glossary, :index, :source
-	
+	attr_reader :internal_links, :external_links, :file_links, :broken_links
 	def initialize( source_directory )
 		@source = File.expand_path( source_directory )
 		raise "DocuBot cannot find directory #{@source}. Exiting." unless File.exists?( @source )
@@ -54,8 +55,61 @@ class DocuBot::Bundle
 				end
 			end
 		end
+		validate_links
 	end
-	
+
+	def validate_links
+		@external_links = Hash.new{ |h,k| h[k]=[] }
+		@internal_links = Hash.new{ |h,k| h[k]=[] }
+		@file_links     = Hash.new{ |h,k| h[k]=[] }
+		@broken_links   = Hash.new{ |h,k| h[k]=[] }
+
+		page_by_html_path = {}
+		page_by_orig_path = {}
+		@toc.every_page.each do |page|
+			page_by_html_path[page.html_path] = page
+			page_by_orig_path[page.file]      = page if page.file
+		end
+
+		Dir.chdir( @source ) do 
+			@toc.every_page.each do |page|
+				page.nokodoc.xpath('//a/@href').each do |href|
+					href=href.content
+					if href=~%r{^http://}i
+						@external_links[page] << href
+					else
+						path = Pathname.new( File.dirname(page.html_path) / href.sub(/#.+/,'') ).cleanpath.to_s
+						if href =~ /\.html(#[a-z][\w.:-]*)?$/i
+							id = $1
+							if target=page_by_html_path[path]
+								if !id || target.nokodoc.at_css(id)
+									@internal_links[page] << href
+								else
+									@broken_links[page] << href
+								end
+							else
+								@broken_links[page] << href
+							end
+						elsif href =~ /^(#[a-z][\w.:-]*)/i
+							id = $1
+							if page.nokodoc.at_css(id)
+								@internal_links[page] << href
+							else
+								@broken_links[page] << href
+							end
+						else
+							if !File.file?(path) || page_by_orig_path[path]
+								@broken_links[page] << href
+							else
+								@file_links[page] << href
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
 	def write( writer_type, destination=nil)
 		writer = DocuBot::Writer.by_type[ writer_type.to_s.downcase ]
 		if writer

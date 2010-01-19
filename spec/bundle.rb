@@ -11,7 +11,9 @@ end
 
 describe "Bundle from empty directory" do
 	before do
-		@bundle = DocuBot::Bundle.new SAMPLES/'empty'
+		@out, @err = capture_io do
+			@bundle = DocuBot::Bundle.new SAMPLES/'empty'
+		end
 	end
 	
 	it "should have an empty TOC" do
@@ -49,12 +51,18 @@ describe "Bundle from empty directory" do
 		@bundle.broken_links.must_be_empty
 	end
 	
+	it "should produce no warnings" do
+		@err.must_be_empty
+	end
+	
 end
 
 
 describe "Gathering links" do
 	before do
-		@bundle = DocuBot::Bundle.new SAMPLES/'link_test'
+		@out, @err = capture_io do
+			@bundle = DocuBot::Bundle.new SAMPLES/'link_test'
+		end
 	end
 	
 	it "should have link collections be pages hashed to arrays of strings" do
@@ -81,7 +89,7 @@ describe "Gathering links" do
 		end
 	end
 	
-	it "should identify broken internal links" do
+	it "should identify and warn about broken internal links" do
 		known_broken = %w[
 			fork.html sub1.html root.md sub1/inner1.md
 			inner2.html ../sub1 sub1/inner1.md
@@ -91,6 +99,7 @@ describe "Gathering links" do
 		all_broken = @bundle.broken_links.values.flatten
 		known_broken.each do |link|
 			all_broken.must_include link
+			@err.must_include link
 		end		
 	end
 	
@@ -114,11 +123,12 @@ describe "Gathering links" do
 		end		
 	end
 	
-	it "should identify invalid sub-page anchors" do
+	it "should identify and warn about invalid sub-page anchors" do
 		known_broken = %w[ #GORKBO ../root.html#GORKBO ]
 		all_broken = @bundle.broken_links.values.flatten
 		known_broken.each do |link|
 			all_broken.must_include link
+			@err.must_include link
 		end		
 	end
 
@@ -129,6 +139,4 @@ describe "Gathering links" do
 			all_internal.must_include link
 		end		
 	end
-	
-	
 end

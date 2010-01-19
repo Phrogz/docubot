@@ -56,6 +56,11 @@ class DocuBot::Bundle
 			end
 		end
 		validate_links
+		@broken_links.each do |page,links|
+			links.each do |link|
+				warn "Broken link '#{link}' in #{page.file}"
+			end
+		end
 	end
 
 	def validate_links
@@ -73,35 +78,26 @@ class DocuBot::Bundle
 
 		Dir.chdir( @source ) do 
 			@toc.every_page.each do |page|
+				next unless page.nokodoc # Sub-links don't have documents
 				page.nokodoc.xpath('//a/@href').each do |href|
 					href=href.content
-					if href=~%r{^http://}i
+					if href=~%r{^[a-z]+://}i
 						@external_links[page] << href
 					else
-						path = Pathname.new( File.dirname(page.html_path) / href.sub(/#.+/,'') ).cleanpath.to_s
-						if href =~ /\.html(#[a-z][\w.:-]*)?$/i
-							id = $1
-							if target=page_by_html_path[path]
-								if !id || target.nokodoc.at_css(id)
-									@internal_links[page] << href
-								else
-									@broken_links[page] << href
-								end
-							else
-								@broken_links[page] << href
-							end
-						elsif href =~ /^(#[a-z][\w.:-]*)/i
-							id = $1
-							if page.nokodoc.at_css(id)
+						id   = href[/(#[a-z][\w.:-]*)/i,1]
+						file = href.sub(/#.+/,'')
+						path = file.empty? ? page.html_path : Pathname.new( File.dirname(page.html_path) / file ).cleanpath.to_s
+						if target=page_by_html_path[path]
+							if !id || target.nokodoc.at_css(id)
 								@internal_links[page] << href
 							else
 								@broken_links[page] << href
 							end
 						else
-							if !File.file?(path) || page_by_orig_path[path]
-								@broken_links[page] << href
-							else
+							if File.file?(path) && !page_by_orig_path[path]
 								@file_links[page] << href
+							else
+								@broken_links[page] << href
 							end
 						end
 					end

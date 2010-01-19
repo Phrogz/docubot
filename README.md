@@ -76,7 +76,7 @@ Note that for the metadata section to be recognized, the section must end with `
 ## Adding Glossary Entries
 If you create a folder named `_glossary` at the root of your project, any pages you put in there will be added to the general glossary with the title of the page (filename or `title` attribute) as the term and the contents of the page as the definition.
 
-To use the glossary page in your site, create a page wherever you want with `template: glossary` in the metasection at the top. The glossary of terms and definitions will be generatd from the glossary template.
+To use the glossary page in your site, create a page wherever you want with `template: glossary` in the metasection at the top. The glossary of terms and definitions will be generated from the glossary template.
 
 To reference a glossary term on a particular page, put two dollar signs around the term, like `If the wrench starts $$fonkulating$$, run as fast...`. If you are using the `glossary.js`, generated `glossary-terms.js`, and `glossary.css` you will get a little tooltip with the definition when you click on it.
 
@@ -215,8 +215,11 @@ _If you do not want this transformation applied to a particular page, put `auto-
 * Additional Markups (e.g. RDoc)
 * Customizing TOC Icons (via nice names, not just indexes)
 * Additional output formats (single-page HTML, single PDF)
-* Doxygen integration
+* [Doxygen][4] integration
+* [Qt Assistant][5]
 
 [1]: http://daringfireball.net/projects/markdown/basics
 [2]: http://rubyinstaller.org/
 [3]: http://msdn.microsoft.com/en-us/library/ms669985(VS.85).aspx
+[4]: http://www.stack.nl/~dimitri/doxygen/
+[5]: http://doc.trolltech.com/4.6/assistant-details.html

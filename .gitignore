@@ -1,4 +1,4 @@
 .DS_Store
 *.gem
 lib/docubot/shells/nvphysx
-test/*_html
+spec/samples/*_html

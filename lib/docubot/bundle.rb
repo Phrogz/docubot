@@ -27,7 +27,7 @@ class DocuBot::Bundle
 					pages_by_path[ item ] = page
 					parent << page if parent
 					if item =~ /\b_glossary\b/
-						@glossary << page 
+						@glossary << page
 					end
 					@index.process_page( page )
 					
@@ -55,12 +55,23 @@ class DocuBot::Bundle
 				end
 			end
 		end
+		
+		# Regenerate pages whose templates require full scaning to have completed
+		# TODO: make this based off of a metasection attribute.
+		@toc.every_page.select do |page|
+			%w[ glossary ].include?( page.template )
+		end.each do |page|
+			page.dirty_template
+		end
+		
+		# TODO: make this optional via global variable
 		validate_links
 		@broken_links.each do |page,links|
 			links.each do |link|
 				warn "Broken link '#{link}' in #{page.file}"
 			end
 		end
+		
 	end
 
 	def validate_links
@@ -106,7 +117,7 @@ class DocuBot::Bundle
 		end
 	end
 
-	def write( writer_type, destination=nil)
+	def write( writer_type, destination=nil )
 		writer = DocuBot::Writer.by_type[ writer_type.to_s.downcase ]
 		if writer
 			writer.new( self ).write( destination )

@@ -5,7 +5,7 @@ class DocuBot::Glossary
 		@entries   = {}
 		@downcased = {}
 		@bundle    = bundle
-		@missing   = []
+		@missing   = Hash.new{ |h,k| h[k]=[] }
 		# .directory? also ensures that the path exists
 		if File.directory?( dir )
 			@directory = File.expand_path( dir )
@@ -18,20 +18,23 @@ class DocuBot::Glossary
 	def []=( term, definition )
 		@entries[ term ] = definition
 		@downcased[ term.downcase ] = term
+		@missing.delete( term.downcase )
 	end
 	def []( term )
 		@entries[ @downcased[ term.downcase ] ]
 	end
+	def term_used( term, referring_page )
+		down = term.downcase
+		unless @downcased[down]
+			@missing[down] << referring_page
+			@missing[down].uniq!
+		end
+	end
 	def each
 		@entries.each{ |term,page| yield term, page }
 	end
-	def add_missing_term( term )
-	  @missing << term.downcase
-		# File.open( @directory/"#{term}.md", "w" ){ |f| f << "<span class='todo'>TODO: define #{term}</span>" } if @directory
-	end
 	def missing_terms
-		# Terms may have been defined after being first seen
-		@missing.reject{ |term| self[term] }.uniq
+		@missing
 	end
 	def <<( page )
 		self[ page.title ] = page

@@ -10,12 +10,12 @@ describe "Glossary Scanner" do
 			"Simple Term"  => 2,
 			"Complex Term" => 3
 		}
-		#@out, @err = capture_io do
+		@out, @err = capture_io do
 			@bundle   = DocuBot::Bundle.new SAMPLES/'glossary'
 			@glossary = @bundle.glossary
 			@page     = @bundle.toc.every_page.find{ |page| page.title=='Glossary' }
 			@fulldoc  = Nokogiri::HTML( @page.to_html )
-		#end
+		end
 	end
 	
 	# No _glossary folder handled in the Bundle spec for empty site
@@ -68,5 +68,26 @@ describe "Glossary Scanner" do
 		@hidden_terms.each do |term|
 			@fulldoc.at_xpath("//dt[text()='#{term}']").must_be_nil
 		end
+	end
+end
+
+describe "Glossary Snippet" do
+	before do
+		@out, @err = capture_io do
+			@bundle   = DocuBot::Bundle.new SAMPLES/'glossary'
+			@glossary = @bundle.glossary
+		end
+	end
+	
+	it "should know about missing terms" do
+		@glossary.missing_terms.must_include "crazy term"
+	end
+	
+	it "should not mistake alternate text for a missing term" do
+		@glossary.missing_terms.wont_include "more complex term"
+	end
+	
+	it "should warn about missing terms" do
+		@err.must_include "crazy term"
 	end
 end

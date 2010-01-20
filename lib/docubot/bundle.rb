@@ -72,6 +72,14 @@ class DocuBot::Bundle
 			end
 		end
 		
+		# TODO: make this optional via global variable
+		@glossary.missing_terms.each do |term,referrers|
+			warn "Glossary term '#{term}' never defined."
+			referrers.each do |referring_page|
+				warn "...seen on #{referring_page.file}."
+			end
+		end
+		
 	end
 
 	def validate_links

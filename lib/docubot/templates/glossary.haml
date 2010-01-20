@@ -1,5 +1,6 @@
 -# TODO: Breakdown by letter.
 %dl#glossary
-	- global.glossary.each do |term,defn|
+	- global.glossary.each do |term,page|
+		- next if page.hide
 		%dt= term
-		%dd= defn
+		%dd= page.to_html

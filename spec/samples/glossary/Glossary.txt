@@ -1,0 +1,5 @@
+template: glossary
++++
+The `glossary.haml` template writes out the glossary contents.
+This page tells it where to be generated and how to be named.
+The contents of this page are ignored by the `glossary.haml` template.

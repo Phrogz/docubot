@@ -23,7 +23,7 @@ class DocuBot::Glossary
 		@entries[ @downcased[ term.downcase ] ]
 	end
 	def each
-		@entries.each{ |term,defn| yield term, defn }
+		@entries.each{ |term,page| yield term, page }
 	end
 	def add_missing_term( term )
 	  @missing << term.downcase
@@ -34,9 +34,9 @@ class DocuBot::Glossary
 		@missing.reject{ |term| self[term] }.uniq
 	end
 	def <<( page )
-		self[ page.title ] = page.to_html
+		self[ page.title ] = page
 	end
 	def to_js
-		"$glossaryTerms = {#{@entries.map{ |term,defn| "'#{term.downcase.gsub("'","\\\\'")}':'#{defn.gsub("'","\\\\'").gsub(/[\r\n]/,'\\n')}'" }.join(",\n")}};"
+		"$glossaryTerms = {#{@entries.map{ |term,page| "'#{term.downcase.gsub("'","\\\\'")}':'#{page.to_html.gsub("'","\\\\'").gsub(/[\r\n]/,'\\n')}'" }.join(",\n")}};"
 	end
 end

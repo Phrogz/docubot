@@ -1,0 +1,4 @@
+#glossary-box   { display:none; position:absolute; width:30%; background:#e0efcc; border:1px solid #82a851; padding:0.5em 0.9em; font-size:9pt; font-family:Calibri, Tahoma; }
+#glossary-close { width:24px; height:24px; background:url(close.png) no-repeat; position:absolute; right:-12px; top:-12px; cursor:pointer; }
+#glossary-box * { margin:0 }
+span.glossary { color:#36401C; border-bottom:1px dashed #6e8e34; cursor:help; }

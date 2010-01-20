@@ -3,6 +3,7 @@
 	%head
 		%meta(http-equiv='Content-Type' content='text/html; charset=utf-8')
 		%link{:rel=>'stylesheet', :type=>'text/css', :href=>"#{root}common.css", :media=>'all'}
+		%link{:rel=>'stylesheet', :type=>'text/css', :href=>"#{root}glossary.css", :media=>'all'}
 		%script{:type=>'text/javascript', :src=>"#{root}glossary-terms.js"}
 		%script{:type=>'text/javascript', :src=>"#{root}glossary.js"}
 		%title= page.title
@@ -21,6 +22,7 @@
 				- if page.author?
 					#author= page.author
 			#pagebody
+				#glossary-box
 				#mainbody= contents
 				#pagefooter
 					Copyright ©#{Time.now.year}#{ " #{global.company}" if global.company? }.

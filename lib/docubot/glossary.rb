@@ -40,6 +40,10 @@ class DocuBot::Glossary
 		self[ page.title ] = page
 	end
 	def to_js
-		"$glossaryTerms = {#{@entries.map{ |term,page| "'#{term.downcase.gsub("'","\\\\'")}':'#{page.to_html.gsub("'","\\\\'").gsub(/[\r\n]/,'\\n')}'" }.join(",\n")}};"
+		"$glossaryTerms = {#{
+			@entries.reject{ |term,page| page.hide }.map do |term,page|
+				"'#{term.downcase.gsub("'","\\\\'")}':'#{page.to_html.gsub("'","\\\\'").gsub(/[\r\n]/,'\\n')}'"
+			end.join(",\n")
+		}};"
 	end
 end

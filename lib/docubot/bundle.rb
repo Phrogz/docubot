@@ -129,9 +129,6 @@ class DocuBot::Bundle
 		writer = DocuBot::Writer.by_type[ writer_type.to_s.downcase ]
 		if writer
 			writer.new( self ).write( destination )
-			unless @glossary.missing_terms.empty?
-				warn "The following glossary terms were never defined:\n#{@glossary.missing_terms.map{|t|t.inspect}.join(', ')}"
-			end			
 		else
 			raise "Unknown writer '#{writer_type}'; available types: #{DocuBot::Writer::INSTALLED_WRITERS.join ', '}"
 		end

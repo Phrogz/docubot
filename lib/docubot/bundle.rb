@@ -68,7 +68,7 @@ class DocuBot::Bundle
 		validate_links
 		@broken_links.each do |page,links|
 			links.each do |link|
-				warn "Broken link '#{link}' in #{page.file}"
+				warn "Broken link on #{page.file}: '#{link}'"
 			end
 		end
 		

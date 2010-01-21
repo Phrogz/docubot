@@ -110,7 +110,7 @@ class DocuBot::Bundle
 		Dir.chdir( @source ) do 
 			@toc.every_page.each do |page|
 				next unless page.nokodoc # Sub-links don't have documents
-				page.nokodoc.xpath('//a/@href').each do |href|
+				page.nokodoc.xpath('.//a/@href').each do |href|
 					href=href.content
 					if href=~%r{^[a-z]+://}i
 						@external_links[page] << href

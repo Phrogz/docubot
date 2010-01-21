@@ -47,10 +47,9 @@ describe "Glossary Scanner" do
 		count.must_equal @all_terms.length
 	end
 	
-	
 	it "uses converters for page content" do
 		@expected_paragraphs.each do |term,paras|
-			@glossary.entries[term].nokodoc.xpath('//p').length.must_equal paras
+			@glossary.entries[term].nokodoc.xpath('.//p').length.must_equal paras
 		end
 	end
 	

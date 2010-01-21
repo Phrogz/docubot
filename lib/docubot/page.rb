@@ -50,7 +50,7 @@ class DocuBot::Page
 			html = DocuBot::process_snippets( self, @raw )
 			html = DocuBot::convert_to_html( self, html, @type )
 		end
-		@nokodoc = Nokogiri::HTML(html || "")
+		@nokodoc = Nokogiri::HTML::DocumentFragment.parse(html || "")
 		auto_id
 		auto_section
 		@nokodoc
@@ -75,11 +75,10 @@ class DocuBot::Page
 	# Wrap siblings of headers in <div class='section'>
 	def auto_section
 		return if @meta['auto-section']==false
-		return unless body = @nokodoc.at_css('body')
 		
 		#TODO: Make this a generic nokogiri call on any node (like body) where you can pass in a hierarchy of elements and a wrapper
 		stack = []
-		body.children.each do |node|
+		@nokodoc.children.each do |node|
 			# non-matching nodes will get level of 0
 			level = node.name[ /h([1-6])/i, 1 ].to_i
 			level = 99 if level == 0
@@ -173,9 +172,7 @@ class DocuBot::Page
 	end
 	
 	def content_html
-		# Nokogiri 'helpfully' wraps our content in a full HTML page
-		# but apparently doesn't create a body for no content.
-		@content_html ||= (body=nokodoc.at_css('body')) && body.children.to_html
+		@content_html ||= nokodoc.to_html
 	end
 
 	def to_html

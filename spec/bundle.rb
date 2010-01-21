@@ -142,11 +142,13 @@ describe "Gathering links" do
 end
 
 describe "Identifying Conflicts" do
-	it "should error when multiple pages will write to the same html" do
+	it "should raise when multiple pages will write to the same html" do
 		proc{
 			@bundle = DocuBot::Bundle.new( SAMPLES/'collisions' )
 		}.must_raise(DocuBot::Bundle::PageCollision)
-		
+	end
+	
+	it "should include the title and filename of every conflicting page" do
 		begin
 			@bundle = DocuBot::Bundle.new( SAMPLES/'collisions' )
 		rescue DocuBot::Bundle::PageCollision => e
@@ -163,7 +165,7 @@ describe "Identifying Conflicts" do
 			e.message.wont_include "page3.md"
 			e.message.wont_include "page3.bin"
 			e.message.wont_include "Page 3"
-		end
-		
+		end		
 	end
+	
 end

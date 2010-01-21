@@ -26,6 +26,18 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 				process.Terminate if process.CommandLine.include? @chm_path.gsub('/','\\')
 			end
 		end
+		
+		# Help find hhc.exe
+		possible_hhc_spots = [ "C:\\Program Files\\HTML Help Workshop", "C:\\Program Files (x86)\\HTML Help Workshop" ]
+		path_directories   = ENV['PATH'].split(';').concat( possible_hhc_spots )
+		ENV['PATH'] = path_directories.join(';')
+		unless path_directories.any?{ |dir| File.exists?( File.join(dir, 'hhc.exe' ) ) }
+			warn "Cannot find hhc.exe in your PATH or the standard install spots.\nDid you install HTML Help Workshop?"
+			FileUtils.rm( [ @hhc, @hhp, @hhk ] )
+			FileUtils.rm_r( @html_path )
+			exit 1
+		end
+		
 		`hhc.exe "#{FileUtils.win_path @hhp}"`.gsub( /[\r\n]+/, "\n" )
 		puts "...%.2fs to create the CHM" % (Time.now-lap)
 		lap = Time.now

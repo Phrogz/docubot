@@ -1,0 +1,3 @@
+title: Page 2 (from text)
++++
+This will collide with Page 2 (from html) and Page 2 (from haml)

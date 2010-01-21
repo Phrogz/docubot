@@ -80,6 +80,18 @@ class DocuBot::Bundle
 			end
 		end
 		
+		# Find any and all pages that would collide
+		pages_by_html_path = Hash.new{ |h,k| h[k] = [] }
+		@toc.every_page.each do |page|
+			pages_by_html_path[page.html_path] << page
+		end
+		collisions = pages_by_html_path.select{ |path,pages| pages.length>1 }
+		unless collisions.empty?
+			message = collisions.map do |path,pages|
+				"#{path}: #{pages.map{ |page| "'#{page.title}' (#{page.file})" }.join(', ')}"
+			end.join("\n")
+			raise PageCollision.new, message
+		end
 	end
 
 	def validate_links
@@ -135,3 +147,6 @@ class DocuBot::Bundle
 	end
 	
 end
+
+class DocuBot::Bundle::PageCollision < RuntimeError; end
+

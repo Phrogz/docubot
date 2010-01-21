@@ -68,6 +68,6 @@ end
 
 describe "Renamed Table of Contents" do
 	it "honors the title of the root index file" do
-		DocuBot::Bundle.new(SAMPLES/'titletest').toc.title.must_equal "Title Changin'"
+		DocuBot::Bundle.new(SAMPLES/'titles').toc.title.must_equal "Title Changin'"
 	end
 end

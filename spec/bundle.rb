@@ -61,7 +61,7 @@ end
 describe "Gathering links" do
 	before do
 		@out, @err = capture_io do
-			@bundle = DocuBot::Bundle.new SAMPLES/'link_test'
+			@bundle = DocuBot::Bundle.new SAMPLES/'links'
 		end
 	end
 	
@@ -138,5 +138,32 @@ describe "Gathering links" do
 		known_internal.each do |link|
 			all_internal.must_include link
 		end		
+	end
+end
+
+describe "Identifying Conflicts" do
+	it "should error when multiple pages will write to the same html" do
+		proc{
+			@bundle = DocuBot::Bundle.new( SAMPLES/'collisions' )
+		}.must_raise(DocuBot::Bundle::PageCollision)
+		
+		begin
+			@bundle = DocuBot::Bundle.new( SAMPLES/'collisions' )
+		rescue DocuBot::Bundle::PageCollision => e
+			e.message.must_include "page1.md"
+			e.message.must_include "page1.textile"
+			e.message.must_include "Page 1 (from Markdown)"
+			e.message.must_include "Page 1 (from Textile)"
+			e.message.must_include "page2.html"
+			e.message.must_include "page2.txt"
+			e.message.must_include "page2.haml"
+			e.message.must_include "Page 2 (from html)"
+			e.message.must_include "Page 2 (from text)"
+			e.message.must_include "Page 2 (from haml)"
+			e.message.wont_include "page3.md"
+			e.message.wont_include "page3.bin"
+			e.message.wont_include "Page 3"
+		end
+		
 	end
 end

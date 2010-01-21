@@ -1,0 +1,6 @@
+title: 2*2
+template: doubler
++++
+p. Para1
+
+p. Para2

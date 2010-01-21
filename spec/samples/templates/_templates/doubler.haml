@@ -1,0 +1,7 @@
+#doubler
+	- if page.multiplier?
+		- page.multiplier.to_i.times do
+			= contents
+	- else
+		= contents
+		= contents

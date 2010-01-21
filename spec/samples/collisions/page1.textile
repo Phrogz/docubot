@@ -1,0 +1,3 @@
+title: Page 1 (from Textile)
++++
+This will collide with Page 1 (from Markdown)

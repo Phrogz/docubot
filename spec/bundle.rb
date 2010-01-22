@@ -169,3 +169,13 @@ describe "Identifying Conflicts" do
 	end
 	
 end
+
+describe "Bundle with Extra Files" do
+	it "should keep track of extra files seen" do
+		flunk "Not yet tested. (Probably works.)"
+	end
+	it "should skip files specified by global glob matches" do
+		# Allow user to specify *.psd and not include those.
+		flunk "Not yet tested and not implemented."
+	end
+end

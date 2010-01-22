@@ -220,6 +220,80 @@ For example, to ignore *.psd and *.ai files in any directory, and ignore any REA
     +++
 
 
+
+# Metasection Attribute Reference
+Here are all the attributes you can put in the metasection for a page or the site that have special meaning. (Of course, you can put your own attributes in for notes or metadata to be used by your own templates.)
+
+    # Any line in the metasection that starts with an octothorpe (number symbol)
+    # will be considered a comment and ignored.
+    
+    
+    #######################################
+    # Attributes in the global index.* file
+    #######################################
+    
+    # The title for your entire documentation project. (Shows in the title of CHMs.)
+    # Defaults to "Table of Contents"
+    title: FrobozzCo Reference Manual
+    
+    # The page to show when the documentation opens, specified by exact title.
+    # Defaults to first page in the Table of Contents.
+    default: Welcome to FrobozzCo
+    
+    # Name of the company (shown in the footer of the default `top.haml`).
+    # Defaults to nothing (not shown).
+    company: Froboz Widgets (a FrobozzCo subsidiary)
+    
+    # Glob patterns describing files (including page sources) to ignore.
+    # Ignoring a page does more than hide it; it doesn't generate it.
+    # Defaults to including every file.
+    ignore: **/*.psd **/.DS_Store **/Thumbs.db **/.[^.$]*
+    
+    
+    ###################################
+    # Attributes at the top of any page
+    ###################################
+    
+    # The title for this page (or section for an index.* file in a folder).
+    # Defaults to the name of the file with underscores made into spaces
+    # and leading digits removed.
+    title: Welcome to FrobozzCo
+    
+    # Create one or more entries in the Index pointing to this page.
+    keywords: Introduction, Overview, Tool Panel
+    
+    # Do not create additional Index entries for headings and/or definition titles.
+    # Defaults to add both headings and definition titles to the Index.
+    no-index: headings definitions
+    
+    # Do not wrap the 'children' of headers in <div class='section'>...</div>
+    # Default: true
+    auto-section: false
+    
+    # Create sub-entries of this page in the Table of Contents, linking to specific
+    # HTML elements based on their id attribute. The title of the entry will be the
+    # text in the HTML element.
+    toc: intro getting.started more-information
+    
+    # Create sub-entries of this page in the Table of Contents, linking to specific
+    # HTML elements based on the exact text in the element. This only works for the
+    # following HTML elements: <h1>-<h6>, <legend>, <caption>, <dt>
+    # Requires two or more elements to be specified, separated by commas.
+    toc: Introduction to FrobozzCo, Getting Started with Widgets, For More Info...
+    
+    # Generate HTML ids for the following elements: <h1>-<h6>, <legend>, <caption>, <dt>
+    # The id created for "<h2>1.2 Awesome & Sauce: more (and stuff)</h2>" will be:
+    # <h2 id='Awesome-Sauce:-more-and-stuff'>...
+    # Defaults to false unless the toc attribute is trying to link to text.
+    auto-id: true
+    
+    # For pages/sections, hide the item from the Table of Contents (can still link to it).
+    # For glossary entries, hide the glossary entry (not even defined on pages).
+    # Default: false (show the item)
+    hide: true
+
+
+
 # Additional Planned Features
 * Additional Markups (e.g. RDoc)
 * Customizing TOC Icons (via nice names, not just indexes)

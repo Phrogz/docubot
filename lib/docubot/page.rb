@@ -128,7 +128,9 @@ class DocuBot::Page
 	end
 	
 	def descendants
-		(@pages + @pages.map{ |page| page.descendants }).flatten
+		all = (@pages + @pages.map{ |page| page.descendants }).flatten
+		all.each{ |page| yield page } if block_given?
+		all
 	end
 	alias_method :every_page, :descendants
 	
@@ -187,6 +189,10 @@ class DocuBot::Page
 		tmpl = master_templates / "page.haml"        unless File.exists?( tmpl )
 		haml = Haml::Engine.new( IO.read( tmpl ), DocuBot::Writer::HAML_OPTIONS )
 		haml.render( Object.new, :contents=>content_html, :page=>self, :global=>@bundle.toc, :root=>root )
+	end
+	
+	def inspect
+		"<#{self.class} '#{self.title}' #{@file ? "@file=#{@file.inspect}" : "@folder=#{@folder.inspect}"}>"
 	end
 	
 end

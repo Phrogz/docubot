@@ -18,6 +18,14 @@ class DocuBot::Bundle
 			files_and_folders = Dir[ '**/*' ]
 			files_and_folders.reject!{ |f| File.basename(f) =~ /^index\.[^.]+$/ || File.basename(f) == '_static' || File.basename(f) == '_glossary' }
 			files_and_folders.reject!{ |f| f =~ /\b_templates\b/ }
+
+			if @toc.ignore?
+				# TODO: allow pathnames with spaces in them surrounded in quotes
+				@toc.ignore.scan( /\S+/ ).each do |glob|
+					files_and_folders = files_and_folders - Dir[glob]
+				end
+			end
+			
 			files_and_folders.each do |item|
 				extension = File.extname( item )[ 1..-1 ]
 				item_is_page = File.directory?(item) || DocuBot::Converter.by_type[extension]
@@ -50,7 +58,7 @@ class DocuBot::Bundle
 					end
 					
 				else
-					# TODO: Anything better needed?
+					# Ignored items will be removed after all scanning is done
 					@extras << item
 				end
 			end

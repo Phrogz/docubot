@@ -25,3 +25,29 @@ describe "Validating page titles" do
 		@toc.pages.find{ |page| page.title == '911' }.wont_be_nil
 	end
 end
+
+describe "Traversing page hierarchy" do
+	before do
+		@out, @err = capture_io do
+			@bundle = DocuBot::Bundle.new( SAMPLES/'links' )
+		end
+	end
+	it "should have #every_page returning an array" do
+		@bundle.toc.every_page.must_be_kind_of Array
+		@bundle.toc.every_page.length.must_equal 6
+	end
+	it "should allow traversing every page directly" do
+		visited = 0
+		@bundle.toc.every_page do |page|
+			page.must_be_kind_of DocuBot::Page
+			visited += 1
+		end
+		visited.must_equal 6
+	end
+end
+
+describe "Testing user variables" do
+	it "should identify if a variable has been defined"
+	it "should inherit variables from the global"
+	it "should override variables from the global"
+end

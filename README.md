@@ -210,6 +210,15 @@ This code is run on the contents of the page before being wrapped in the page an
 
 _If you do not want this transformation applied to a particular page, put `auto-section: false` in the metasection for the page._
 
+## Ignoring Files
+Do you have certain files that you want ignored, such as source Photoshop files in your images directory, Thumbs.db files from windows, or every text files that might be mistaken for pages? If so, add an `ignore` attribute in the metasection on the index.* file at the root of your site. The value of this is a space-delimited list of glob patterns for files and folders to ignore.
+
+For example, to ignore *.psd and *.ai files in any directory, and ignore any README files at the root of your site, you would add:
+
+    title : My Super Documentation
+    ignore: **/*.psd **/*.ai README.*
+    +++
+
 
 # Additional Planned Features
 * Additional Markups (e.g. RDoc)

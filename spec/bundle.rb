@@ -171,11 +171,40 @@ describe "Identifying Conflicts" do
 end
 
 describe "Bundle with Extra Files" do
-	it "should keep track of extra files seen" do
-		flunk "Not yet tested. (Probably works.)"
+	before do
+		@out, @err = capture_io do
+			@bundle = DocuBot::Bundle.new( SAMPLES/'files' )
+		end
 	end
+	
+	it "should keep track of extra files seen" do
+		@bundle.extras.wont_be_nil
+		static_files = %w[ common.css _static/foo.png section/foo.jpg ]
+		static_files << "section/sub section/foo.gif"
+		static_files.each do |path|
+			@bundle.extras.must_include path
+		end
+	end
+	
+	it "should not count page sources as extra files" do
+		page_files = %w[ index.md another.md first.textile section/page.haml ]
+		page_files << "section/sub section/page.txt"
+		page_files.each do |path|
+			@bundle.extras.wont_include path
+		end
+	end
+	
 	it "should skip files specified by global glob matches" do
-		# Allow user to specify *.psd and not include those.
-		flunk "Not yet tested and not implemented."
+		@bundle.toc.ignore?.must_equal true
+		@bundle.toc.ignore.must_equal "**/*.psd **/*.ai **/Thumbs.db BUILDING.txt"
+		bad_files = %w[ _static/foo.ai _static/foo.psd _static/Thumbs.db ]
+		bad_files << "section/sub section/Thumbs.db"
+		bad_files.each do |path|
+			@bundle.extras.wont_include path
+		end
+	end
+	
+	it "should not count ignored files as the source for pages" do
+		@bundle.toc.every_page.find{ |page| page.file == 'BUILDING.txt' }.must_be_nil
 	end
 end

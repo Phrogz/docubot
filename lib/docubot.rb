@@ -28,7 +28,7 @@ module DocuBot
 	Dir.chdir( SHELL_DIR ){ SHELLS = Dir['*'] }
 	
 	def self.id_from_text( text )
-		text.strip.gsub(/[^\w.:-]+/,'-').gsub(/^-|-$/,'')
+		text.strip.gsub(/[^\w.:-]+/,'-').gsub(/-$/,'').gsub(/^[A-Z]+/i,'')
 	end
 end
 

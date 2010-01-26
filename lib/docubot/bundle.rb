@@ -1,72 +1,48 @@
 # encoding: UTF-8
 require 'pathname'
 class DocuBot::Bundle
-	attr_reader :toc, :extras, :glossary, :index, :source
+	attr_reader :toc, :extras, :glossary, :index, :source, :global
 	attr_reader :internal_links, :external_links, :file_links, :broken_links
+	attr_reader :pages, :pages_by_title, :page_by_file_path, :page_by_html_path
 	def initialize( source_directory )
 		@source = File.expand_path( source_directory )
 		raise "DocuBot cannot find directory #{@source}. Exiting." unless File.exists?( @source )
+		@pages  = []
 		@extras = []
+		@pages_by_title    = Hash.new{ |h,k| h[k]=[] }
+		@page_by_file_path = {}
+		@page_by_html_path = {}
+
 		@glossary = DocuBot::Glossary.new( self, @source/'_glossary' )
 		@index    = DocuBot::Index.new( self )
-		Dir.chdir( @source ) do
-			@toc = DocuBot::Page.new( self, ".", "Table of Contents" )
-			@toc.meta['glossary'] = @glossary
-			@toc.meta['index']    = @index
-			pages_by_path = { '.'=>@toc }
-		
-			files_and_folders = Dir[ '**/*' ]
-			files_and_folders.reject!{ |f| File.basename(f) =~ /^index\.[^.]+$/ || File.basename(f) == '_static' || File.basename(f) == '_glossary' }
-			files_and_folders.reject!{ |f| f =~ /\b_templates\b/ }
+		@toc      = DocuBot::LinkTree::Root.new( self )
 
-			if @toc.ignore?
-				# TODO: allow pathnames with spaces in them surrounded in quotes
-				@toc.ignore.scan( /\S+/ ).each do |glob|
-					files_and_folders = files_and_folders - Dir[glob]
-				end
+		Dir.chdir( @source ) do
+			# This might be nil; MetaSection.new is OK with that.
+			index_file = Dir[ *DocuBot::Converter.types.map{|t| "index.#{t}"} ][ 0 ]
+			@global = DocuBot::MetaSection.new( {}, index_file )
+			@global.glossary = @glossary
+			@global.index    = @index
+			@global.toc      = @toc
+
+			files_and_folders = Dir[ '**/*' ]
+			
+			# index files are handled by Page.new for a directory; no sections for special folders (but process contents)
+			files_and_folders.reject!{ |path| name = File.basename( path ); name =~ /^(?:index\.[^.]+|_static|_glossary)$/ }
+			
+			# All files in the _templates directory should be ignored
+			files_and_folders.reject!{ |f| f =~ /^_templates\b/ }
+
+			@global.ignore.as_list.each do |glob|
+				files_and_folders = files_and_folders - Dir[glob]
 			end
 			
-			files_and_folders.each do |item|
-				extension = File.extname( item )[ 1..-1 ]
-				item_is_page = File.directory?(item) || DocuBot::Converter.by_type[extension]
-				if item_is_page
-					parent = pages_by_path[ File.dirname( item ) ]
-					page = DocuBot::Page.new( self, item )
-					pages_by_path[ item ] = page
-					parent << page if parent
-					if item =~ /\b_glossary\b/
-						@glossary << page
-					end
-					@index.process_page( page )
-					
-					# TODO: Move this bloat elsewhere.
-					if page.toc?
-						ndoc = page.nokodoc
-						toc = page.toc
-						ids = if toc[','] # Comma-delimited toc interpreted as generated ids
-							toc.split(/,\s*/).map{ |title| DocuBot.id_from_text(title) }
-						else
-							toc.scan /[a-z][\w.:-]*/i
-						end
- 						ids.each do |id|
-							if ele = ndoc.at_css("##{id}")
-								page << DocuBot::SubLink.new( page, ele.inner_text, id )
-							else
-								warn "Could not find requested toc anchor '##{id}' on #{page.html_path}"
-							end
-						end
-					end
-					
-				else
-					# Ignored items will be removed after all scanning is done
-					@extras << item
-				end
-			end
+			create_pages( files_and_folders )			
 		end
 		
 		# Regenerate pages whose templates require full scaning to have completed
 		# TODO: make this based off of a metasection attribute.
-		@toc.every_page.select do |page|
+		@pages.select do |page|
 			%w[ glossary ].include?( page.template )
 		end.each do |page|
 			page.dirty_template
@@ -74,32 +50,48 @@ class DocuBot::Bundle
 		
 		# TODO: make this optional via global variable
 		validate_links
-		@broken_links.each do |page,links|
-			links.each do |link|
-				warn "Broken link on #{page.file}: '#{link}'"
-			end
-		end
+		warn_for_broken_links
 		
 		# TODO: make this optional via global variable
-		@glossary.missing_terms.each do |term,referrers|
-			warn "Glossary term '#{term}' never defined."
-			referrers.each do |referring_page|
-				warn "...seen on #{referring_page.file}."
-			end
-		end
+		warn_for_missing_glossary_terms
 		
-		# Find any and all pages that would collide
-		pages_by_html_path = Hash.new{ |h,k| h[k] = [] }
-		@toc.every_page.each do |page|
-			pages_by_html_path[page.html_path] << page
-		end
-		collisions = pages_by_html_path.select{ |path,pages| pages.length>1 }
-		unless collisions.empty?
-			message = collisions.map do |path,pages|
-				"#{path}: #{pages.map{ |page| "'#{page.title}' (#{page.file})" }.join(', ')}"
-			end.join("\n")
-			raise PageCollision.new, message
-		end
+		find_page_collisions
+	end
+	
+	def create_pages( files_and_folders )
+		files_and_folders.each do |path|
+			extension = File.extname( path )[ 1..-1 ]
+			item_is_page = File.directory?(path) || DocuBot::Converter.by_type[extension]
+			if !item_is_page
+				@extras << path
+			else
+				page = DocuBot::Page.new( self, path )
+
+				if path =~ %r{^_glossary/}
+					@glossary << page
+				else
+					@pages                            << page
+					@page_by_file_path[path]           = page
+					@page_by_html_path[page.html_path] = page
+					@pages_by_title[page.title]       << page
+					@index.process_page( page )
+
+					# Add the page (and any sub-links) to the toc
+					unless page.hide
+						@toc.add_to_link_hierarchy( page.title, page.html_path, page )
+						page.toc.as_list.each do |id_or_text|
+							id = id_or_text[0..0] == '#' ? id_or_text : DocuBot.id_from_text(id_or_text)
+							if ele = page.nokodoc.at_css(id)
+								@toc.add_to_link_hierarchy( ele.inner_text, page.html_path + id, page )
+							else
+								warn "Could not find requested toc anchor #{id.inspect} based on #{id_or_text.inspect} on #{page.html_path}"
+							end
+						end
+					end
+					
+				end
+			end
+		end		
 	end
 
 	def validate_links
@@ -110,26 +102,26 @@ class DocuBot::Bundle
 
 		page_by_html_path = {}
 		page_by_orig_path = {}
-		@toc.every_page.each do |page|
+		@pages.each do |page|
 			page_by_html_path[page.html_path] = page
 			page_by_orig_path[page.file]      = page if page.file
 		end
 
 		Dir.chdir( @source ) do 
-			@toc.every_page.each do |page|
-				next unless page.nokodoc # Sub-links don't have documents
+			@pages.each do |page|
 				page.nokodoc.xpath('.//a/@href').each do |href|
 					href=href.content
 					if href=~%r{^[a-z]+://}i
 						@external_links[page] << href
 					else
-						id   = href[/(#[a-z][\w.:-]*)/i,1]
+						id   = href[/#[a-z][\w.:-]*/i]
 						file = href.sub(/#.+/,'')
 						path = file.empty? ? page.html_path : Pathname.new( File.dirname(page.html_path) / file ).cleanpath.to_s
 						if target=page_by_html_path[path]
 							if !id || target.nokodoc.at_css(id)
 								@internal_links[page] << href
 							else
+								warn "Could not find internal link for #{id.inspect} on #{page.html_path.inspect}" if id 
 								@broken_links[page] << href
 							end
 						else
@@ -143,6 +135,38 @@ class DocuBot::Bundle
 				end
 			end
 		end
+	end
+	
+	def warn_for_broken_links
+		@broken_links.each do |page,links|
+			links.each do |link|
+				warn "Broken link on #{page.file}: '#{link}'"
+			end
+		end
+	end
+	
+	def warn_for_missing_glossary_terms
+		@glossary.missing_terms.each do |term,referrers|
+			warn "Glossary term '#{term}' never defined."
+			referrers.each do |referring_page|
+				warn "...seen on #{referring_page.file}."
+			end
+		end		
+	end
+	
+	def find_page_collisions
+		# Find any and all pages that would collide
+		pages_by_html_path = Hash.new{ |h,k| h[k] = [] }
+		@pages.each do |page|
+			pages_by_html_path[page.html_path] << page
+		end
+		collisions = pages_by_html_path.select{ |path,pages| pages.length>1 }
+		unless collisions.empty?
+			message = collisions.map do |path,pages|
+				"#{path}: #{pages.map{ |page| "'#{page.title}' (#{page.file})" }.join(', ')}"
+			end.join("\n")
+			raise PageCollision.new, message
+		end		
 	end
 
 	def write( writer_type, destination=nil )

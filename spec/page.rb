@@ -7,22 +7,22 @@ describe "Validating page titles" do
 		@toc    = @bundle.toc
 	end
 	it "knows who its bundle is" do
-		@toc.pages.each{ |page| page.bundle.must_equal @bundle }
+		@toc.children.each{ |node| node.page.bundle.must_equal @bundle }
 	end
 	it "ignores leading numbers for the titles (unless all numbers)" do
-		@toc.pages.each{ |page| page.title.must_match /(?:^\D|^\d+$)/ }
+		@toc.children.each{ |node| node.page.title.must_match /(?:^\D|^\d+$)/ }
 	end
 	it "honors pages specifying their title" do
-		@toc.pages.find{ |page| page.title =~ /renamed/i  }.must_be_nil
-		@toc.pages.find{ |page| page.title == 'Third One' }.wont_be_nil
+		@toc.children.find{ |page| page.title =~ /renamed/i  }.must_be_nil
+		@toc.children.find{ |page| page.title == 'Third One' }.wont_be_nil
 	end
 	it "replaces underscores with spaces in the title" do
 		%w[ First Second Third Fourth Fifth ].each_with_index do |name,i|
-			@toc.pages[i].title.must_equal "#{name} One"
+			@toc.children[i].page.title.must_equal "#{name} One"
 		end
 	end
 	it "doesn't change names of files that are all numbers" do
-		@toc.pages.find{ |page| page.title == '911' }.wont_be_nil
+		@toc.children.find{ |node| node.page.title == '911' }.wont_be_nil
 	end
 end
 
@@ -32,17 +32,14 @@ describe "Traversing page hierarchy" do
 			@bundle = DocuBot::Bundle.new( SAMPLES/'links' )
 		end
 	end
-	it "should have #every_page returning an array" do
-		@bundle.toc.every_page.must_be_kind_of Array
-		@bundle.toc.every_page.length.must_equal 6
+	it "should have #pages returning an array" do
+		@bundle.pages.must_be_kind_of Array
+		@bundle.pages.length.must_equal 6
 	end
-	it "should allow traversing every page directly" do
-		visited = 0
-		@bundle.toc.every_page do |page|
+	it "every item should be a Page" do
+		@bundle.pages.each do |page|
 			page.must_be_kind_of DocuBot::Page
-			visited += 1
 		end
-		visited.must_equal 6
 	end
 end
 

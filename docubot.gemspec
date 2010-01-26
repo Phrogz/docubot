@@ -1,9 +1,11 @@
 # encoding: UTF-8
 require 'rubygems'
+$: << 'lib'
+require 'docubot'
 
 Gem::Specification.new do |s|
 	s.name        = "docubot"
-	s.version     = "0.3.3"
+	s.version     = DocuBot::VERSION
 	s.date        = "2010-01-20"
 	#s.platform    = Gem::Platform::Win32
 	s.authors     = ["Gavin Kistner", "Harold Hausman"]

@@ -20,7 +20,7 @@ module FileUtils
 end
 
 module DocuBot
-	VERSION = '0.3.3'
+	VERSION = '0.4'
 	DIR     = File.expand_path( File.dirname( __FILE__ ) )
 	
 	TEMPLATE_DIR = DIR / 'docubot/templates'
@@ -28,10 +28,12 @@ module DocuBot
 	Dir.chdir( SHELL_DIR ){ SHELLS = Dir['*'] }
 	
 	def self.id_from_text( text )
-		text.strip.gsub(/[^\w.:-]+/,'-').gsub(/-$/,'').gsub(/^[A-Z]+/i,'')
+		"#" << text.strip.gsub(/[^\w.:-]+/,'-').gsub(/^[^a-z]+|-+$/i,'')
 	end
 end
 
+require 'docubot/link_tree'
+require 'docubot/metasection'
 require 'docubot/snippet'
 require 'docubot/converter'
 require 'docubot/writer'

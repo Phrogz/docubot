@@ -1,21 +1,14 @@
-!!! Strict
-%html
-	%head
-		%meta(http-equiv='Content-Type' content='text/html; charset=utf-8')
-		%title= global.title + " Index"
-		%link{:rel=>'stylesheet', :type=>'text/css', :href=>"#{root}common.css", :media=>'all'}
-	%body
-		-# TODO: Breakdown by letter.
-		%ul#index
-			- global.index.entries.sort_by{ |k,p| k.downcase }.each do |keyword,pages|
-				- if pages.length == 1
-					%li
-						%a{ :href => pages.first.html_path }= keyword
-				- else
-					%li
-						= keyword
-						%ul
-							- pages.each do |page|
-								%li
-									%a{ :href => page.html_path }= page.title
+-# TODO: Breakdown by letter.
+%ul#index
+	- global.index.entries.sort_by{ |k,p| k.downcase }.each do |keyword,pages|
+		- if pages.length == 1
+			%li
+				%a{ :href => pages.first.html_path }= keyword
+		- else
+			%li
+				= keyword
+				%ul
+					- pages.each do |page|
+						%li
+							%a{ :href => page.html_path }= page.title
 

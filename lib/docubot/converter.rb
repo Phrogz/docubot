@@ -8,6 +8,9 @@ module DocuBot
 		def self.by_type
 			@by_type
 		end
+		def self.types
+			@by_type.keys
+		end
 	end
 
 	def self.convert_to_html( page, source, type )

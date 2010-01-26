@@ -46,4 +46,7 @@ class DocuBot::Glossary
 			end.join(",\n")
 		}};"
 	end
+	def inspect
+		"<#{self.class} terms='#{@entries.keys.join ', '}'>"
+	end
 end

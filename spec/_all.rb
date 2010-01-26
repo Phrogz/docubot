@@ -1,5 +1,6 @@
 #encoding: UTF-8
 $: << '..'
+require 'spec/global'
 require 'spec/bundle'
 require 'spec/toc'
 require 'spec/converters'

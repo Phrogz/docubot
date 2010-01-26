@@ -13,8 +13,8 @@ describe "Glossary Scanner" do
 		@out, @err = capture_io do
 			@bundle   = DocuBot::Bundle.new SAMPLES/'glossary'
 			@glossary = @bundle.glossary
-			@page     = @bundle.toc.every_page.find{ |page| page.title=='Glossary' }
-			@fulldoc  = Nokogiri::HTML( @page.to_html )
+			@page     = @bundle.pages_by_title['Glossary'].first
+			@fulldoc  = Nokogiri::HTML::DocumentFragment.parse( @page.to_html )
 		end
 	end
 	
@@ -34,9 +34,9 @@ describe "Glossary Scanner" do
 		@glossary.entries.values.each do |defn|
 			defn.must_be_kind_of DocuBot::Page
 		end
-		@glossary.entries["Secret Term"].hide.must_equal true
+		@glossary.entries["Secret Term"].hide.as_boolean.must_equal true
 	end
-
+	
 	it "supports iterating over the entries with each" do
 		count = 0
 		@glossary.each do |page,defn|
@@ -54,18 +54,21 @@ describe "Glossary Scanner" do
 	end
 	
 	it "supports a glossary template that generates HTML for terms" do
-		definitions = @fulldoc.xpath('//dt')
+		definitions = @fulldoc.xpath('.//dt')
 		@expected_paragraphs.each do |term,paras|
 			dt = definitions.find{ |node| node.inner_text==term }
 			dt.wont_be_nil
-			dt.next_element.xpath('.//p').length.must_equal paras			
+			if dt.next_element.xpath('.//p').length != paras
+				puts dt.next_element.to_html
+			end	
+			dt.next_element.xpath('.//p').length.must_equal paras
 		end
 	end
-
+	
 	it "does not include hidden pages in the output" do
-		definitions = @fulldoc.xpath('//dt')
+		definitions = @fulldoc.xpath('.//dt')
 		@hidden_terms.each do |term|
-			@fulldoc.at_xpath("//dt[text()='#{term}']").must_be_nil
+			@fulldoc.at_xpath(".//dt[text()='#{term}']").must_be_nil
 		end
 	end
 end

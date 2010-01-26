@@ -99,8 +99,12 @@ if ARGS[:create]
 		end
 	end
 else
+	# require 'perftools'
 	start = Time.now
-	bundle = DocuBot::Bundle.new( ARGS[:directory] )
+	# bundle = nil
+	# PerfTools::CpuProfiler.start("/tmp/docubot") do
+		bundle = DocuBot::Bundle.new( ARGS[:directory] )
+	# end
 	lap = Time.now
 	puts "%.2fs to prepare the bundle..." % (lap-start)
 	bundle.write( ARGS[:writer], ARGS[:output] )

@@ -273,13 +273,13 @@ Here are all the attributes you can put in the metasection for a page or the sit
     # Create sub-entries of this page in the Table of Contents, linking to specific
     # HTML elements based on their id attribute. The title of the entry will be the
     # text in the HTML element.
-    toc: intro getting.started more-information
+    toc: #intro, #getting.started, #more-information
     
     # Create sub-entries of this page in the Table of Contents, linking to specific
     # HTML elements based on the exact text in the element. This only works for the
     # following HTML elements: <h1>-<h6>, <legend>, <caption>, <dt>
     # Requires two or more elements to be specified, separated by commas.
-    toc: Introduction to FrobozzCo, Getting Started with Widgets, For More Info...
+    toc: "Introduction to FrobozzCo", "Getting Started with Widgets", "For More Info..."
     
     # Generate HTML ids for the following elements: <h1>-<h6>, <legend>, <caption>, <dt>
     # The id created for "<h2>1.2 Awesome & Sauce: more (and stuff)</h2>" will be:

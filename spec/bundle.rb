@@ -18,7 +18,7 @@ describe "Bundle from empty directory" do
 	
 	it "should have an empty TOC" do
 		@bundle.toc.wont_be_nil
-		@bundle.toc.pages.must_be_empty
+		@bundle.toc.descendants.must_be_empty
 	end
 	
 	it "should have an empty index" do
@@ -195,8 +195,7 @@ describe "Bundle with Extra Files" do
 	end
 	
 	it "should skip files specified by global glob matches" do
-		@bundle.toc.ignore?.must_equal true
-		@bundle.toc.ignore.must_equal "**/*.psd **/*.ai **/Thumbs.db BUILDING.txt"
+		@bundle.global.ignore.as_list.must_equal %w[ **/*.psd **/*.ai **/Thumbs.db BUILDING.txt ]
 		bad_files = %w[ _static/foo.ai _static/foo.psd _static/Thumbs.db ]
 		bad_files << "section/sub section/Thumbs.db"
 		bad_files.each do |path|
@@ -205,6 +204,130 @@ describe "Bundle with Extra Files" do
 	end
 	
 	it "should not count ignored files as the source for pages" do
-		@bundle.toc.every_page.find{ |page| page.file == 'BUILDING.txt' }.must_be_nil
+		@bundle.pages.find{ |page| page.file == 'BUILDING.txt' }.must_be_nil
+		@bundle.page_by_file_path['BUILDING.txt'].must_be_nil
+	end
+end
+
+describe "Pages in bundles" do
+	before do
+		@titles = [ 'First One', 'Second One', 'Third One', 'Fourth One', 'Fifth One', '911' ]
+		Dir.chdir SAMPLES/'links' do
+			@files = Dir['**/*'] - %w[ index.txt sub2/bozo.bin ]
+			@htmls = @files.map{ |path|
+				path[/\.[^.]+$/] ? path.gsub(/\.[^.]+$/,'.html') : path/'index.html'
+			}
+		end
+		@out, @err = capture_io do
+			@titles_bundle = DocuBot::Bundle.new SAMPLES/'titles'
+			@links_bundle  = DocuBot::Bundle.new SAMPLES/'links'
+		end
+	end
+	
+	it "should allow you to find arrays of pages by title" do
+		@titles_bundle.pages_by_title.wont_be_nil
+		@titles.each do |page_title|
+			pages = @titles_bundle.pages_by_title[page_title]
+			pages.must_be_kind_of Array
+			pages.length.must_equal 1
+			pages.first.must_be_kind_of DocuBot::Page
+		end
+	end
+	
+	it "should return an empty array for a non-existent page" do
+		pages = @titles_bundle.pages_by_title['NONE SUCH']
+		pages.must_be_kind_of Array
+		pages.length.must_equal 0
+	end
+
+	it "should not include the main index file in the titles" do
+		pages = @titles_bundle.pages_by_title["Title Changin'"]
+		pages.must_be_kind_of Array
+		pages.length.must_equal 0
+	end
+	
+	it "should give access to pages by source file path" do
+		@links_bundle.page_by_file_path.wont_be_nil
+		@files.each do |path|
+			@links_bundle.page_by_file_path[path].must_be_kind_of DocuBot::Page
+		end
+	end
+	
+	it "should return nil for an unfound file path" do
+		@links_bundle.page_by_file_path['NONE SUCH'].must_be_nil
+	end
+	
+	it "should not include raw files in the file paths" do
+		@links_bundle.page_by_file_path['sub2/bozo.bin'].must_be_nil
+	end
+	
+	it "should give access to pages by html file path" do
+		@links_bundle.page_by_html_path.wont_be_nil
+		@htmls.each do |path|
+			p path unless @links_bundle.page_by_html_path[path]
+			@links_bundle.page_by_html_path[path].wont_be_nil
+			@links_bundle.page_by_html_path[path].must_be_kind_of DocuBot::Page
+		end
+	end
+	
+	it "should return nil for an unfound html path" do
+		@links_bundle.page_by_html_path['NONE SUCH'].must_be_nil
+	end
+	
+	it "should not include raw files in the html paths" do
+		@links_bundle.page_by_html_path['sub2/bozo.bin'].must_be_nil
+	end
+end
+
+describe "Global bundle attributes" do
+	before do
+		@out, @err = capture_io do
+			@bundle = DocuBot::Bundle.new SAMPLES/'attributes'
+		end
+	end
+	
+	it "should have a global object" do
+		@bundle.global.wont_be_nil
+	end
+	
+	it "should be indexable by method and return strings" do
+		@bundle.global.author.must_equal  "Gavin Kistner"
+		@bundle.global.default.must_equal "All About Mr. Friggles"
+		@bundle.global.quotes.must_equal  %q{"It's all about Mr. Benjamin", "I have never seen this cat before in my life!"}
+		@bundle.global.awesome.must_equal "true"
+	end
+	
+	it "should be indexable by string" do
+		@bundle.global['author.email'].must_equal "!@phrogz.net"
+		@bundle.global['author website'].must_equal "http://phrogz.net"
+	end
+	
+	it "should use utf8 for the strings" do
+		if Object.const_defined? :Encoding
+			Encoding.compatible?( @bundle.global.title, "UTF-8™")
+		end
+		@bundle.global.title.must_equal "Friggles® The Cat, ©2009"
+	end
+	
+	it "should allow casting values to boolean" do
+		@bundle.global.awesome.as_boolean.must_equal true
+	end
+
+	it "should allow casting values to arrays of strings" do
+		quotes = @bundle.global.quotes.as_list
+		quotes.must_be_kind_of Array
+		quotes.must_equal [ "It's all about Mr. Benjamin", "I have never seen this cat before in my life!" ]
+	end
+end
+
+describe "Page attributes" do
+	before do
+		@out, @err = capture_io do
+			@bundle = DocuBot::Bundle.new SAMPLES/'attributes'
+		end
+	end
+	
+	it "does something" do
+		
 	end
 end

@@ -1,10 +1,7 @@
 %p The following pages are part of <em>#{page.title}</em>:
 %ul#children
-	- page.pages.each do |child_page|
+	- page.children.each do |child_page|
 		%li #{child_page.title}#{": #{child_page.summary}" if child_page.summary?}			
 - if contents
-	%p
-		%strong
-			Before you go in, you should probably know the following:
 	#good-info= contents
 	

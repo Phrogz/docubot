@@ -11,6 +11,7 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		lap = Time.now
 		@chm_path = destination || "#{@bundle.source}.chm"
 		@toc = @bundle.toc
+		@global = @bundle.global
 		write_hhc
 		write_hhk
 		write_hhp
@@ -63,20 +64,20 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 	def write_hhp
 		@hhp = @chm_path.sub( /[^.]+$/, 'hhp' )
 
-		if @toc.default?
+		if @global.default
 			# User tried to specify the default page
-			@default_topic = @toc.descendants.find{ |page| page.title==@toc.default }
+			@default_topic = @bundle.pages_by_title[ @global.default ].first
 			if @default_topic
 				if @default_topic.file =~ /\s/
 					warn "'#{@toc.default}' cannot be the default CHM page; it has a space in the file name."
 					@default_topic = nil
 				end
 			else
-				warn "The requested default page '#{@toc.default}' could not be found. (Did the title change?)"
+				warn "The requested default page '#{@global.default}' could not be found. (Did the title change?)"
 			end
 		end
-		@default_topic ||= @toc.descendants.find{ |page| page.file =~ /^\S+$/ }
-		warn "No default page is set, because no page has a file name without spaces." unless @default_topic
+		@default_topic ||= @toc.descendants.find{ |node| node.link =~ /^\S+$/ }
+		warn "No default page is set, because no page has a path without spaces." unless @default_topic
 
 		File.open( @hhp, 'w' ) do |f|
 			f << ERB.new( IO.read( SUPPORT / 'hhp.erb' ) ).result( binding )

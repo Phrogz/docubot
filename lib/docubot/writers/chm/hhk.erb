@@ -8,7 +8,7 @@
    <param name="FrameName" value="right">
 </OBJECT>
 <UL>
-<%@toc.index.each do |entry,pages|%>
+<%@global.index.each do |entry,pages|%>
    <LI> <OBJECT type="text/sitemap">
 	   <param name="Name" value="<%=entry%>">
 	   <param name="Local" value="<%=FileUtils.win_path( @html_path/pages.first.html_path )%>">

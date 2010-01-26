@@ -16,11 +16,22 @@ class DocuBot::LinkTree::Node
 	def file
 		@link.sub(/#.+/,'')
 	end
+	
+	def leaf?
+		!@children.any?{ |node| node.page != @page }
+	end
 
 	# Add a new link underneath a link to its logical parent
 	def add_to_link_hierarchy( title, link, page=nil )
 		node = DocuBot::LinkTree::Node.new( title, link, page )
-		parent_link = node.anchor ? node.file : (File.dirname(link) / 'index.html')
+		parent_link = if node.anchor
+			node.file
+		elsif File.basename(link)=='index.html'
+			File.dirname(File.dirname(link))/'index.html'
+		else
+			(File.dirname(link) / 'index.html')
+		end
+		#puts "Adding #{title.inspect} (#{link}) to hierarchy under #{parent_link}"
 		parent = descendants.find{ |node| node.link==parent_link } || self
 		parent << node
 	end
@@ -53,11 +64,27 @@ class DocuBot::LinkTree::Node
 		@depth ||= ancestors.length
 	end
 	
+	def root
+		@root ||= "../" * (depth + ( leaf? ? 0 : 1 ))
+	end
+	
 	def ancestors
 		ancestors = []
 		node = self
 		ancestors << node while node = node.parent
 		ancestors.reverse!
+	end
+	
+	def to_s
+		"#{@title} (#{@link}) - #{@page && @page.title}"
+	end
+	
+	def to_txt( depth=0 )
+		indent = "  "*depth
+		[
+			indent+to_s,
+			children.map{|kid|kid.to_txt(depth+1)}
+		].flatten.join("\n")
 	end
 end
 
@@ -74,5 +101,9 @@ class DocuBot::LinkTree::Root < DocuBot::LinkTree::Node
 	def <<( node )
 		node.parent = nil
 		@children << node
+	end
+	
+	def to_s
+		"(Table of Contents)"
 	end
 end

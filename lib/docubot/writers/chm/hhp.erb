@@ -7,11 +7,11 @@ Index file="<%=FileUtils.win_path @hhk%>"
 <%end%>Display compile progress=No
 Full-text search=Yes
 Language=0x409 English (United States)
-Title=<%=@toc.title%>
+Title=<%=@global.title%>
 
 
 [FILES]
-<%@toc.descendants.each do |page|
+<%@bundle.pages.each do |page|
 	%><%=FileUtils.win_path( @html_path/page.html_path) %>
 <%end
 @bundle.extras.each do |file|

@@ -40,7 +40,6 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			@bundle.toc.descendants.each do |node|
 				next if node.anchor
 				
-				root = "../" * node.depth
 				contents = node.page.to_html
 				template = node.page.template # Call page.to_html first to ensure page.template is set
 
@@ -54,7 +53,7 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 					:page       => node.page,
 					:contents   => contents,
 					:global     => @bundle.global,
-					:root       => root,
+					:root       => node.root,
 					:breadcrumb => node.ancestors,
 					:custom_js  => custom_js,
 					:custom_css => custom_css

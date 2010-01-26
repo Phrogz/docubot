@@ -3,22 +3,45 @@
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
 <!-- Sitemap 1.0 -->
-<%@write_section = lambda do |page| %>
+<%
+ICON = {
+	:book       => 1,
+	:folder     => 5,
+	:question   => 9,
+	:page       => 11,
+	:internet   => 13,
+	:info       => 17,
+	:shortcut   => 19,
+	:letter     => 23,
+	:attachment => 25,
+	:contact    => 27,
+	:sound      => 29,
+	:cd         => 31,
+	:movie      => 33,
+	:list       => 35,
+	:idea       => 37,
+	:note       => 39,
+	:tool       => 41
+}
+
+@write_section = lambda do |node|
+	%>
 <UL>
-	<%page.pages.each do |child|%>
-		<%next if child.hide%>
+	<%node.children.each do |child|
+		icon = if child.anchor
+			ICON[:info]
+		elsif child.page.icon
+			ICON[ child.page.icon.downcase.to_sym ] || child.page.icon
+		else
+			child.leaf? ? ICON[:page] : ICON[:book]
+		end
+		%>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="<%=CGI.escapeHTML child.title%>">
-			<param name="Local" value="<%=FileUtils.win_path( @html_path / child.html_path ).gsub('&','%26')%>">
-			<%if child.icon?
-				%><param name="ImageNumber" value="<%=child.icon%>"><%
-			elsif child.sublink?
-				%><param name="ImageNumber" value="17"><%
-			elsif child.leaf?
-				%><param name="ImageNumber" value="11"><%
-			end%>
+			<param name="Local" value="<%=FileUtils.win_path( @html_path / child.link ).gsub('&','%26')%>">
+			<param name="ImageNumber" value="<%=icon%>">
 			</OBJECT>
-		<%@write_section[child] unless child.pages.empty?%>
+		<%@write_section[child] unless child.children.empty?%>
 	<%end%>
 </UL>
 <%end%>

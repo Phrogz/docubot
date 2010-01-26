@@ -39,6 +39,7 @@ class DocuBot::Bundle
 			
 			create_pages( files_and_folders )			
 		end
+		# puts @toc.to_txt
 		
 		# Regenerate pages whose templates require full scaning to have completed
 		# TODO: make this based off of a metasection attribute.

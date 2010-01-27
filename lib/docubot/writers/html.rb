@@ -53,7 +53,7 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 					:page       => node.page,
 					:contents   => contents,
 					:global     => @bundle.global,
-					:root       => node.root,
+					:root       => node.page.root,
 					:breadcrumb => node.ancestors,
 					:custom_js  => custom_js,
 					:custom_css => custom_css

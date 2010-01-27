@@ -41,6 +41,10 @@ class DocuBot::LinkTree::Node
 		@children << node
 	end
 	
+	def []( child_index )
+		@children[child_index]
+	end
+	
 	def children( parent_link=nil, &block )
 		if parent_link
 			root = find( parent_link )
@@ -60,19 +64,17 @@ class DocuBot::LinkTree::Node
 	end
 	
 	def depth
-		# Assuming no one is going to shuffle the nodes after placement
+		# Cached assuming no one is going to shuffle the nodes after placement
 		@depth ||= ancestors.length
 	end
 	
-	def root
-		@root ||= "../" * (depth + ( leaf? ? 0 : 1 ))
-	end
-	
 	def ancestors
-		ancestors = []
+		# Cached assuming no one is going to shuffle the nodes after placement
+		return @ancestors if @ancestors
+		@ancestors = []
 		node = self
-		ancestors << node while node = node.parent
-		ancestors.reverse!
+		@ancestors << node while node = node.parent
+		@ancestors.reverse!
 	end
 	
 	def to_s

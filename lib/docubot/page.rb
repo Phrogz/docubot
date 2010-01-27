@@ -7,9 +7,17 @@ class DocuBot::Page
 
 	attr_reader :type, :folder, :file, :meta, :nokodoc, :bundle
 
+	def self.title( source_path )
+		title = File.basename( source_path )
+		title.sub!(/\.[^.\s]+$/,'') unless File.directory?( source_path )
+		title.gsub!( '_', ' ' )
+		title.sub!( /^\d+\s/, '' )
+		title
+	end
+
 	def initialize( bundle, source_path, title=nil )
 		puts "#{self.class}.new( #{source_path.inspect}, #{title.inspect}, #{type.inspect} )" if $DEBUG
-		title ||= File.basename( source_path ).sub( /\.[^.]+$/, '' ).gsub( '_', ' ' ).sub( /^\d+\s/, '' )
+		title ||= self.class.title( source_path )
 		@bundle = bundle
 		@file  = source_path
 		if File.directory?( @file )

@@ -105,3 +105,25 @@ describe "Sub-page Links in the Table of Contents" do
 		kid.page.must_equal e2.page
 	end
 end
+
+describe "ToC with Deep Hierarchy" do
+	before do
+		@bundle = DocuBot::Bundle.new SAMPLES/'hierarchy'
+	end
+	
+	it "should match the expected hierarchy" do
+		@bundle.toc[0].page.title.must_equal '1'
+		@bundle.toc[0][0].page.title.must_equal '1.1'
+		@bundle.toc[0][0][0].page.title.must_equal '1.1.1'
+		@bundle.toc[0][0][0][0].page.title.must_equal '1.1.1p'
+		@bundle.toc[0][0][1].page.title.must_equal '1.1p'
+		@bundle.toc[0][1].page.title.must_equal '1p'
+		@bundle.toc[1].page.title.must_equal '2'
+		@bundle.toc[1][0].page.title.must_equal '2.1'
+		@bundle.toc[1][0][0].page.title.must_equal '2.1.1'
+		@bundle.toc[1][0][0][0].page.title.must_equal '2.1.1p'
+		@bundle.toc[1][0][1].page.title.must_equal '2.1p'
+		@bundle.toc[1][1].page.title.must_equal '2p'
+		@bundle.toc[2].page.title.must_equal 'main'
+	end
+end

@@ -122,6 +122,15 @@ describe "Gathering links" do
 			all_file_links.must_include link
 		end		
 	end
+
+	it "should identify valid links to internal files at the root" do
+		@bundle = DocuBot::Bundle.new SAMPLES/'hierarchy'
+		known_file_links = %w[ main.css ../main.css ../../main.css ../../../main.css ]
+		all_file_links = @bundle.file_links.values.flatten
+		known_file_links.each do |link|
+			all_file_links.must_include link
+		end		
+	end
 	
 	it "should identify and warn about invalid sub-page anchors" do
 		known_broken = %w[ #GORKBO ../root.html#GORKBO ]
@@ -327,7 +336,4 @@ describe "Page attributes" do
 		end
 	end
 	
-	it "does something" do
-		
-	end
 end

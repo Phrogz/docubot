@@ -20,7 +20,7 @@ class DocuBot::Bundle
 		Dir.chdir( @source ) do
 			# This might be nil; MetaSection.new is OK with that.
 			index_file = Dir[ *DocuBot::Converter.types.map{|t| "index.#{t}"} ][ 0 ]
-			@global = DocuBot::MetaSection.new( {}, index_file )
+			@global = DocuBot::MetaSection.new( {:title=>'DocuBot Documentation'}, index_file )
 			@global.glossary = @glossary
 			@global.index    = @index
 			@global.toc      = @toc
@@ -101,24 +101,18 @@ class DocuBot::Bundle
 		@file_links     = Hash.new{ |h,k| h[k]=[] }
 		@broken_links   = Hash.new{ |h,k| h[k]=[] }
 
-		page_by_html_path = {}
-		page_by_orig_path = {}
-		@pages.each do |page|
-			page_by_html_path[page.html_path] = page
-			page_by_orig_path[page.file]      = page if page.file
-		end
-
 		Dir.chdir( @source ) do 
 			@pages.each do |page|
-				page.nokodoc.xpath('.//a/@href').each do |href|
-					href=href.content
+				# TODO: set the xpath to .//a/@href once this is fixed: http://github.com/tenderlove/nokogiri/issues/#issue/213
+				page.nokodoc.xpath('.//a').each do |a|
+					next unless href = a['href']
 					if href=~%r{^[a-z]+://}i
 						@external_links[page] << href
 					else
 						id   = href[/#[a-z][\w.:-]*/i]
 						file = href.sub(/#.+/,'')
 						path = file.empty? ? page.html_path : Pathname.new( File.dirname(page.html_path) / file ).cleanpath.to_s
-						if target=page_by_html_path[path]
+						if target=@page_by_html_path[path]
 							if !id || target.nokodoc.at_css(id)
 								@internal_links[page] << href
 							else
@@ -126,7 +120,7 @@ class DocuBot::Bundle
 								@broken_links[page] << href
 							end
 						else
-							if File.file?(path) && !page_by_orig_path[path]
+							if File.file?(path) && !@page_by_file_path[path]
 								@file_links[page] << href
 							else
 								@broken_links[page] << href

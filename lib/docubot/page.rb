@@ -8,7 +8,8 @@ class DocuBot::Page
 	attr_reader :type, :folder, :file, :meta, :nokodoc, :bundle
 
 	def self.title( source_path )
-		title = File.basename( source_path )
+	  # File#basename might return the same string
+		title = File.basename( source_path ).dup
 		title.sub!(/\.[^.\s]+$/,'') unless File.directory?( source_path )
 		title.gsub!( '_', ' ' )
 		title.sub!( /^\d+\s/, '' )

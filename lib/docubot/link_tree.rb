@@ -32,7 +32,7 @@ class DocuBot::LinkTree::Node
 			(File.dirname(link) / 'index.html')
 		end
 		#puts "Adding #{title.inspect} (#{link}) to hierarchy under #{parent_link}"
-		parent = descendants.find{ |node| node.link==parent_link } || self
+		parent = descendants.find{ |n| n.link==parent_link } || self
 		parent << node
 	end
 

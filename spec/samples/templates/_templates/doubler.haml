@@ -1,5 +1,5 @@
 #doubler
-	- if page.multiplier?
+	- if page.multiplier
 		- page.multiplier.to_i.times do
 			= contents
 	- else

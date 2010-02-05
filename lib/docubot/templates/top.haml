@@ -22,11 +22,11 @@
 						%span.sep &gt;
 					= page.title
 				%h1#title= page.title
-				- if page.author?
+				- if page.author
 					#author= page.author
 			#pagebody
 				#glossary-box
 				#mainbody= contents
 				#pagefooter
-					Copyright ©#{Time.now.year}#{ " #{global.company}" if global.company? }.
+					Copyright ©#{Time.now.year}#{ " #{global.company}" if global.company }.
 					All Rights Reserved.

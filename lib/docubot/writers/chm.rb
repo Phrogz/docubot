@@ -5,13 +5,41 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 	handles_type :chm
 	
 	SUPPORT = DocuBot::Writer::DIR / 'chm'
+
+  attr_reader :chm_path, :hhc, :hhp, :hhk, :default_topic
+	
+	def initialize( bundle )
+	  super
+		@toc = @bundle.toc
+		@global = @bundle.global
+		if @global.default
+			# User tried to specify the default page
+			@default_topic = @bundle.pages_by_title[ @global.default ].first
+			if @default_topic
+				if @default_topic.file =~ /\s/
+					warn "'#{@global.default}' cannot be the default CHM page; it has a space in the file name."
+					@default_topic = nil
+				end
+			else
+				warn "The requested default page '#{@global.default}' could not be found. (Did the title change?)"
+			end
+		end
+		if @default_topic.nil?
+  		@default_topic = @toc.descendants.find{ |node| node.link =~ /^\S+$/ }
+  		@default_topic &&= @default_topic.page
+  	end
+		warn "No default page is set, because no page has a path without spaces." unless @default_topic	  
+
+	end
 	
 	def write( destination=nil )
 		super( nil )
+
 		lap = Time.now
 		@chm_path = destination || "#{@bundle.source}.chm"
-		@toc = @bundle.toc
-		@global = @bundle.global
+		@hhc = @chm_path.sub( /[^.]+$/, 'hhc' )
+		@hhp = @chm_path.sub( /[^.]+$/, 'hhp' )
+		@hhk = @chm_path.sub( /[^.]+$/, 'hhk' )
 		write_hhc
 		write_hhk
 		write_hhp
@@ -55,37 +83,18 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 	end
 
 	def write_hhc
-		@hhc = @chm_path.sub( /[^.]+$/, 'hhc' )
 		File.open( @hhc, 'w' ) do |f|
 			f << ERB.new( IO.read( SUPPORT / 'hhc.erb' ) ).result( binding )
 		end
 	end
 
 	def write_hhp
-		@hhp = @chm_path.sub( /[^.]+$/, 'hhp' )
-
-		if @global.default
-			# User tried to specify the default page
-			@default_topic = @bundle.pages_by_title[ @global.default ].first
-			if @default_topic
-				if @default_topic.file =~ /\s/
-					warn "'#{@toc.default}' cannot be the default CHM page; it has a space in the file name."
-					@default_topic = nil
-				end
-			else
-				warn "The requested default page '#{@global.default}' could not be found. (Did the title change?)"
-			end
-		end
-		@default_topic ||= @toc.descendants.find{ |node| node.link =~ /^\S+$/ }
-		warn "No default page is set, because no page has a path without spaces." unless @default_topic
-
 		File.open( @hhp, 'w' ) do |f|
 			f << ERB.new( IO.read( SUPPORT / 'hhp.erb' ) ).result( binding )
 		end
 	end
 
 	def write_hhk
-		@hhk = @chm_path.sub( /[^.]+$/, 'hhk' )
 		File.open( @hhk, 'w' ) do |f|
 			f << ERB.new( IO.read( SUPPORT / 'hhk.erb' ) ).result( binding )
 		end

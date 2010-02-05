@@ -124,7 +124,7 @@ _If you want `id` attributes auto-generated for the elements listed above, but d
 ## Editing the HTML Templates and Stylesheet
 TODO: _See the files in the `_templates` directory (and the `_root` directory inside it). Bone up on your Haml and Ruby skills._
 
-TODO: _Sections default to `section.haml`, pages to `page.haml`. _Use `template: foobar` at the top of a page to get it to use another page template. All content finishes by being wrapped in `top.haml`._
+TODO: _Sections default to `section.haml`, pages to `page.haml`. Use `template: foobar` at the top of a page to get it to use another page template. All content finishes by being wrapped in `top.haml`._
 
 
 ## Using Additional Metadata
@@ -170,10 +170,10 @@ By default, the contents of every page will have `<div class='section'>...</div>
     <p>Put on your clothes.</p>
     
     <h3>1.2.1 First, the undergarments</h3>
-		<p>...and then the rest</p>
-		
-		<h1>2.0 Eating Breakfast</h1>
-		<p>And so on, and so on...</p>
+    <p>...and then the rest</p>
+    
+    <h1>2.0 Eating Breakfast</h1>
+    <p>And so on, and so on...</p>
 
 will actually be transformed into this:
 
@@ -211,7 +211,7 @@ This code is run on the contents of the page before being wrapped in the page an
 _If you do not want this transformation applied to a particular page, put `auto-section: false` in the metasection for the page._
 
 ## Ignoring Files
-Do you have certain files that you want ignored, such as source Photoshop files in your images directory, Thumbs.db files from windows, or every text files that might be mistaken for pages? If so, add an `ignore` attribute in the metasection on the index.* file at the root of your site. The value of this is a space-delimited list of glob patterns for files and folders to ignore.
+Do you have certain files that you want ignored, such as source Photoshop files in your images directory, Thumbs.db files from Windows, or even text files that might be mistaken for pages? If so, add an `ignore` attribute in the metasection on the index.* file at the root of your site. The value of this is a space-delimited list of glob patterns for files and folders to ignore.
 
 For example, to ignore *.psd and *.ai files in any directory, and ignore any README files at the root of your site, you would add:
 

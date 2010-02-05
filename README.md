@@ -128,7 +128,7 @@ TODO: _Sections default to `section.haml`, pages to `page.haml`. Use `template: 
 
 
 ## Using Additional Metadata
-TODO: _Labeled values in the metasection are available as properties of the `page` object made available to templates. Use `page.value?` to ask if any value has been defined. Use `page['non-standard name']` if the name has spaces or hyphens or other non-standard idenfitiers in it._
+TODO: _Labeled values in the metasection are available as properties of the `page` object made available to templates. Use `if page.value` to ask if any value has been defined. Use `page['non-standard name']` if the name has spaces or hyphens or other non-standard idenfitiers in it._
 
 
 ## Setting Global Metadata

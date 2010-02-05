@@ -28,10 +28,12 @@ class DocuBot::Bundle
 			files_and_folders = Dir[ '**/*' ]
 			
 			# index files are handled by Page.new for a directory; no sections for special folders (but process contents)
-			files_and_folders.reject!{ |path| name = File.basename( path ); name =~ /^(?:index\.[^.]+|_static|_glossary)$/ }
+			files_and_folders.reject!{ |path| name = File.basename( path ); name =~ /^(?:index\.[^.]+)$/ }
 			
 			# All files in the _templates directory should be ignored
-			files_and_folders.reject!{ |f| f =~ /^_templates\b/ }
+			files_and_folders.reject!{ |f| f =~ /(?:^|\/)_/ }
+			files_and_folders.concat Dir[ '_static/**/*' ]
+			files_and_folders.concat Dir[ '_glossary/**/*' ]
 
 			@global.ignore.as_list.each do |glob|
 				files_and_folders = files_and_folders - Dir[glob]

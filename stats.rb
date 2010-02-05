@@ -2,7 +2,7 @@ code = /^[ \t]*[^#\r\n]/
 full = /^[ \t]*\S/
 raw_kinds = {
 	'Test content'   => 'spec/samples/**/*',
-	'Haml templates' => 'lib/docubot/templates/*.haml',
+	'Haml lines'     => 'lib/docubot/templates/*.haml',
 	'CSS'            => 'lib/docubot/templates/**/*.css',
 	'JS'             => 'lib/docubot/templates/**/*.js',
 }

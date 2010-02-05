@@ -109,11 +109,11 @@ class DocuBot::Bundle
 					if href=~%r{^[a-z]+://}i
 						@external_links[page] << href
 					else
-						id   = href[/#[a-z][\w.:-]*/i]
-						file = href.sub(/#.+/,'')
+						id   = href[/#([a-z][\w.:-]*)?/i]
+						file = href.sub(/#.*/,'')
 						path = file.empty? ? page.html_path : Pathname.new( File.dirname(page.html_path) / file ).cleanpath.to_s
 						if target=@page_by_html_path[path]
-							if !id || target.nokodoc.at_css(id)
+							if !id || id == "#" || target.nokodoc.at_css(id)
 								@internal_links[page] << href
 							else
 								warn "Could not find internal link for #{id.inspect} on #{page.html_path.inspect}" if id 

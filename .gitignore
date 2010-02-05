@@ -2,3 +2,4 @@
 *.gem
 lib/docubot/shells/nvphysx
 spec/samples/*_html
+bin/docubot.bat

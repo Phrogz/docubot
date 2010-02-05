@@ -36,7 +36,7 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		super( nil )
 
 		lap = Time.now
-		@chm_path = destination || "#{@bundle.source}.chm"
+		@chm_path = File.expand_path( destination || "#{@bundle.source}.chm" )
 		@hhc = @chm_path.sub( /[^.]+$/, 'hhc' )
 		@hhp = @chm_path.sub( /[^.]+$/, 'hhp' )
 		@hhk = @chm_path.sub( /[^.]+$/, 'hhk' )

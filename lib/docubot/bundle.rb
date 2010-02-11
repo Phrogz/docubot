@@ -108,6 +108,7 @@ class DocuBot::Bundle
 				# TODO: set the xpath to .//a/@href once this is fixed: http://github.com/tenderlove/nokogiri/issues/#issue/213
 				page.nokodoc.xpath('.//a').each do |a|
 					next unless href = a['href']
+					href = CGI.unescape(href)
 					if href=~%r{^[a-z]+://}i
 						@external_links[page] << href
 					else

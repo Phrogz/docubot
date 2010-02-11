@@ -109,6 +109,7 @@ describe "Gathering links" do
 			../root.html inner1.html ../sub2.html ../sub2/inner2.html
 			../sub1/index.html index.html
 		]
+		known_internal << "one two three.html"
 		all_internal = @bundle.internal_links.values.flatten
 		known_internal.each do |link|
 			all_internal.must_include link

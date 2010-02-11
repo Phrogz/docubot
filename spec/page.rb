@@ -38,7 +38,7 @@ describe "Traversing page hierarchy" do
 	end
 	it "should have #pages returning an array" do
 		@bundle.pages.must_be_kind_of Array
-		@bundle.pages.length.must_equal 6
+		@bundle.pages.length.must_equal 7
 	end
 	it "every item should be a Page" do
 		@bundle.pages.each do |page|

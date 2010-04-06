@@ -9,21 +9,22 @@ require 'docubot'
 
 USAGE = <<ENDUSAGE
 Usage:
-   docubot [-h] [create [-s shell] [-f]] directory [-w writer] [-o output_file]
+   docubot [-h] [create [-s shell] [-f]] directory [-w writer] [-o output_file] [-n]
 ENDUSAGE
 
 HELP = <<ENDHELP
-   -h, --help    Show this help.
-   create        Create a starter directory filled with example files;
-                 also copies the template for easy modification, if desired.
-   -s, --shell   The shell to copy from.
-                 Available shells: #{DocuBot::SHELLS.join(', ')}
-   -f, --force   Force create over an existing directory,
-                 deleting any existing files.
-   -w, --writer  The output type to create [Defaults to 'chm']
-                 Available writers: #{DocuBot::Writer::INSTALLED_WRITERS.join(', ')}
-   -o, --output  The file or folder (depending on the writer) to create.
-                 [Default value depends on the writer chosen.]
+   -h, --help       Show this help.
+   create           Create a starter directory filled with example files;
+                    also copies the template for easy modification, if desired.
+   -s, --shell      The shell to copy from.
+                    Available shells: #{DocuBot::SHELLS.join(', ')}
+   -f, --force      Force create over an existing directory,
+                    deleting any existing files.
+   -w, --writer     The output type to create [Defaults to 'chm']
+                    Available writers: #{DocuBot::Writer::INSTALLED_WRITERS.join(', ')}
+   -o, --output     The file or folder (depending on the writer) to create.
+                    [Default value depends on the writer chosen.]
+   -n, --nopreview  Disable automatic preview of .chm.
 
 ENDHELP
 
@@ -44,6 +45,8 @@ ARGV.each{ |arg|
 			next_arg = :writer
 		when '-o','--output'
 			next_arg = :output
+		when '-n','--nopreview'
+			ARGS[:nopreview] = true
 		else
 			if next_arg
 				ARGS[next_arg] = arg

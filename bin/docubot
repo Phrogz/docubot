@@ -9,7 +9,7 @@ require 'docubot'
 
 USAGE = <<ENDUSAGE
 Usage:
-   docubot [-h] [create [-s shell] [-f]] directory [-w writer] [-o output_file] [-n]
+   docubot [-h] [create [-s shell] [-f]] directory [-w writer] [-o output_file] [-n] [-l log_file]
 ENDUSAGE
 
 HELP = <<ENDHELP
@@ -25,6 +25,7 @@ HELP = <<ENDHELP
    -o, --output     The file or folder (depending on the writer) to create.
                     [Default value depends on the writer chosen.]
    -n, --nopreview  Disable automatic preview of .chm.
+   -l, --logfile    Specify the filename to log to.
 
 ENDHELP
 
@@ -47,6 +48,8 @@ ARGV.each{ |arg|
 			next_arg = :output
 		when '-n','--nopreview'
 			ARGS[:nopreview] = true
+		when '-l','--logfile'
+			next_arg = :logfile
 		else
 			if next_arg
 				ARGS[next_arg] = arg
@@ -60,6 +63,12 @@ if ARGS[:help] or !ARGS[:directory]
 	puts USAGE
 	puts HELP if ARGS[:help]
 	exit
+end
+
+if ARGS[:logfile]
+	$stdout.reopen( ARGS[:logfile], "w" )
+	$stdout.sync = true
+	$stderr.reopen( $stdout )
 end
 
 if ARGS[:create]

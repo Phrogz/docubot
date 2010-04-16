@@ -72,7 +72,7 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		lap = Time.now
 		
 		# Clean out the intermediary files
-		FileUtils.rm( [ @hhc, @hhp, @hhk ] )
+		FileUtils.rm( [ @hhc, @hhp, @hhk ] ) unless ARGS[:logfile] 
 		FileUtils.rm_r( @html_path )
 		puts "...%.2fs to clean up temporary files" % (Time.now-lap)
 		lap = Time.now

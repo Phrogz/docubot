@@ -21,7 +21,7 @@ DocuBot requires [Ruby][2] and Windows. (Windows is required to create the CHM f
    * `gem install docubot --no-rdoc --no-ri`
      * _Disabling system documentation is necessary because the RedCloth used by DocuBot currently has issues when installing on Windows._
      * This will install the `docubot` binary as well as all necessary supporting files.
-3. Download and install [Microsoft HTML Help](http://msdn.microsoft.com/en-us/library/ms669985(VS.85).aspx).
+3. Download and install [Microsoft HTML Help](http://msdn.microsoft.com/en-us/library/ms669985.aspx).
 4. Ensure that the HTML Help Compiler executable (`hhc.exe`) is in your PATH.
 
 

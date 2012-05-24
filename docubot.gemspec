@@ -6,7 +6,7 @@ require 'docubot'
 Gem::Specification.new do |s|
 	s.name        = "docubot"
 	s.version     = DocuBot::VERSION
-	s.date        = "2010-01-26"
+	s.date        = "2012-05-24"
 	#s.platform    = Gem::Platform::Win32
 	s.authors     = ["Gavin Kistner", "Harold Hausman"]
 	s.email       = "gavin@phrogz.net"
@@ -19,13 +19,13 @@ Gem::Specification.new do |s|
 	s.test_file   = 'spec/_all.rb'
 	s.add_dependency 'haml'
 	s.add_dependency 'nokogiri'
-	s.add_dependency 'bluecloth'
+	s.add_dependency 'kramdown'
 	s.add_dependency 'RedCloth'
 	s.add_dependency 'minitest'
 	s.requirements << "Windows with HTML Help Workshop installed and hhc.exe in the %PATH%."
 	s.requirements << "Haml gem for template interpretation."
 	s.requirements << "Nokogiri gem for parsing HTML after creation (and manipulating)."
-	s.requirements << "BlueCloth gem for Markdown conversion."
+	s.requirements << "kramdown gem for Markdown conversion."
 	s.requirements << "RedCloth gem for Textile conversion."
 	s.requirements << "MiniTest gem for running specifications."
 	#s.has_rdoc = true

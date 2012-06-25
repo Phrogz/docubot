@@ -219,6 +219,31 @@ describe "Bundle with Extra Files" do
 	end
 end
 
+describe "Bundle with Skipped Files" do
+	before do
+		@out, @err = capture_io do
+			@bundle = DocuBot::Bundle.new( SAMPLES/'underscores' )
+		end
+	end
+	
+	it "should not include files that start with an underscore" do
+		titles = @bundle.pages.map(&:title)
+		titles.wont_include "ignoreme"
+		titles.wont_include "andignoreme"
+		titles.wont_include " ignoreme"
+		titles.wont_include " andignoreme"
+	end
+	
+	it "should not include folders inside _static" do
+		titles = @bundle.pages.map(&:title)
+		titles.wont_include "Foo"
+		titles.wont_include " Foo"
+		titles.wont_include "Bar"
+		titles.wont_include " Bar"
+	end
+	
+end
+
 describe "Pages in bundles" do
 	before do
 		@titles = [ 'First One', 'Second One', 'Third One', 'Fourth One', 'Fifth One', '911' ]

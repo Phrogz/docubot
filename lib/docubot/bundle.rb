@@ -32,8 +32,8 @@ class DocuBot::Bundle
 			
 			# All files in the _templates directory should be ignored
 			files_and_folders.reject!{ |f| f =~ /(?:^|\/)_/ }
-			files_and_folders.concat Dir[ '_static/**/*' ]
-			files_and_folders.concat Dir[ '_glossary/**/*' ]
+			files_and_folders.concat Dir[ '_static/**/*'   ].reject{ |f| File.directory?(f) }
+			files_and_folders.concat Dir[ '_glossary/**/*' ].reject{ |f| File.directory?(f) }
 
 			@global.ignore.as_list.each do |glob|
 				files_and_folders = files_and_folders - Dir[glob]

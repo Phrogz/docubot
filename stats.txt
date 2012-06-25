@@ -1,7 +1,7 @@
-Library code: 910
-Spec code   : 748
-Executable  : 98
-Test content: 351
+Library code: 917
+Spec code   : 774
+Executable  : 109
+Test content: 358
 Haml lines  : 60
 CSS         : 103
 JS          : 56

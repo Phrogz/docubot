@@ -1,6 +1,7 @@
 #encoding: UTF-8
 require_relative '_helper'
 
+# *************************************************************************************************
 describe "Simplest Table of Contents" do
 	before do
 		Dir.chdir SAMPLES/'simplest' do
@@ -43,12 +44,14 @@ describe "Simplest Table of Contents" do
 	end	
 end
 
+# *************************************************************************************************
 describe "Renamed Table of Contents" do
 	it "honors the title of the root index file" do
 		DocuBot::Bundle.new(SAMPLES/'titles').global.title.must_equal "Title Changin'"
 	end
 end
 
+# *************************************************************************************************
 describe "Sub-page Links in the Table of Contents" do
 	before do
 		@out, @err = capture_io do
@@ -75,29 +78,31 @@ describe "Sub-page Links in the Table of Contents" do
 	it "should warn about failed TOC requests" do
 		# explicit2.haml has an existing ID on the element for "Heading 1",
 		# so it can't update the HTML id or the TOC request to match.
-		@err.must_include "Heading 1"
+		@err.must_include "Oh No No No"
 	end
 	
 	it "should have sub-entries" do
 		e2 = @toc.find('explicit2.html')
 
-		e2.children.length.must_equal 3
+		e2.children.length.must_equal 4
 		
-		# The first sub-link is not "Heading 1" because explicit2.haml has an existing ID on that element
-		# and so cannot (at this time) change either the HTML id or the TOC request to match.
-		# It is ignored.			
 		kid = e2.children[0]
+		kid.title.must_equal "Heading 1"
+		# No assumptions are made about the generated id.
+		kid.page.must_equal e2.page
+
+		kid = e2.children[1]
 		kid.title.must_equal "Heading 1.1"
 		kid.link.must_equal 'explicit2.html#h1-1'
 		kid.page.must_equal e2.page
 
-		kid = e2.children[1]
+		kid = e2.children[2]
 		kid.title.must_equal "Giggity"
 		kid.file.must_equal 'explicit2.html'
 		# No assumptions are made about the generated id.
 		kid.page.must_equal e2.page
 
-		kid = e2.children[2]
+		kid = e2.children[3]
 		kid.title.must_equal "Heading 0"
 		kid.file.must_equal   'explicit2.html'
 		kid.anchor.must_equal 'h0'
@@ -116,6 +121,7 @@ describe "Sub-page Links in the Table of Contents" do
 	end
 end
 
+# *************************************************************************************************
 describe "ToC with Deep Hierarchy" do
 	before do
 		@bundle = DocuBot::Bundle.new SAMPLES/'hierarchy'

@@ -1,0 +1,7 @@
+title      : My Documentation
+short_title: My Docs
+company    : FroBoz
+default    : HelloWorld
++++
+This documentation can be compiled to CHM using DocuBot:
+http://github.com/phrogz/DocuBot#readme

@@ -1,0 +1,3 @@
+#glossary-box   { display:none; position:absolute; width:30%; background:#e0efcc; border:1px solid #82a851; padding:0.5em 0.9em; font-size:9pt; font-family:Calibri, Tahoma; z-index:50; }
+span.glossary { color:#36401C; border-bottom:1px dashed #6e8e34; cursor:help; }
+span.glossary-missing { border-bottom:1px dotted #900 }

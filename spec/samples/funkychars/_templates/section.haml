@@ -1,0 +1,10 @@
+- page.meta.style = 'nosidebar'
+%p The following pages are part of <em>#{page.title}</em>:
+%ul#children
+	- page.children.each do |child_page|
+		%li
+			%a{ :href=>root/child_page.html_path }= child_page.title
+			- if child_page.summary
+				.summary= child_page.summary
+- unless contents.nil? or contents.empty?
+	#good-info= contents

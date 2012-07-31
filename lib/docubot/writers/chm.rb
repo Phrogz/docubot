@@ -72,12 +72,12 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 		lap = Time.now
 		
 		# Clean out the intermediary files
-		FileUtils.rm( [ @hhc, @hhp, @hhk ] ) unless ARGS[:logfile] 
+		FileUtils.rm( [ @hhc, @hhp, @hhk ] ) unless defined?(ARGS) && ARGS[:logfile] 
 		FileUtils.rm_r( @html_path )
 		puts "...%.2fs to clean up temporary files" % (Time.now-lap)
 		lap = Time.now
 		
-		unless ARGS[:nopreview]
+		unless defined?(ARGS) && ARGS[:nopreview]
 			# Spin a new thread so it doesn't hold up the Ruby process, but sleep long enough for it to get going.
 			Thread.new{ `hh.exe "#{FileUtils.win_path @chm_path}"` }
 			sleep 0.1 if Object.const_defined? "Encoding" # This sleep does not help on 1.8.6

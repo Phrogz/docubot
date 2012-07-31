@@ -87,20 +87,19 @@ class DocuBot::CHMWriter < DocuBot::HTMLWriter
 	end
 
 	def write_hhc
-		File.open( @hhc, 'w' ) do |f|
-			f << ERB.new( IO.read( SUPPORT / 'hhc.erb', encoding:'utf-8' ) ).result( binding )
-		end
+		contents = ERB.new( IO.read( SUPPORT / 'hhc.erb', encoding:'utf-8' ) ).result( binding )
+		# puts contents
+		File.open( @hhc, 'w' ){ |f| f << contents }
 	end
 
 	def write_hhp
-		File.open( @hhp, 'w' ) do |f|
-			f << ERB.new( IO.read( SUPPORT / 'hhp.erb', encoding:'utf-8' ) ).result( binding )
-		end
+		contents = ERB.new( IO.read( SUPPORT / 'hhp.erb', encoding:'utf-8' ) ).result( binding )
+		# puts contents
+		File.open( @hhp, 'w' ){ |f| f << contents }
 	end
 
 	def write_hhk
-		File.open( @hhk, 'w' ) do |f|
-			f << ERB.new( IO.read( SUPPORT / 'hhk.erb', encoding:'utf-8' ) ).result( binding )
-		end
+		contents = ERB.new( IO.read( SUPPORT / 'hhk.erb', encoding:'utf-8' ) ).result( binding )
+		File.open( @hhk, 'w' ){ |f| f << contents }
 	end
 end

@@ -38,7 +38,7 @@ ICON = {
 		%>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="<%=CGI.escapeHTML child.title%>">
-			<param name="Local" value="<%=FileUtils.win_path( @html_path / child.link ).gsub('&','&amp;')%>">
+			<param name="Local" value="<%=FileUtils.win_path( @html_path / child.link )%>">
 			<param name="ImageNumber" value="<%=icon%>">
 			</OBJECT>
 		<%@write_section[child] unless child.children.empty?%>

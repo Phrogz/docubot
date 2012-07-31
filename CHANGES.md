@@ -1,3 +1,8 @@
+# 1.0.1 : 2012-July-31
+* Fix problems with Table of Contents linking to files/folders with an ampersand in the name.
+
+----
+
 # 1.0.0 : 2012-July-31
 * Requires Ruby 1.9.2+
 * All files are explicitly read as UTF-8

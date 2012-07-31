@@ -6,7 +6,7 @@ require 'docubot'
 Gem::Specification.new do |s|
 	s.name        = "docubot"
 	s.version     = DocuBot::VERSION
-	s.date        = "2012-05-24"
+	s.date        = "2012-07-31"
 	#s.platform    = Gem::Platform::Win32
 	s.authors     = ["Gavin Kistner", "Harold Hausman"]
 	s.email       = "gavin@phrogz.net"

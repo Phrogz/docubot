@@ -11,7 +11,7 @@
   _(Apostrophes and quotes are now ignored; elements are found by text value instead of assumed id.)_
 * Fixed CHM writer to work standalone (outside of the bin/docubot command)
   * _TODO: provide a mechanism to control writer options other than assumed global `ARGS`._
-* Changed to use require_relative; requires Ruby 1.9.2+  
+* Changed to use `require_relative`; requires Ruby 1.9.2+  
   _(Major version number bump due solely to this; all other features are backwards compatible.)_
 
 ----

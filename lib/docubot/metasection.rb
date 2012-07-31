@@ -25,7 +25,7 @@ class DocuBot::MetaSection
 		@attrs = {}
 		attrs.each{ |key,value| self[key]=value }
 		if file_path && File.exists?( file_path )
-			parts = IO.read( file_path ).split( META_SEPARATOR, 2 )
+			parts = IO.read( file_path, encoding:'utf-8' ).split( META_SEPARATOR, 2 )
 			if parts.length > 1
 				parts.first.scan(/.+/) do |line|
 					next if line =~ /^\s*#/

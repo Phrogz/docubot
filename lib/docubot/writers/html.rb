@@ -36,7 +36,7 @@ class DocuBot::HTMLWriter < DocuBot::Writer
 			
 			# Write out every page
 			top = File.exists?( source_templates/'top.haml' ) ? source_templates/'top.haml' : master_templates/'top.haml'
-			top = Haml::Engine.new( IO.read( top ), HAML_OPTIONS )
+			top = Haml::Engine.new( IO.read( top, encoding:'utf-8' ), HAML_OPTIONS )
 			@bundle.toc.descendants.each do |node|
 				next if node.anchor
 				

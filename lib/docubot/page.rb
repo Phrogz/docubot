@@ -155,7 +155,7 @@ class DocuBot::Page
 		tmpl = source_templates / "#{template}.haml"
 		tmpl = master_templates / "#{template}.haml" unless File.exists?( tmpl )
 		tmpl = master_templates / "page.haml"        unless File.exists?( tmpl )
-		tmpl = IO.read( tmpl )
+		tmpl = IO.read( tmpl, encoding:'utf-8' )
 		haml = Haml::Engine.new( tmpl, DocuBot::Writer::HAML_OPTIONS )
 		haml.render( Object.new, :contents=>content_html, :page=>self, :global=>@bundle.global, :root=>root )
 	end

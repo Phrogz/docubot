@@ -1,5 +1,5 @@
 #encoding: UTF-8
-require File.join(File.dirname(__FILE__), "_helper")
+require_relative '_helper'
 
 describe "Simplest Table of Contents" do
 	before do
@@ -103,6 +103,16 @@ describe "Sub-page Links in the Table of Contents" do
 		kid.anchor.must_equal 'h0'
 		kid.link.must_equal   'explicit2.html#h0'
 		kid.page.must_equal e2.page
+	end
+
+	it "should work for Markdown headers with mixed casing" do
+		e3 = @toc.find('explicit3.html')
+		e3.children.length.must_equal 1
+
+		kid = e3.children[0]
+		kid.title.must_equal "It's a Heading!"
+		kid.file.must_equal 'explicit3.html'
+		kid.page.must_equal e3.page
 	end
 end
 

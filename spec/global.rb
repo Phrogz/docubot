@@ -1,5 +1,5 @@
 #encoding: UTF-8
-require File.join(File.dirname(__FILE__), "_helper")
+require_relative '_helper'
 
 # http://www.w3.org/TR/html4/types.html#type-id
 # We disallow colons or periods in the ID because they mess up CSS selectors

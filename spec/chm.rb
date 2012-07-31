@@ -1,5 +1,5 @@
 #encoding: UTF-8
-require File.join(File.dirname(__FILE__), "_helper")
+require_relative '_helper'
 
 describe "CHM Writer default topic" do
 	it "should pick the first valid page as the default if not specified" do

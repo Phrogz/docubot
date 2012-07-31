@@ -83,11 +83,25 @@ class DocuBot::Bundle
 					unless page.hide
 						@toc.add_to_link_hierarchy( page.title, page.html_path, page )
 						page.toc.as_list.each do |id_or_text|
-							id = id_or_text[0..0] == '#' ? id_or_text : DocuBot.id_from_text(id_or_text)
-							if ele = page.nokodoc.at_css(id)
-								@toc.add_to_link_hierarchy( ele.inner_text, page.html_path + id, page )
+							if id_or_text[0..0] == '#'
+								if ele = page.nokodoc.at_css(id_or_text)
+									@toc.add_to_link_hierarchy( ele.inner_text, page.html_path + id_or_text, page )
+								else
+									warn "Could not find requested toc anchor #{id_or_text.inspect} on #{page.html_path}"
+								end
 							else
-								warn "Could not find requested toc anchor #{id.inspect} based on #{id_or_text.inspect} on #{page.html_path}"
+								# TODO: Find an elegant way to handle quotes in XPath, for speed
+								# Kramdown 'helpfully' converts quotes in the body to be curly, breaking direct text matching
+								quotes = /['‘’"“”]+/
+								quoteless = id_or_text.gsub(quotes,'')
+								if t=page.nokodoc.xpath('text()|.//text()').find{ |t| t.content.gsub(quotes,'')==quoteless }
+									ele = t.parent
+									# FIXME: better unique ID generator
+									ele['id'] = "item-#{Time.now.to_i}-#{rand 999999}" unless ele['id']
+									@toc.add_to_link_hierarchy( id_or_text, page.html_path + '#' + ele['id'], page )
+								else
+									warn "Could not find requested toc anchor for #{id_or_text.inspect} on #{page.html_path}"
+								end
 							end
 						end
 					end

@@ -1,6 +1,5 @@
-require 'rubygems'
 require 'minitest/spec'
-require 'docubot'
+require_relative '../lib/docubot'
 SAMPLES = File.dirname(__FILE__)/'samples'
 MiniTest::Unit.autorun
 

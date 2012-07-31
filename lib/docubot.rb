@@ -20,7 +20,7 @@ module FileUtils
 end
 
 module DocuBot
-	VERSION = '0.7.1'
+	VERSION = '1.0.0'
 	DIR     = File.expand_path( File.dirname( __FILE__ ) )
 	
 	TEMPLATE_DIR = DIR / 'docubot/templates'
@@ -32,12 +32,12 @@ module DocuBot
 	end
 end
 
-require 'docubot/link_tree'
-require 'docubot/metasection'
-require 'docubot/snippet'
-require 'docubot/converter'
-require 'docubot/writer'
-require 'docubot/page'
-require 'docubot/glossary'
-require 'docubot/index'
-require 'docubot/bundle'
+require_relative 'docubot/link_tree'
+require_relative 'docubot/metasection'
+require_relative 'docubot/snippet'
+require_relative 'docubot/converter'
+require_relative 'docubot/writer'
+require_relative 'docubot/page'
+require_relative 'docubot/glossary'
+require_relative 'docubot/index'
+require_relative 'docubot/bundle'

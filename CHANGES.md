@@ -1,3 +1,8 @@
+# 1.0.2 : 2013-May-22
+* Markdown conversion of code blocks turns off line numbers when syntax highlighting is enabled.
+
+----
+
 # 1.0.1 : 2012-July-31
 * Fix problems with Table of Contents linking to files/folders with an ampersand in the name.
 

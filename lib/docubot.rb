@@ -20,7 +20,7 @@ module FileUtils
 end
 
 module DocuBot
-	VERSION = '1.0.1'
+	VERSION = '1.0.2'
 	DIR     = File.expand_path( File.dirname( __FILE__ ) )
 	
 	TEMPLATE_DIR = DIR / 'docubot/templates'

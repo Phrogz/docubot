@@ -291,7 +291,10 @@ Here are all the attributes you can put in the metasection for a page or the sit
     # For glossary entries, hide the glossary entry (not even defined on pages).
     # Default: false (show the item)
     hide: true
-
+    
+    # Prevent this page from being included in the TOC or contents.
+    # Useful for when a page is planned and in source control but not ready yet.
+    skip: true
 
 
 # Additional Planned Features

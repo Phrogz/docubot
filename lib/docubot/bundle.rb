@@ -69,6 +69,7 @@ class DocuBot::Bundle
 				@extras << path
 			else
 				page = DocuBot::Page.new( self, path )
+				next if page.skip
 
 				if path =~ %r{^_glossary/}
 					@glossary << page

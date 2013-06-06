@@ -248,7 +248,7 @@ describe "Pages in bundles" do
 	before do
 		@titles = [ 'First One', 'Second One', 'Third One', 'Fourth One', 'Fifth One', '911' ]
 		Dir.chdir SAMPLES/'links' do
-			@files = Dir['**/*'] - %w[ index.txt sub2/bozo.bin ]
+			@files = Dir['**/*'] - %w[ index.txt sub2/bozo.bin pending.md ]
 			@htmls = @files.map{ |path|
 				path[/\.[^.]+$/] ? path.gsub(/\.[^.]+$/,'.html') : path/'index.html'
 			}
@@ -312,6 +312,15 @@ describe "Pages in bundles" do
 	it "should not include raw files in the html paths" do
 		@links_bundle.page_by_html_path['sub2/bozo.bin'].must_be_nil
 	end
+
+	it "should not include raw files in the html paths" do
+		@links_bundle.page_by_html_path['sub2/bozo.bin'].must_be_nil
+	end
+
+	it "should not include pages marked as ready:false" do
+		@links_bundle.page_by_file_path["pending.md"].must_be_nil
+	end
+
 end
 
 describe "Global bundle attributes" do

@@ -1,3 +1,13 @@
+# 1.1.1 : 2013-August-28
+* Fix sorting of files to use numeric ordering instead of lexicographic ordering _(e.g. `2_Foo.txt` comes before `03_Bar.txt`)_.
+
+----
+
+# 1.1 : 2013-June-6
+* Markdown conversion of code blocks turns off line numbers when syntax highlighting is enabled.
+
+----
+
 # 1.0.2 : 2013-May-22
 * Markdown conversion of code blocks turns off line numbers when syntax highlighting is enabled.
 

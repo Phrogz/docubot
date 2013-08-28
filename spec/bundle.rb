@@ -205,8 +205,8 @@ describe "Bundle with Extra Files" do
 	end
 	
 	it "should skip files specified by global glob matches" do
-		@bundle.global.ignore.as_list.must_equal %w[ **/*.psd **/*.ai **/Thumbs.db BUILDING.txt ]
-		bad_files = %w[ _static/foo.ai _static/foo.psd _static/Thumbs.db ]
+		@bundle.global.ignore.as_list.must_equal %w[ **/*.psd **/*.ai **/Thumbs.db BUILDING.txt *.rb ]
+		bad_files = %w[ _static/foo.ai _static/foo.psd _static/Thumbs.db section/build.rb ]
 		bad_files << "section/sub section/Thumbs.db"
 		bad_files.each do |path|
 			@bundle.extras.wont_include path

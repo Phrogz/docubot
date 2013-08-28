@@ -23,13 +23,6 @@ describe "Simplest Table of Contents" do
 		end
 	end
 	
-	it "preserves file system ordering" do
-		@files.each_with_index do |source_file,i|
-			filename_without_extension = source_file.sub( /\.[^.]+$/, '' )
-			@toc.children[i].title.must_equal filename_without_extension
-		end
-	end
-
 	it "has no parent or ancestors" do
 		@toc.parent.must_be_nil
 		@toc.ancestors.must_be_empty
@@ -141,5 +134,20 @@ describe "ToC with Deep Hierarchy" do
 		@bundle.toc[1][0][1].page.title.must_equal '2.1p'
 		@bundle.toc[1][1].page.title.must_equal '2p'
 		@bundle.toc[2].page.title.must_equal 'main'
+	end
+end
+
+
+# *************************************************************************************************
+describe "ToC with Ordered Items" do
+	before do
+		@bundle = DocuBot::Bundle.new SAMPLES/'ordering'
+	end
+	
+	it "should match the expected hierarchy" do
+		@bundle.toc[0].page.title.must_equal 'License'
+		@bundle.toc[1].page.title.must_equal 'Introduction'
+		@bundle.toc[2].page.title.must_equal 'Moar'
+		@bundle.toc[3].page.title.must_equal 'Appendix'
 	end
 end

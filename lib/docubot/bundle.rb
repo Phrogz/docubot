@@ -26,7 +26,7 @@ class DocuBot::Bundle
 			@global.toc      = @toc
 
 			files_and_folders = Dir[ '**/*' ]
-			
+
 			# index files are handled by Page.new for a directory; no sections for special folders (but process contents)
 			files_and_folders.reject!{ |path| name = File.basename( path ); name =~ /^(?:index\.[^.]+)$/ }
 			
@@ -38,7 +38,10 @@ class DocuBot::Bundle
 			@global.ignore.as_list.each do |glob|
 				files_and_folders = files_and_folders - Dir[glob]
 			end
-			
+
+			# Sort by leading digits, if present, interpreted as numbers
+			files_and_folders.sort_by!{ |path| path.split(%r{[/\\]}).map{ |name| name.tr('_',' ').scan(/\A(?:(\d+)\s+)?(.+)/)[0].tap{ |parts| parts[0] = parts[0] ? parts[0].to_i : 9e9 } } }
+
 			create_pages( files_and_folders )			
 		end
 		# puts @toc.to_txt

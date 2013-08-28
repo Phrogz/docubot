@@ -1,2 +1,2 @@
-ignore: **/*.psd, **/*.ai, **/Thumbs.db, BUILDING.txt
+ignore: **/*.psd, **/*.ai, **/Thumbs.db, BUILDING.txt, *.rb
 +++

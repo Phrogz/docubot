@@ -6,10 +6,10 @@ require 'docubot'
 Gem::Specification.new do |s|
 	s.name        = "docubot"
 	s.version     = DocuBot::VERSION
-	s.date        = "2013-08-28"
 	#s.platform    = Gem::Platform::Win32
 	s.authors     = ["Gavin Kistner", "Harold Hausman"]
 	s.email       = "gavin@phrogz.net"
+	s.license     = "MIT License"
 	s.homepage    = "http://github.com/Phrogz/docubot"
 	s.summary     = "Create documentation from a hierarchy of text files."
 	s.description = "DocuBot creates HTML or CHM documentation from a hierarchy of files, supporting markups like Markdown, Textile, and Haml."

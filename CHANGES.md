@@ -1,3 +1,9 @@
+# 1.1.2 : 2013-August-29
+* Treat `mailto:` href as unvalidated external links (fixes issue #25).
+* Added explicit MIT License.
+
+----
+
 # 1.1.1 : 2013-August-28
 * Fix sorting of files to use numeric ordering instead of lexicographic ordering _(e.g. `2_Foo.txt` comes before `03_Bar.txt`)_.
 

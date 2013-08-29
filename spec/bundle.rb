@@ -82,7 +82,7 @@ describe "Gathering links" do
 	end
 	
 	it "should identify (but not validate) external links" do
-		known_external = %w[ http://www.google.com/ http://phrogz.net http://phrogz.net/tmp/gkhead.jpg HTTP://NONEXISTENT.SITE ]
+		known_external = %w[ http://www.google.com/ http://phrogz.net http://phrogz.net/tmp/gkhead.jpg HTTP://NONEXISTENT.SITE mailto:!@phrogz.net ]
 		all_external = @bundle.external_links.values.flatten
 		known_external.each do |link|
 			all_external.must_include link

@@ -127,7 +127,7 @@ class DocuBot::Bundle
 				page.nokodoc.xpath('.//a').each do |a|
 					next unless href = a['href']
 					href = CGI.unescape(href)
-					if href=~%r{^[a-z]+://}i
+					if href=~%r{\A[a-z]+:}i
 						@external_links[page] << href
 					else
 						id   = href[/#([a-z][\w.:-]*)?/i]

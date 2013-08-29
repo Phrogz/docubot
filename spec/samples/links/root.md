@@ -12,3 +12,5 @@
 [BROKEN](#GORKBO)
 
 <div id="sub-id">Just in case</div>
+
+Send me some email at <a href="mailto:!@phrogz.net">some site</a>

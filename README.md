@@ -304,6 +304,9 @@ Here are all the attributes you can put in the metasection for a page or the sit
 * [Doxygen][4] integration
 * [Qt Assistant][5]
 
+# License
+Docubot is released under the [MIT License](http://opensource.org/licenses/MIT). Please see `LICENSE.txt` for details.
+
 [1]: http://daringfireball.net/projects/markdown/basics
 [2]: http://rubyinstaller.org/
 [3]: http://msdn.microsoft.com/en-us/library/ms669985(VS.85).aspx

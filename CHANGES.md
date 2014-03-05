@@ -1,4 +1,4 @@
-# 1.1.3 : 2014-March-5
+# 1.1.4 : 2014-March-5
 * Add `-v` or `--version` for command line.
 
 ----
@@ -10,7 +10,7 @@
 ----
 
 # 1.1.1 : 2013-August-28
-* Fix sorting of files to use numeric ordering instead of lexicographic ordering _(e.g. `2_Foo.txt` comes before `03_Bar.txt`)_.
+* Fix sorting of files to use numeric ordering instead of lexicographic ordering <em>(e.g. `2_Foo.txt` comes before `03_Bar.txt`)</em>.
 
 ----
 

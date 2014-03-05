@@ -148,6 +148,11 @@ describe "ToC with Ordered Items" do
 		@bundle.toc[0].page.title.must_equal 'License'
 		@bundle.toc[1].page.title.must_equal 'Introduction'
 		@bundle.toc[2].page.title.must_equal 'Moar'
-		@bundle.toc[3].page.title.must_equal 'Appendix'
+		@bundle.toc[3].page.title.must_equal 'Three'
+		@bundle.toc[4].page.title.must_equal 'Four'
+		@bundle.toc[5].page.title.must_equal 'Thirty'
+		@bundle.toc[6].page.title.must_equal 'Thirty Five'
+		@bundle.toc[7].page.title.must_equal 'Forty'
+		@bundle.toc[8].page.title.must_equal 'Appendix'
 	end
 end

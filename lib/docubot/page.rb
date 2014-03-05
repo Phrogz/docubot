@@ -12,7 +12,7 @@ class DocuBot::Page
 		title = File.basename( source_path ).dup
 		title.sub!(/\.[^.\s]+$/,'') unless File.directory?( source_path )
 		title.gsub!( '_', ' ' )
-		title.sub!( /^\d+\s/, '' )
+		title.sub!( /^\d+\s+/, '' )
 		title
 	end
 

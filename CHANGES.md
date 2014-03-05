@@ -1,3 +1,8 @@
+# 1.1.3 : 2014-March-5
+* Add `-v` or `--version` for command line.
+
+----
+
 # 1.1.2 : 2013-August-29
 * Treat `mailto:` href as unvalidated external links (fixes issue #25).
 * Added explicit MIT License.
@@ -10,7 +15,7 @@
 ----
 
 # 1.1 : 2013-June-6
-* Markdown conversion of code blocks turns off line numbers when syntax highlighting is enabled.
+* Add `skip:true` option to fully skip pages based on meta information.
 
 ----
 

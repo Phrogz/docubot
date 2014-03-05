@@ -9,11 +9,12 @@ require 'docubot'
 
 USAGE = <<ENDUSAGE
 Usage:
-   docubot [-h] [create [-s shell] [-f]] directory [-w writer] [-o output_file] [-n] [-l log_file]
+   docubot [-h] [-v] [create [-s shell] [-f]] directory [-w writer] [-o output_file] [-n] [-l log_file]
 ENDUSAGE
 
 HELP = <<ENDHELP
    -h, --help       Show this help.
+   -v, --version    Show the version number (#{DocuBot::VERSION}).
    create           Create a starter directory filled with example files;
                     also copies the template for easy modification, if desired.
    -s, --shell      The shell to copy from.
@@ -34,22 +35,15 @@ UNFLAGGED_ARGS = [ :directory ]
 next_arg = UNFLAGGED_ARGS.first
 ARGV.each{ |arg|
 	case arg
-		when '-h','--help'
-		  ARGS[:help] = true
-		when 'create'
-		  ARGS[:create] = true
-		when '-f','--force'
-		  ARGS[:force] = true
-		when '-s','--shell'
-			next_arg = :shell
-		when '-w','--writer'
-			next_arg = :writer
-		when '-o','--output'
-			next_arg = :output
-		when '-n','--nopreview'
-			ARGS[:nopreview] = true
-		when '-l','--logfile'
-			next_arg = :logfile
+		when '-h','--help'      then ARGS[:help]      = true
+		when 'create'           then ARGS[:create]    = true
+		when '-f','--force'     then ARGS[:force]     = true
+		when '-n','--nopreview' then ARGS[:nopreview] = true
+		when '-v','--version'   then ARGS[:version]   = true
+		when '-s','--shell'     then next_arg = :shell
+		when '-w','--writer'    then next_arg = :writer
+		when '-o','--output'    then next_arg = :output
+		when '-l','--logfile'   then next_arg = :logfile
 		else
 			if next_arg
 				ARGS[next_arg] = arg
@@ -59,8 +53,12 @@ ARGV.each{ |arg|
 	end
 }
 
+if ARGS[:version]
+	puts "DocuBot v#{DocuBot::VERSION}"
+end
+
 if ARGS[:help] or !ARGS[:directory]
-	puts USAGE
+	puts USAGE unless ARGS[:version]
 	puts HELP if ARGS[:help]
 	exit
 end

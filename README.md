@@ -86,10 +86,10 @@ If you want to create a glossary link using slightly different text than the glo
 ## Adding Sub-Heading Links to the Table of Contents
 If you have a single page with many sections on it and you want to see sub-links for those sections in the table of contents, you can accomplish it in one of two ways.
 
-If you have content with explicit `id` attributes on various HTML elements, add a `toc` entry in the metasection with a **space-delimited** list of the element identifiers whose contents you want added as a sub-link in the table of contents. For example:
+If you have content with explicit `id` attributes on various HTML elements, add a `toc` entry in the metasection with a comma-delimited list of the element identifiers whose contents you want added as a sub-link in the table of contents. For example:
 
     title: Welcome to FrobozzCo
-    toc  : intro learning
+    toc  : #intro, #learning
     +++
     <h2 id="intro">Introduction</h2>
     ...
@@ -105,10 +105,10 @@ In the above example, the Table of Contents will have the following hierarchy:
 
 The sub-links in the table of contents will link directly to the appropriate subsection.
 
-If you are using markup (such as Markdown) without specifying HTML `id` attributes, do not fret. DocuBot can automatically create identifiers for the following HTML elements: `h1 h2 h3 h4 h5 h6 legend caption dt`. In this scenario, add a `toc` entry in the metasection with a **comma-delimited** list of the exact text for the elements you wish to link to. For example:
+If you are using markup (such as Markdown) without specifying HTML `id` attributes, do not fret. DocuBot can automatically create identifiers for the following HTML elements: `h1 h2 h3 h4 h5 h6 legend caption dt`. In this scenario, add a `toc` entry in the metasection with a comma-delimited list of the exact text for the elements you wish to link to, in quotes. For example:
 
     title: Welcome to FrobozzCo
-    toc  : Introduction, Learning from Your Mistakes
+    toc  : "Introduction", "Learning from Your Mistakes"
     +++
     ## Introduction
     ...

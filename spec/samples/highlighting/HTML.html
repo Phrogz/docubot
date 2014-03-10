@@ -1,0 +1,42 @@
+title: Highlighting HTML
++++
+<p>Here's some HTML to highlight:</p>
+<pre><code class="cplusplus">
+#include &lt;AtlasUtils/Plugin.h&gt;
+#include &lt;AtlasUtils/PluginRegistry.h&gt;
+
+#include "Cube.h"
+
+class CUBE_Plugin: public AtlasUtils::Plugin&lt;AtlasSG::NodePtr&gt;
+{
+    public:
+        // The constructor calls the super-class constructor
+        // passing it the plug-in's name "cube"
+        CUBE_Plugin():
+            AtlasUtils::Plugin&lt;AtlasSG::NodePtr&gt;("cube")
+        {
+        }
+
+        // The read method will be called whenever a request is
+        // made to open a file with an extension ".cube"
+        virtual AtlasSG::NodePtr read( const std::string &amp;filename )
+        {
+            // Since this is a pseudo-plug-in we can ignore the filename
+
+            return AtlasSG::NodePtr( new Cube );
+        }
+
+        virtual bool write( AtlasSG::NodePtr, const std::string &amp;)
+        { 
+            return false;
+        }
+};
+
+
+// The PLUGIN_PROXY macro instantiates an object of class CUBE_Plugin
+// when the dynamic shared object is loaded.
+
+PLUGIN_PROXY( CUBE_Plugin )
+</code></pre>
+
+<p>And here's an inline <code class="ruby">def call() end</code></p>

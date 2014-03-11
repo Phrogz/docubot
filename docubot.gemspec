@@ -22,11 +22,13 @@ Gem::Specification.new do |s|
 	s.add_dependency 'kramdown'
 	s.add_dependency 'RedCloth'
 	s.add_dependency 'minitest'
+	s.add_dependency 'coderay'
 	s.requirements << "Windows with HTML Help Workshop installed and hhc.exe in the %PATH%."
 	s.requirements << "Haml gem for template interpretation."
 	s.requirements << "Nokogiri gem for parsing HTML after creation (and manipulating)."
 	s.requirements << "kramdown gem for Markdown conversion."
 	s.requirements << "RedCloth gem for Textile conversion."
 	s.requirements << "MiniTest gem for running specifications."
+	s.requirements << "CodeRay gem for syntax highlighting."
 	#s.has_rdoc = true
 end

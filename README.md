@@ -63,6 +63,65 @@ A file named "index.md" inside a directory describes the section itself. Such a 
 
 Note that for the metadata section to be recognized, the section must end with `+++` on its own line (even if you have no additional content you wanted to write for that section).
 
+## Syntax Highlighting for Code
+If you install the [CodeRay](http://coderay.rubychan.de) Ruby gem _(hint: `gem install coderay`)_ you can get syntax highlighting for code blocks in a variety of coding languages. Supported languages and their identifiers _see below_ as of CodeRay v1.1:
+
+* **C** - `c`
+* **C++** - `cplusplus`, `cpp`
+* **Clojure** - `clojure`
+* **CSS** - `css`
+* **Delphi** - `delphi`, `pascal`
+* **Diff** - `diff`, `patch`
+* **Erb** - `erb`, `eruby`
+* **Groovy** - `groovy`
+* **Haml** - `haml`
+* **HTML** - `html`, `xhtml`
+* **Java** - `java`
+* **JavaScript** - `js`, `ecma_script`, `ecmascript`, `java_script`, `javascript`
+* **JSON** - `json`
+* **PHP** - `php`
+* **Python** - `python`
+* **Ruby** - `ruby`, `rhtml`, `irb`
+* **SQL** - `sql`
+* **Text** - `plain`, `plaintext`, `text`, `default`
+* **XML** - `xml`
+* **YAML** - `yaml`, `yml`
+
+Syntax highlighting is currently supported for HTML and Markdown markup pages only. 
+
+### Syntax Highlighting in HTML
+To specify that a block of code should have syntax highlighting applied, add a CSS class to the element whose contents you want highlighted:
+
+    <pre class="language-cpp">
+    printf('Syntax highlighting for C++');
+    </pre>
+
+This can be on any element, including inline `<code>` elements. The CSS class must start with `language-` and finish with one of the recognized language identifiers _(see above)_.
+
+### Syntax Highlighting in Markdown
+To specify that a block of code should have syntax highlighting applied, specify the language for the code block either via a kramdown code fence…
+
+    ~~~ cpp
+    printf('Syntax highlighting for C++');
+    ~~~
+
+…or a kramdown [inline-attribute block](http://kramdown.gettalong.org/syntax.html#language-of-code-blocks):
+
+    ~~~
+    printf('This is less tidy');
+    ~~~
+    {: .language-cpp}
+
+To specify that an inline code snippet should be highlighted, also use the inline attribute block:
+
+    To print a line, use the `printf()`{: .language-cpp} command.
+
+**Note**: Applying CSS classes to arbitrary HTML markup inside Markdown will **not** apply syntax highlighting:
+
+    <span class="language-cpp">No highlighting here in Markdown</span>
+
+### Disabling Syntax Highlighting
+If you do not want syntax highlighting applied to a particular page—if, for some reason, you have CSS classes `language-foo` applied to your HTML but don't want syntax highlighting—add a `highlight:off` directive to the metasection for your page.
 
 ## Adding Terms to the Index
 1. By default, every heading (`<h1>`-`<h6>`) and definition term (`<dt>`) in your final pages will add an entry in the index to the page using it.
@@ -295,6 +354,9 @@ Here are all the attributes you can put in the metasection for a page or the sit
     # Prevent this page from being included in the TOC or contents.
     # Useful for when a page is planned and in source control but not ready yet.
     skip: true
+    
+    # Disable syntax highlighting of code blocks on this page.
+    highlight: off
 
 
 # Additional Planned Features

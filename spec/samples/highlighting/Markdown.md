@@ -1,19 +1,20 @@
-title: Highlighting HTML
+title: Highlighting Markdown
 +++
-<p>Here's some HTML to highlight:</p>
-<pre class="language-cpp">
-#include &lt;AtlasUtils/Plugin.h&gt;
-#include &lt;AtlasUtils/PluginRegistry.h&gt;
+Here's some code to highlight:
+
+~~~ cpp
+#include <AtlasUtils/Plugin.h>
+#include <AtlasUtils/PluginRegistry.h>
 
 #include "Cube.h"
 
-class CUBE_Plugin: public AtlasUtils::Plugin&lt;AtlasSG::NodePtr&gt;
+class CUBE_Plugin: public AtlasUtils::Plugin<AtlasSG::NodePtr>
 {
     public:
         // The constructor calls the super-class constructor
         // passing it the plug-in's name "cube"
         CUBE_Plugin():
-            AtlasUtils::Plugin&lt;AtlasSG::NodePtr&gt;("cube")
+            AtlasUtils::Plugin<AtlasSG::NodePtr>("cube")
         {
         }
 
@@ -37,9 +38,10 @@ class CUBE_Plugin: public AtlasUtils::Plugin&lt;AtlasSG::NodePtr&gt;
 // when the dynamic shared object is loaded.
 
 PLUGIN_PROXY( CUBE_Plugin )
-</pre>
+~~~
 
-<p>And here's an inline <code class="language-ruby">def call; end</code></p>
-<p>Here's one that's left untouched: <code id="untouched1">def call; end</code></p>
-<p>Here's another that's left untouched: <span id="untouched2" class="ruby">def call; end</span></p>
+And here's an inline `def call; end`{: .language-ruby} Ruby code.
 
+Here's one that's left untouched: `def call; end`{: #untouched1}
+
+Here's another that's left untouched: <span id="untouched2" class="language-ruby">def call; end</span>

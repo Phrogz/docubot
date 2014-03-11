@@ -64,7 +64,7 @@ A file named "index.md" inside a directory describes the section itself. Such a 
 Note that for the metadata section to be recognized, the section must end with `+++` on its own line (even if you have no additional content you wanted to write for that section).
 
 ## Syntax Highlighting for Code
-If you install the [CodeRay](http://coderay.rubychan.de) Ruby gem _(hint: `gem install coderay`)_ you can get syntax highlighting for code blocks in a variety of coding languages. Supported languages and their identifiers _see below_ as of CodeRay v1.1:
+If you install the [CodeRay](http://coderay.rubychan.de) Ruby gem _(hint: `gem install coderay`)_ you can get syntax highlighting for code blocks in a variety of coding languages. Supported languages and their identifiers _(see below)_ as of CodeRay v1.1:
 
 * **C** - `c`
 * **C++** - `cplusplus`, `cpp`
@@ -118,7 +118,7 @@ To specify that an inline code snippet should be highlighted, also use the inlin
 
 **Note**: Applying CSS classes to arbitrary HTML markup inside Markdown will **not** apply syntax highlighting:
 
-    <span class="language-cpp">No highlighting here in Markdown</span>
+    You will get <span class="language-cpp">no highlighting here</span> in Markdown.
 
 ### Disabling Syntax Highlighting
 If you do not want syntax highlighting applied to a particular page—if, for some reason, you have CSS classes `language-foo` applied to your HTML but don't want syntax highlighting—add a `highlight:off` directive to the metasection for your page.
